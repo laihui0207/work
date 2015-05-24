@@ -362,6 +362,8 @@ final class YunZhiShengAdapter {
 			mRecognitionState = false;
 			if (protocol.matches(".+semantic.+")) {
 				mCallback.onFinishRecognition(protocol, true);
+			}else{
+				mCallback.onFinishRecognition1("");
 			}
 
 			// 若有唤醒请求，则开始唤醒服务

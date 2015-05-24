@@ -485,6 +485,15 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 		doSendMessage(CommonMessage.VoiceEngine.RECOGNITION_START, null);
 	}
 
+
+	void onFinishRecognition1(String result){
+		LogUtil.w(LOG_TAG, "onFinishRecognition1");
+		preFinishInteraction();
+		mCurrentDialogError = ErrorType.ERR_NET;
+		changeState(State.STATE_ERROR);
+	}
+
+	private String mRecognitionResult = null;
 	void onFinishRecognition(String result, boolean isSemantic) {
 		LogUtil.d(LOG_TAG, "onFinishRecognition, result = " + result + ", isSemantic = " + isSemantic);
 
@@ -502,9 +511,10 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 			boolean finish = false, success = false, gotoSearch = false;
 			if (!isSemantic) {	// phonetic
 				// Send the result back to service
-				Bundle data = new Bundle();
+				/*Bundle data = new Bundle();
 				data.putString("result", result);
-				doSendMessage(CommonMessage.VoiceEngine.RECOGNITION_COMPLETE, data);
+				doSendMessage(CommonMessage.VoiceEngine.RECOGNITION_COMPLETE, data);*/
+				mRecognitionResult = result;
 
 				if ( !checkCommandAnswer(result) ) {
 					LogUtil.d(LOG_TAG, "wait for the following analysed result...");
@@ -542,6 +552,9 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 					success = false;
 				} else {
 					// need to switch to search state
+					Bundle data = new Bundle();
+					data.putString("result", mRecognitionResult);
+					doSendMessage(CommonMessage.VoiceEngine.RECOGNITION_COMPLETE, data);
 					finish = false;
 					gotoSearch = true;
 				}
