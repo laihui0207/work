@@ -210,6 +210,8 @@ public class HomeActivity extends BaseActivity {
 			LogUtil.w(TAG, "MyOnClickListener mbIsClickedIcon="+mbIsClickedIcon);
 			if(!isIconClicked()){
 				setIconClick(true);
+			}else{
+				return;
 			}
 			switch (v.getId()) {
 			case R.id.home_music_btn:
