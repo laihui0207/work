@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">播客</string>
+    <string name="music_name_default">He Wasn\'t There</string>
+    <string name="music_author_default">Lily Allen</string>
+    <string name="music_back">返回</string>
+    <string name="add_love">十\n订阅</string>
+    <string name="re_love">已\n订阅</string>
+    <string name="music_order_1">顺序播放</string>
+    <string name="music_order_2">单曲循环</string>
+    <string name="music_order_3">随机播放</string>
+    <string name="subscribe_me">订\n阅\n管\n理</string>
+    <string name="subscribe_title">订阅管理</string>
+    <string name="sub">立即订阅</string>
+    <string name="no_sub">取消订阅</string>
+    <string name="sub_sum">已订阅(%1$s)</string>
+    <string name="cannot_message">您最多能订阅6个栏目，请\n取消部分栏目再订阅新栏目。</string>
+    <string name="know">我知道了</string>
+</resources>

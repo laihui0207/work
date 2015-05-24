@@ -1,0 +1,23 @@
+<resources>
+
+    <string name="app_name">tsd-Launcher3</string>
+
+    <string name="MissingComponentsMsg">系统启动失败，检测到缺少以下组件：</string>
+
+    <string name="home_icall">iCALL</string>
+    <string name="home_allapps">全部应用</string>
+
+    <string name="time_default">--:--</string>
+    <string name="temperature_default">--</string>
+    <string name="temperature_unit">&#xb0;</string>
+    <string name="date_default">--月--日</string>
+    <string name="suggestion_default">Unknown</string>
+    
+    <string name="FullGreetingMessage">主人欢迎回来, 今天是%1$d月%2$d日，%3$s，气温%4$d度，%5$s洗车。</string>
+    <string name="ShortGreetingMessage">主人欢迎回来, 今天是%1$d月%2$d日。</string>
+    <string name="GoodbyeMessage">主人再会。</string>
+    <string name="BGMusicMessage">下面是今天的背景音乐，请欣赏。</string>
+
+    <string name="NetworkDisconnected">网络连接丢失，请检查网络设置</string>
+    <string name="LoginFailedMsg">设备认证失败，请与供应商联系</string>
+</resources>

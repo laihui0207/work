@@ -1,0 +1,131 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tuyou.tsd.navigation"
+    android:sharedUserId="com.tuyou.tsd"
+    android:versionCode="23"
+    android:versionName="0.4.5" >
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="19" />
+
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.BAIDU_LOCATION_SERVICE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCES_MOCK_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_GPS" />
+    <!-- SDK1.5需要android.permission.GET_TASKS权限判断本程序是否为当前运行的应用? -->
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <!-- 来电消音 -->
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <application
+        android:name="com.tuyou.tsd.common.base.TSDApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name" >
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="0TC6r2T1uTX9xgdUSyQuV5Lo" />
+
+        <!-- debug模式申请的key：r1Em7hxaGvUmbu3Te5Mne508 -->
+        <!-- 小宝账号申请的key：Bd6c46GxIq74XT0xawU9vqUU -->
+        <!-- 小宝账号申请的新key:0TC6r2T1uTX9xgdUSyQuV5Lo -->
+
+        <activity
+            android:name="com.tuyou.tsd.navigation.MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.AppStartLoadTranslucent" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tuyou.tsd.navigation.BNavigatorActivity"
+            android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.AppStartLoadTranslucent" />
+        <activity
+            android:name="com.tuyou.tsd.navigation.RouteResultsActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.AppStartLoadTranslucent" >
+        </activity>
+        <activity
+            android:name="com.tuyou.tsd.navigation.RoutePlanActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.AppStartLoadTranslucent" >
+        </activity>
+        <activity
+            android:name="com.tuyou.tsd.navigation.RouteGuideActivity"
+            android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.AppStartLoadTranslucent" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tuyou.tsd.navigation.InitNavActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.AppStartLoadTranslucent" >
+        </activity>
+
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote" >
+            <intent-filter>
+                <action android:name="com.baidu.location.service_v2.2" >
+                </action>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.tuyou.tsd.navigation.LocationService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.tuyou.tsd.navigation.LocationService" />
+            </intent-filter>
+        </service>
+        <service android:name="com.tuyou.tsd.navigation.SearchService" >
+            <intent-filter>
+                <action android:name="com.tuyou.tsd.navigation.SearchService" />
+            </intent-filter>
+        </service>
+
+        <receiver android:name="com.tuyou.tsd.navigation.mode.StartNavBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="com.tuyou.tsd.start_nav" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

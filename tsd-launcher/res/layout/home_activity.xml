@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res/com.tuyou.tsd"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/home_view"
+    android:background="@drawable/home_bg" >
+
+    <TextView 
+        android:id="@+id/home_time_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:text="@string/time_default"
+        android:textColor="@color/white"
+        android:textSize="100sp" />
+
+    <com.tuyou.tsd.launcher.widget.WeatherView
+        android:id="@+id/home_weather_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp" />
+
+   <ImageView
+        android:id="@+id/home_separator_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_1"
+        android:layout_below="@id/home_time_view"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/separator_hline" />
+
+    <ImageView 
+        android:id="@+id/home_face_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/home_separator_view"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/earanim" />
+
+    <com.tuyou.tsd.launcher.widget.ImageTextView
+        android:id="@+id/home_speech_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/home_face_view"
+        android:layout_alignTop="@+id/home_face_view"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+	    custom:content_marginLeft="25dp"
+	    custom:content_marginRight="10dp"
+	    custom:content_marginTop="15dp"
+	    custom:content_marginBottom="15dp"
+        custom:backImg="@drawable/speech_bg"
+        custom:content="Hello world!" />
+</RelativeLayout>

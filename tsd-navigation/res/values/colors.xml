@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <drawable name="white">#ffffff</drawable>
+    <drawable name="txt_seach">#00a0e6</drawable>
+    <drawable name="bg_seach_title">#121818</drawable>
+    <drawable name="bg_navigation_2">#0073a5</drawable>
+    <drawable name="bg_line_1">#00a1e5</drawable>
+    <drawable name="bg_line_2">#2000a1e5</drawable>
+    <!-- 搜索字体颜色 -->
+    <drawable name="txt_seacher_content">#cccccc</drawable>
+    <!-- 85%黑色 -->
+    <drawable name="black85">#95000000</drawable>
+    <!-- 路线方案选中效果 -->
+    <drawable name="bg_select_type">#4000a0e6</drawable>
+    <!-- 周边 -->
+    <drawable name="bg_periphery_1">#ff3852</drawable>
+    <drawable name="bg_periphery_2">#208aff</drawable>
+    <drawable name="bg_periphery_3">#ba48ea</drawable>
+    <drawable name="bg_periphery_4">#05d3cf</drawable>
+    <drawable name="bg_periphery_5">#7ed0f1</drawable>
+    <drawable name="bg_periphery_6">#fea334</drawable>
+    <drawable name="bg_periphery_7">#f4d100</drawable>
+    <drawable name="bg_periphery_1_1">#b12739</drawable>
+    <drawable name="bg_periphery_2_1">#1561b2</drawable>
+    <drawable name="bg_periphery_3_1">#8233a3</drawable>
+    <drawable name="bg_periphery_4_1">#049490</drawable>
+    <drawable name="bg_periphery_5_1">#5990a8</drawable>
+    <drawable name="bg_periphery_6_1">#b27225</drawable>
+    <drawable name="bg_periphery_7_1">#aa9110</drawable>
+    
+    <!-- poi结果页 -->
+    <color name="textColor1">#FF5AC4F3</color>
+    <color name="textColor2">#FF377E9D</color>
+    <color name="textColor3">#FF499FE8</color>
+    <color name="textColor4">#FF9A9A9A</color>
+
+</resources>

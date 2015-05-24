@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/home_separator_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_1"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp"
+        android:src="@drawable/separator_hline" />
+
+    <ImageView
+        android:id="@+id/home_xiaobao_shadow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/home_separator_view"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/xiaobao_bg" />
+
+    <ImageView
+        android:id="@+id/home_xiaobao_face"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/home_xiaobao_shadow"
+        android:layout_marginBottom="-20dp"
+        android:src="@drawable/xiaobao_nor" />
+
+    <ImageView
+        android:id="@+id/home_xiaobao_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/home_xiaobao_face"
+        android:src="@drawable/hint" />
+
+    <ImageButton
+        android:id="@+id/home_music_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/home_xiaobao_face"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/music_btn" />
+
+    <ImageButton
+        android:id="@+id/home_news_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/home_xiaobao_face"
+        android:layout_below="@+id/home_music_btn"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/news_btn" />
+
+    <ImageButton
+        android:id="@+id/home_nav_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/home_xiaobao_face"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/nav_btn" />
+
+    <ImageButton
+        android:id="@+id/home_pod_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/home_xiaobao_face"
+        android:layout_below="@+id/home_nav_btn"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/pod_btn" />
+
+    <TextView
+        android:id="@+id/home_icall_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="15dp"
+        android:text="@string/home_icall"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/home_allapps_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/home_icall_btn"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="15dp"
+        android:layout_marginRight="15dp"
+        android:text="@string/home_allapps"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</RelativeLayout>

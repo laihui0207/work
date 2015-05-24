@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <drawable name="txt_seach">#00a0e6</drawable>
+    <drawable name="bg_seach_title">#121818</drawable>
+    <drawable name="bg_navigation_2">#0073a5</drawable>
+    <drawable name="bg_line_1">#00a1e5</drawable>
+    <drawable name="bg_line_2">#2000a1e5</drawable>
+    <!-- 80%黑色 -->
+    <drawable name="black80">#95000000</drawable>
+
+</resources>

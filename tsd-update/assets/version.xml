@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<updates>
+    <update>
+		<version>2</version>
+		<name>UpdateSoft</name>
+		<packagename>com.tuyou.tsd.updatesoft</packagename>
+		<url>http://gdown.baidu.com/data/wisegame/f98d235e39e29031/baiduxinwen.apk</url>
+	</update>
+    <update>
+		<version>2</version>
+		<name>TrafficStats</name>
+		<packagename>com.tuyou.tsd.trafficstats</packagename>
+		<url>http://android.ruansky.com/downbag/2014/07/16/a.ruansky.com.YSXJXAQJ.v.1.0.apk
+</url>
+	</update>
+	<update>
+		<version>2</version>
+		<name>SMSDelete</name>
+		<packagename>com.tuyou.tsd.sms</packagename>
+		<url>http://android.ruansky.com/downbag/2014/07/10/lhXzj.apk</url>
+	</update>
+</updates>
+

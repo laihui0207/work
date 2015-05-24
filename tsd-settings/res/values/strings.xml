@@ -1,0 +1,112 @@
+<resources>
+
+    <string name="app_name">设置</string>
+    <string name="app_url">http://aituyou.com/app</string>
+
+    <!-- 主页 -->
+    <string name="setting_wifi">小宝热点</string>
+    <string name="setting_power">屏幕休眠</string>
+    <string name="setting_fm">FM设置</string>
+    <string name="setting_info">绑定手机</string>
+    <string name="setting_flow">流量监控</string>
+    <string name="setting_camera">摄像头</string>
+    <string name="setting_about">关\n于\n小\n宝</string>
+    <!-- wifi管理 -->
+    <string name="flow_ssid">热点名</string>
+    <string name="flow_type">安全性</string>
+    <string name="flow_psd">密&#160;&#160;&#160;&#160;码</string>
+    <string name="flow_type_value">WPA/PSK</string>
+    <string name="flow_psd_no">开放</string>
+    <string name="flow_psd_wpa">WPA/PSK</string>
+    <string name="flow_psd_wpa2">WPA2/PSK</string>
+    <string name="txt_flow_sy">剩余定向流量</string>
+    <string name="txt_flow_dw">MB</string>
+    <string name="txt_flow_redress">矫正流量</string>
+    <string name="wifi_open_on">正在开启无线热点。。。</string>
+    <string name="wifi_open_off">正在关闭无线热点。。。</string>
+    <string name="wifi_ssid">XiaoBao_WIFI</string>
+    <string name="wifi_psd">12345678</string>
+    <string name="wifi_no_open_ts">嘘~一般人我不告诉他……</string>
+    <string name="wifi_no_open_jy">唤醒小宝,说“打开小宝热点”也可以哦~</string>
+    <string name="wifi_open_ts">小宝热点开启，密码是12345678</string>
+    <string name="wifi_off_ts">小宝热点关闭</string>
+    <!-- 关闭屏幕 -->
+    <string name="txt_off_sceen_title">屏幕自动关闭时间</string>
+    <string name="txt_off_sceen_unit">分钟</string>
+    <string name="txt_off_screen_time_1">1</string>
+    <string name="txt_off_screen_time_2">2</string>
+    <string name="txt_off_screen_time_3">3</string>
+    <string name="txt_off_screen_time_4">4</string>
+    <string name="txt_off_screen_time_5">5</string>
+    <!-- FM发射设置 -->
+    <string name="txt_fm_title">FM发射管理</string>
+    <string name="txt_fm_kg">FM发射开关</string>
+    <string name="txt_fm_ts">调试频率</string>
+    <string name="txt_fm_toast_1">如果当前频率不佳，请更改频率</string>
+    <string name="txt_fm_frequency">88.8</string>
+    <string name="txt_fm_play_music">测试声音</string>
+    <string name="txt_fm_stop_music">中止播放</string>
+    <string name="txt_fm_unit">MHz</string>
+    <string name="txt_fm_fre_new">当前频率:</string>
+    <string name="fm_no_open_jy">唤醒小宝,说“打开FM”也可以哦~</string>
+    <string name="fm_open_tts">老大，小宝在车载FM等你哦</string>
+    <!-- 个人信息 -->
+    <string name="information_name">昵称:</string>
+    <string name="information_phone">绑定的手机号:</string>
+    <string name="information_car">车牌号:</string>
+    <string name="information_sex">性别:</string>
+    <string name="information_app">扫一下把APP带回家</string>
+    <string name="information_tips">说明:</string>
+    <string name="information_tips_1">如要解除绑定或修改设置，</string>
+    <string name="information_tips_2">请在手机APP中操作。</string>
+    <string name="information_no_tips_1">您尚未将手机app与小宝绑定\n&#160;&#160;&#160;&#160;绑定后才能接收事故提醒</string>
+    <string name="information_no_tips_2">您可以扫描二维码下载手机APP\n下载后进行绑定</string>
+    <!-- 摄像头校正 -->
+    <string name="txt_camera_boot">您可以上下左右转动摄像头调整摄像头的角度。</string>
+    <string name="txt_camera_boot_look">去看看效果</string>
+    <string name="back">返回</string>
+    <!-- 摄像头预览 -->
+    <string name="txt_preview_t1">请调节摄像头</string>
+    <string name="txt_preview_t2">以看到正前方的道路为最佳</string>
+    <string name="txt_preview_finish">完成</string>
+    <string name="txt_dialog_wait">请稍后...</string>
+    <string name="txt_preview_title">调节摄像头</string>
+    <string name="tts_no_photograph">暂时无法拍照，请稍后</string>
+
+    <!-- 初始化设置 -->
+    <string name="txt_init_start">立即开始</string>
+    <string name="txt_guide_next">下一步</string>
+    <string name="txt_init_finish">立即开启</string>
+    <string name="txt_init_device">校正摄像头</string>
+    <string name="txt_init_tts_1">老大，我叫小宝，是一个智能伴驾机器人，你可以用我听音乐、新闻和节目，也可以用我导航和拍照，但要先对我初始化设置哦。现在开始吧</string>
+    <string name="txt_init_tts_2">用车载FM收听小宝的声音会更好听滴</string>
+    <string name="txt_init_tts_3">先将车载FM调到小宝的频率，再点击测试声音试试怎么样</string>
+    <string name="txt_init_tts_4">要把摄像头调整到合适的角度小宝才能看得更清楚哦</string>
+    <string name="txt_init_ts_finish">初始化完成，\n赶紧开启小宝的卖萌之旅吧~</string>
+    <!-- 下载app页面 -->
+    <string name="txt_downapp_content">请确认您已经下载了手机app\n并完成了设备绑定</string>
+    <string name="txt_downapp_ok">仍然继续</string>
+    <string name="txt_downapp_cancel">取消</string>
+
+    <!-- 关于小宝 -->
+    <string name="txt_about_title">关于小宝</string>
+    <string name="txt_version">版本号:</string>
+    <string name="txt_update_content">更新说明:</string>
+    <string name="about_no_update">没有更新记录</string>
+    <string name="txt_about_version">版本介绍</string>
+    <string name="txt_about_order">小宝指令</string>
+    <string name="txt_about_order_1">唤醒指令:</string>
+    <string name="txt_about_order_2">唤醒＋操作:</string>
+    <string name="txt_about_order_3">本地指令</string>
+    <string name="txt_about_order_4">娱乐:</string>
+    <string name="txt_about_order_5">导航:</string>
+    <string name="txt_about_order_6">小宝热点:</string>
+    <string name="txt_about_order_11">小宝小宝</string>
+    <string name="txt_about_order_22">小宝拍照(拍照)、小宝闭嘴(暂停播放)</string>
+    <string name="txt_about_order_44">音乐、打开音乐、节目、打开节目、新闻、打开新闻......</string>
+    <string name="txt_about_order_55">我要去...导航到...我想去...</string>
+    <string name="txt_about_order_66">打开小宝热点、小宝开热点、打开小宝wifi...</string>
+    <!-- FM notification -->
+    <string name="txt_notification_1">FM</string>
+
+</resources>

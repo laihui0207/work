@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/music_bg"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp" >
+
+        <TextView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_back_select"
+            android:onClick="onClick"
+            android:text="@string/music_back"
+            android:textColor="@drawable/music_list_text_select"
+            android:gravity="right|center_vertical"
+            android:paddingRight="@dimen/dimen_15"
+            />
+
+        <TextView
+            android:id="@+id/music_play_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_20" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/music_play_list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:listSelector="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:divider="@null"
+        android:fadingEdge="none"
+        android:cacheColorHint="#00000000"
+        android:headerDividersEnabled="false"
+        android:footerDividersEnabled="false"/>
+
+</LinearLayout>

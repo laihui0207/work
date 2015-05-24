@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+    
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/dimen_20"
+        android:layout_marginTop="@dimen/dimen_10">
+       <TextView 
+            android:id="@+id/photo_time1"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="@color/white_50"/>
+       <LinearLayout 
+           android:layout_height="wrap_content"
+           android:layout_width="wrap_content"
+           android:orientation="horizontal"
+           >
+           <TextView 
+               android:id="@+id/photo_time2"
+               android:layout_height="wrap_content"
+               android:layout_width="wrap_content"
+               android:textColor="@color/white"
+               android:textSize="@dimen/text_size_18"/>
+           <TextView 
+            android:id="@+id/photo_time3"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10"
+            android:textColor="@color/white_50"/>
+       </LinearLayout>
+    </LinearLayout>
+    <com.tuyou.tsd.cardvr.customView.NoScrollGridView
+        android:id="@+id/listview_item_gridview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="3"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:horizontalSpacing="@dimen/dimen_30"
+        android:verticalSpacing="@dimen/dimen_20"
+        android:layout_marginLeft="@dimen/dimen_20"
+        android:layout_marginRight="@dimen/dimen_20"
+        android:listSelector="@drawable/grid_view_item_select"
+        android:layout_marginTop="@dimen/dimen_10"
+        android:layout_marginBottom="@dimen/dimen_10"
+        />
+
+</LinearLayout>

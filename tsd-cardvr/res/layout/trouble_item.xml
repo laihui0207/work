@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:layout_marginLeft="@dimen/dimen_30"
+    android:layout_marginRight="@dimen/dimen_30" 
+    android:gravity="center_horizontal">
+
+    <LinearLayout
+        android:id="@+id/trouble_item1"
+        android:layout_width="@dimen/dimen_112"
+        android:layout_height="@dimen/dimen_146"
+        android:layout_marginTop="@dimen/dimen_20"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/trouble_icon_1"
+                android:layout_width="@dimen/dimen_112"
+                android:layout_height="@dimen/dimen_84"
+                android:src="@drawable/sample" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/trouble_time_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
+            android:textSize="@dimen/text_size_20"
+            android:layout_marginTop="@dimen/dimen_8" />
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/trouble_item2"
+        android:layout_width="@dimen/dimen_112"
+        android:layout_height="@dimen/dimen_146"
+        android:layout_marginTop="@dimen/dimen_20"
+        android:layout_marginLeft="@dimen/dimen_20"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/trouble_icon_2"
+                android:layout_width="@dimen/dimen_112"
+                android:layout_height="@dimen/dimen_84"
+                android:src="@drawable/sample" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/trouble_time_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
+            android:textSize="@dimen/text_size_20"
+            android:layout_marginTop="@dimen/dimen_8" />
+    </LinearLayout>
+    
+    
+    <LinearLayout
+        android:id="@+id/trouble_item3"
+        android:layout_width="@dimen/dimen_112"
+        android:layout_height="@dimen/dimen_146"
+        android:layout_marginTop="@dimen/dimen_20"
+        android:layout_marginLeft="@dimen/dimen_20"
+        android:layout_marginRight="@dimen/dimen_20"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/trouble_icon_3"
+                android:layout_width="@dimen/dimen_112"
+                android:layout_height="@dimen/dimen_84"
+                android:src="@drawable/sample" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/trouble_time_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal|bottom"
+            android:textSize="@dimen/text_size_20"
+            android:layout_marginBottom="@dimen/dimen_20" />
+    </LinearLayout>
+    <LinearLayout 
+        android:layout_height="@dimen/dimen_146"
+        android:layout_width="@dimen/dimen_211"
+        android:orientation="vertical"
+        android:background="@drawable/trouble_item_time_bg"
+        android:layout_marginTop="@dimen/dimen_20"
+        android:visibility="gone">
+        <TextView 
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/trouble_time"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_24"
+            android:layout_marginLeft="@dimen/dimen_24"
+            android:layout_marginTop="@dimen/dimen_12"
+            android:layout_marginBottom="@dimen/dimen_15"/>
+        <ImageView 
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_1"
+            android:background="@color/white"
+            android:layout_marginLeft="@dimen/dimen_30"
+            android:layout_marginRight="@dimen/dimen_30"/>
+        <TextView 
+            android:id="@+id/trouble_time_all"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_20"
+            android:layout_marginLeft="@dimen/dimen_24"
+            android:layout_marginTop="@dimen/dimen_12"/>
+    </LinearLayout>
+
+</LinearLayout>

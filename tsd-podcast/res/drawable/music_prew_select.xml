@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:state_focused="true" android:drawable="@drawable/music_prew_click"></item>
+    <item android:state_pressed="true" android:drawable="@drawable/music_prew_click"></item>
+    <item android:state_enabled="false" android:drawable="@drawable/music_prew_unableclick"></item>
+    <item android:state_enabled="true" android:drawable="@drawable/music_prew_unclick"></item>
+    <item android:drawable="@drawable/music_prew_unclick"></item>
+
+</selector>

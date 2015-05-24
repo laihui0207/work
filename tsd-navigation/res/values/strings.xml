@@ -1,0 +1,69 @@
+<resources>
+
+    <string name="app_name">导航</string>
+    <string name="cache_city">福州市</string>
+    <string name="btn_route_back">返回</string>
+    <string name="txt_plan_tj">推荐</string>
+    <string name="txt_mian_periphery">周边</string>
+    <string name="txt_mian_his">历史</string>
+    <string name="txt_route_title">搜索结果</string>
+    <string name="txt_route_hint_edt">目的地搜索</string>
+    <string name="txt_dialog_wait">正在搜索...  </string>
+    <string name="txt_dialog_load">正在加载...  </string>
+    <string name="txt_poi_ok">使用</string>
+
+    <!-- 搜索服务类 -->
+    <string name="searchservice_no_result">没有找到结果，请检查目的地</string>
+    <string name="searchservice_wrong_result">搜索出错，请检查目的地</string>
+    <string name="searchservice_no_net">网络连接断开，请检测网络</string>
+    <string name="searchservice_time_out">连接超时，请重新搜索</string>
+    <string name="searchservice_no_location">请先定位</string>
+    <!-- 导航主页面 -->
+    <string name="main_searching">正在搜索中,请稍后再试</string>
+    <string name="main_no_result">抱歉，未能找到结果</string>
+    <string name="main_location_fail">定位失败</string>
+    <string name="main_enter_destination">请输入目的地</string>
+    <string name="main_my_location">我的位置</string>
+    <!-- 路线规划页面 -->
+    <string name="route_key_fail">key校验失败, </string>
+    <string name="route_key_success">key校验成功!</string>
+    <string name="route_type_recommend">智能\n推荐</string>
+    <string name="route_type_avoid_tafficjam">躲避\n拥堵</string>
+    <string name="route_type_min_time">最短\n时间</string>
+    <string name="route_type_min_dist">最短\n距离</string>
+    <string name="route_type_min_toll">收费\n最少</string>
+    <string name="txt_plan_unit_time">分钟</string>
+    <string name="txt_plan_unit_diatance">公里</string>
+
+    <!-- 导航中页面 -->
+    <string name="txt_nav_mode">播报模式</string>
+    <string name="txt_nav_content">播报内容</string>
+    <string name="txt_nav_daynight">昼夜模式</string>
+    <string name="txt_nav_daynight_day">白天</string>
+    <string name="txt_nav_daynight_night">黑夜</string>
+    <string name="txt_nav_daynight_avo">自动</string>
+    <string name="txt_nav_mode_xx">详细</string>
+    <string name="txt_nav_mode_bz">标准</string>
+    <string name="txt_nav_mode_jd">简单</string>
+    <string name="txt_nav_content_dzy">电子眼</string>
+    <string name="txt_nav_content_xstx">限速提醒</string>
+    <string name="txt_nav_content_aqjs">安全驾驶</string>
+    <string name="txt_nav_content_qflk">前方路况</string>
+    <string name="txt_nav_content_zxtx">直行顺行提醒</string>
+
+    <string-array name="poiHot">
+        <item>加油站</item>
+        <item>停车场</item>
+        <item>服务区</item>
+        <item>ATM</item>
+        <item>公共\n厕所</item>
+        <item>汽车\n维修</item>
+        <item>麦当劳</item>
+        <item>肯德基</item>
+        <item>中式\n快餐</item>
+        <item>药店</item>
+        <item>商场</item>
+        <item>酒店</item>
+    </string-array>
+
+</resources>

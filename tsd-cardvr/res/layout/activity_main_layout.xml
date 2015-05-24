@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/app_bg" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:id="@+id/home_driving_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_10"
+            android:layout_weight="1" >
+
+            <ImageView
+                android:id="@+id/home_driving_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/vedio_all_select" />
+
+            <TextView
+                android:id="@+id/home_driving_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/home_driving_3"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dimen_10"
+                android:text="全部视频"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/home_driving_num_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@id/home_driving_3"
+                android:layout_alignTop="@id/home_driving_3"
+                android:background="@drawable/text_bg"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/home_driving_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_alignBottom="@id/home_driving_3"
+                android:layout_marginBottom="@dimen/dimen_10"
+                android:layout_centerHorizontal="true"
+                android:textSize="@dimen/text_size_24" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/home_accident_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_10" >
+
+            <ImageView
+                android:id="@+id/home_accident_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/vedio_event_select" />
+
+            <TextView
+                android:id="@+id/home_accident_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/home_accident_3"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dimen_10"
+                android:text="事件视频"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/home_accident_num_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@id/home_accident_3"
+                android:layout_alignTop="@id/home_accident_3"
+                android:background="@drawable/text_bg"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/home_accident_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/home_accident_3"
+                android:layout_marginBottom="@dimen/dimen_10"
+                android:textColor="@color/white"
+                android:layout_centerHorizontal="true"
+                android:textSize="@dimen/text_size_24"  />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/home_remind_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_10"
+            android:layout_weight="1" >
+
+            <ImageView
+                android:id="@+id/home_remind_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/vedio_love_select" />
+
+            <TextView
+                android:id="@+id/home_remind_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/home_remind_3"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dimen_10"
+                android:text="@string/title_love"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/home_remind_num_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@id/home_remind_3"
+                android:layout_alignTop="@id/home_remind_3"
+                android:background="@drawable/text_bg"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/home_remind_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/home_remind_3"
+                android:layout_marginBottom="@dimen/dimen_10"
+                android:textColor="@color/white"
+                android:layout_centerHorizontal="true"
+                android:textSize="@dimen/text_size_24"  />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/home_settings_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/btn_settings_selected" />
+
+    <ImageView
+        android:id="@+id/home_exit_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/btn_exit_selected" />
+
+</RelativeLayout>

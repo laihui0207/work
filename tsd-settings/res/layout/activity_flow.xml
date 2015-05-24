@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_main"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/black80"
+        android:gravity="center_vertical" >
+
+        <TextView
+            android:id="@+id/btn_flow_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/btn_back_selector"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/dimen_30"
+            android:text="@string/back"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_20" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="@string/setting_flow"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_25" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <FrameLayout
+                android:layout_width="@dimen/dimen_180"
+                android:layout_height="@dimen/dimen_180"
+                android:layout_marginTop="@dimen/dimen_15" >
+
+                <com.tuyou.tsd.settings.trafficstats.TasksCompletedView
+                    android:id="@+id/bar_flow_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/txt_flow_vaule"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TextView"
+                        android:textColor="@drawable/txt_fm_sum"
+                        android:textSize="@dimen/text_size_22" />
+
+                    <TextView
+                        android:layout_width="@dimen/dimen_80"
+                        android:layout_height="@dimen/dimen_1"
+                        android:background="@drawable/gray" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1000"
+                        android:textColor="@drawable/white"
+                        android:textSize="@dimen/text_size_22" />
+                </LinearLayout>
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_15" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/txt_flow_sy"
+                    android:textColor="@drawable/white"
+                    android:textSize="@dimen/text_size_22" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="("
+                    android:textColor="@drawable/white"
+                    android:textSize="@dimen/text_size_22" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/txt_flow_dw"
+                    android:textColor="@drawable/txt_fm_sum"
+                    android:textSize="@dimen/text_size_22" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=")"
+                    android:textColor="@drawable/white"
+                    android:textSize="@dimen/text_size_22" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_flow_redress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_10"
+            android:layout_marginLeft="@dimen/dimen_15"
+            android:background="@drawable/btn_bg_selector"
+            android:text="@string/txt_flow_redress"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_22" />
+    </LinearLayout>
+
+</LinearLayout>

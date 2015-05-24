@@ -1,0 +1,160 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tuyou.tsd.cardvr"
+    android:sharedUserId="com.tuyou.tsd"
+    android:versionCode="23"
+    android:versionName="0.9.0" >
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="17" />
+
+    <!-- 获取粗略位置 -->
+    <!-- <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> -->
+    <!-- 获取精确位置   通过GPS芯片接收卫星的定位信息，定位精度达10米以内 -->
+    <!-- <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> -->
+    <!-- 允许应用程序访问额外的位置提供命令 -->
+    <!-- <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" /> -->
+    <!-- 获取网络状态 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 获取WIFI状态 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- WIFI状态改变 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <!-- 网络状态改变 -->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <!-- 访问网络 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 写入外部存储 -->
+        
+    <uses-permission android:name="android.permission.READ_MEDIA_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE">
+        <group gid="media_rw" />
+        <group gid="sdcard_rw" />
+    </uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE">
+        <group gid="sdcard_rw" />
+    </uses-permission>
+        
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"></uses-permission>
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION"/>
+
+    <!-- Wake Lock是一种锁的机制, 只要有人拿着这个锁,系统就无法进入休眠， -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="landscape" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity 
+              android:name="com.tuyou.tsd.cardvr.PhotoActivity"
+			  android:launchMode="singleInstance"
+			  android:screenOrientation="landscape"
+			  android:label="@string/app_name2"
+			  android:icon="@drawable/photo_icon" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+		</activity>
+        <activity
+            android:name="com.tuyou.tsd.cardvr.activitys.SettingsActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name="com.tuyou.tsd.cardvr.activitys.DrivingRecordActivity"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name="com.tuyou.tsd.cardvr.activitys.TroubleActivity"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name="com.tuyou.tsd.cardvr.activitys.VideoPlayActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name="com.tuyou.tsd.cardvr.activitys.CheckOutActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="landscape"></activity>
+        <activity
+            android:name="com.tuyou.tsd.cardvr.activitys.PhotoDetailedActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="landscape"></activity>
+
+        <service
+            android:name="com.tuyou.tsd.cardvr.service.VideoRec"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="com.tuyou.tsd.cardvr.service.VideoRec" >
+                </action>
+                <!-- action android:name="tsd.command.dvr.START_RECORD"></action -->
+                <action android:name="android.intent.action.BOOT_COMPLETED" >
+                </action>
+            </intent-filter>
+        </service>
+        
+        <service
+            android:name="com.tuyou.tsd.cardvr.service.InterfaceService"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="com.tuyou.tsd.cardvr.service.InterfaceService" >
+                </action>
+                <!-- action android:name="tsd.command.dvr.START_RECORD"></action -->
+                <action android:name="android.intent.action.BOOT_COMPLETED" >
+                </action>
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name="com.tuyou.tsd.cardvr.service.VideoRecBroadcastReceiver"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" >
+                </action>
+                <action android:name="tsd.event.cardvr.start_record" >
+                </action>
+                <action android:name="tsd.event.cardvr.stop_record" >
+                </action>
+                <action android:name="tsd.event.cardvr.alert_triggered" >
+                </action>
+                <action android:name="tsd.event.cardvr.accident_triggered" >
+                </action>
+                <!-- action android:name="tsd.command.dvr.TAKE_PICTURE"></action -->
+            </intent-filter>
+        </receiver>
+        
+        <provider
+			android:name = ".service.videoMeta.VideoContentProvider"            
+			android:authorities="com.tuyou.cardvr.videoContentProvider"
+            android:permission="android.permission.tsd">
+		</provider>     
+            
+    </application>
+
+</manifest>

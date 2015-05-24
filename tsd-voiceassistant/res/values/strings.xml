@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">语音助手</string>
+
+    <string name="go_home">去主页</string>
+    <string name="recognizing">小宝思考中</string>
+    <string name="searching">小宝搜索中</string>
+    <string name="search_result">搜索结果</string>
+    
+
+    <!-- Error messages -->
+    <string name="noExternalStorageMounted">错误：语音助手服务未启动（未检测到SD卡）</string>
+    <string name="resourceDirNotFound">错误：语音助手服务未启动（资源文件目录不存在/sdcard/Android/data/tuyou/voiceassistant）</string>
+    
+</resources>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 公共部分 -->
+    <!-- 半透明 -->
+    <drawable name="translucence">#7fff0000</drawable>
+    <!-- 黑色 -->
+    <drawable name="black">#000000</drawable>
+    <!-- 白色 -->
+    <drawable name="white">#FFFFFF</drawable>
+    <!-- 红色 -->
+    <drawable name="red">#d40505</drawable>
+    <!-- 透明 -->
+    <drawable name="transparent">#00000000</drawable>
+    <!-- 灰色 -->
+    <drawable name="gray">#CCCCCC</drawable>
+    <!-- 紫色 -->
+    <drawable name="purple">#6343CA</drawable>
+    <!-- 橘黄色 -->
+    <drawable name="orange">#FFB400</drawable>
+
+    <!-- 40%黑色 -->
+    <drawable name="t_40_black">#40000000</drawable>
+    <!-- 80%黑色 -->
+    <drawable name="t_80_black">#80000000</drawable>
+    <drawable name="txt_fm_sum">#009deb</drawable>
+    <drawable name="txt_wifi_psd_1">#232c31</drawable>
+    <drawable name="txt_wifi_psd_2">#00a0e6</drawable>
+
+</resources>

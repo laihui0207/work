@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<array name="weather_icons_array">
+	    <item>@drawable/weather_0</item>
+	    <item>@drawable/weather_1</item>
+	    <item>@drawable/weather_2</item>
+	    <item>@drawable/weather_3</item>
+	    <item>@drawable/weather_4</item>
+	    <item>@drawable/weather_5</item>
+	    <item>@drawable/weather_6</item>
+	    <item>@drawable/weather_7</item>
+	    <item>@drawable/weather_8</item>
+	    <item>@drawable/weather_9</item>
+	    <item>@drawable/weather_10</item>
+	    <item>@drawable/weather_11</item>
+	    <item>@drawable/weather_12</item>
+	    <item>@drawable/weather_13</item>
+	    <item>@drawable/weather_14</item>
+	    <item>@drawable/weather_15</item>
+	    <item>@drawable/weather_16</item>
+	    <item>@drawable/weather_17</item>
+	    <item>@drawable/weather_18</item>
+	    <item>@drawable/weather_19</item>
+	    <item>@drawable/weather_20</item>
+	    <item>@drawable/weather_21</item>
+	    <item>@drawable/weather_22</item>
+	    <item>@drawable/weather_23</item>
+	    <item>@drawable/weather_24</item>
+	    <item>@drawable/weather_25</item>
+	    <item>@drawable/weather_26</item>
+	    <item>@drawable/weather_27</item>
+	    <item>@drawable/weather_28</item>
+	    <item>@drawable/weather_29</item>
+	    <item>@drawable/weather_30</item>
+	    <item>@drawable/weather_31</item>
+	    <item>@drawable/weather_32</item>
+	    <item>@drawable/weather_33</item>
+	    <item>@drawable/weather_34</item>
+	    <item>@drawable/weather_35</item>
+	    <item>@drawable/weather_36</item>
+	    <item>@drawable/weather_37</item>
+	    <item>@drawable/weather_38</item>
+	    <item>@drawable/weather_99</item>
+   	</array>    
+</resources>

@@ -1,0 +1,61 @@
+<resources>
+
+    <string name="app_name">行车视频</string>
+    <string name="app_name2">图库</string>
+    <string name="photo_title">图片</string>
+    <string name="desc"></string>
+    <string name="setting_download_app">您可以扫描下方的二\n维码获得手机APP,\n下载后可以进行绑定\n操作 。</string>
+    <string name="setting_time_year_now">12</string>
+    <string name="setting_time_month_now">08</string>
+    <string name="setting_slash">/</string>
+    <string name="setting_month">月</string>
+    <string name="trouble_time">发生时间</string>
+    <string name="earlier">更早</string>
+    <string name="setting_message">您可以扫描下方的二\n维码获得手机APP，\n下载后可以进行绑定\n操作。</string>
+    <string name="setting_msg1">停车防盗防刮蹭功能</string>
+    <string name="setting_msg1_tip">您尚未将您的手机与您的车载设备\n进行绑定，防盗防刮蹭功能需要绑\n定后才能使用。</string>
+    <string name="setting_msg2">录像的同时录音</string>
+    <string name="video_play_time">\"</string>
+    <string name="setting_off">停车防盗防刮蹭功能关闭</string>
+    <string name="setting_on">停车防盗防刮蹭功能开启</string>
+    <string name="no_video">视频不存在</string>
+    
+    <string name="back">返回</string>
+    <string name="setting">设置</string>
+    <string name="photoandrecord">拍照的同时锁定视频</string>
+    <string name="default_address"></string>
+    <string name="default_time">00:00:00</string>
+	<string name="default_time_1">/00:00:00</string>
+	<string name="title_trouble">事件视频</string>
+	<string name="title_love">收藏的视频</string>
+	<string name="all_video">全部视频</string>
+	<string name="no_all_video">这里空空如也\n还没有行车记录视频哦~</string>
+	<string name="message_all_video">如果您已点火一段时间，\n请检查行车记录仪是否正常工作</string>
+	<string name="event_msg">哇哦~~您的爱车还没有事故发生，\n请继续保持哦~</string>
+	<string name="event_message">事件视频会被锁定，\n但您可以在手机app管理这些视频哦</string>
+	<string name="love_msg">这里空空如也，\n快把重要的视频收藏进来吧~</string>
+	<string name="love_message">收藏的视频将被锁定，\n但您可以在手机app管理这些视频哦</string>
+	<string name="check_out_title">视频速查</string>
+	<string name="event">事故</string>
+	<string name="love">收藏</string>
+	<string name="no_address">暂未获取到地理位置</string>
+
+    <!-- 行车记录service -->
+    <string name="noti_server_running_title">videoRec</string>
+    <string name="noti_server_running_text">Running</string>
+    <string name="noti_no_sd_card_running_title">videoRec</string>
+    <string name="noti_no_sd_card_running_text">No sd card</string>
+    <string name="noti_sd_card_not_enough_mem_title">videoRec</string>
+    <string name="noti_sd_card_not_enough_mem_text">SD card memrory is not enough</string>
+    
+    <string name="photo_false">拍照失败了哦</string>
+    <string name="photo_no_sd">没有SD卡</string>
+    <string name="photo_accident_event">啊啊啊啊啊啊啊啊啊</string>
+    <string name="photo_no_enough">行车记录仪锁定的内容太多啦，抽空去手机机APP里清理一下吧</string>
+    <string name="sd_is_much">SD卡有点拥挤，去手机APP中清理一下吧</string>
+    <string name="sure">确定</string>
+    <string name="no_sd">SD卡移除了</string>
+    <string name="cannot_pic">小宝无法拍照，储存卡好像有问题</string>
+    <string name="sd_sdeject">存储卡移除，行车记录功能已经停止</string>
+    
+</resources>

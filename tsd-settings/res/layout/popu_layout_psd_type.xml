@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/dimen_250"
+    android:layout_height="match_parent"
+    android:background="@drawable/transparent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/txt_popu_no"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_wifi_psd_selector"
+            android:paddingLeft="@dimen/dimen_10"
+            android:text="@string/flow_psd_no"
+            android:textColor="@drawable/white"
+            android:textSize="@dimen/text_size_22" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_1"
+            android:background="@drawable/gray" />
+
+        <TextView
+            android:id="@+id/txt_popu_wpa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_wifi_psd_selector"
+            android:paddingLeft="@dimen/dimen_10"
+            android:text="@string/flow_psd_wpa"
+            android:textColor="@drawable/white"
+            android:textSize="@dimen/text_size_22" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_1"
+            android:background="@drawable/gray" />
+
+        <TextView
+            android:id="@+id/txt_popu_wpa2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_wifi_psd_selector"
+            android:paddingLeft="@dimen/dimen_10"
+            android:text="@string/flow_psd_wpa2"
+            android:textColor="@drawable/white"
+            android:textSize="@dimen/text_size_22" />
+    </LinearLayout>
+
+</LinearLayout>

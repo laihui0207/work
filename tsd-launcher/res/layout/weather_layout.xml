@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res/com.tuyou.tsd"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/temperature_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/temperature_default"
+            android:textColor="@color/white"
+            android:textSize="60sp" />
+
+        <TextView
+            android:id="@+id/temperature_unit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/temperature_text"
+            android:layout_alignTop="@id/temperature_text"
+            android:text="@string/temperature_unit"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_60" />
+
+	    <ImageView
+	        android:id="@+id/weather_img"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentRight="true"
+	        android:src="@drawable/weather_37" />
+    </RelativeLayout>
+    
+    <TextView
+        android:id="@+id/date_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/date_default"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_20" />
+
+	<com.tuyou.tsd.launcher.widget.ImageTextView
+        android:id="@+id/suggestion_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        custom:content_marginLeft="20dp"
+        custom:backImg="@drawable/not_recommend_bg"
+        custom:content="@string/suggestion_default"
+	     />
+</LinearLayout>

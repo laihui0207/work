@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <RelativeLayout
+        android:layout_height="@dimen/dimen_50"
+        android:layout_width="fill_parent"
+        android:background="@drawable/adapter_title">
+        <ImageView 
+            android:id="@+id/location"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@drawable/location"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dimen_20"/>
+        <ImageView 
+            android:id="@+id/view_state"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@drawable/new_point"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dimen_20"
+            android:layout_alignParentRight="true"
+            android:visibility="gone"/>
+        <TextView 
+            android:id="@+id/address"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="@color/white"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dimen_10"
+            android:text="@string/default_address"
+            android:layout_toRightOf="@id/location"
+            android:textSize="@dimen/text_size_20"
+            android:singleLine="true"
+            android:ellipsize="start"
+            android:layout_toLeftOf="@id/view_state"/>
+    </RelativeLayout>
+
+    <com.tuyou.tsd.cardvr.customView.NoScrollGridView
+        android:id="@+id/trouble_gridview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="3"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:horizontalSpacing="@dimen/dimen_20"
+        android:verticalSpacing="@dimen/dimen_20"
+        android:layout_marginLeft="@dimen/dimen_20"
+        android:layout_marginRight="@dimen/dimen_20"
+        android:listSelector="@drawable/grid_view_item_select"
+        android:layout_marginTop="@dimen/dimen_10"
+        android:layout_marginBottom="@dimen/dimen_10">
+    </com.tuyou.tsd.cardvr.customView.NoScrollGridView>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/trouble_item_time_bg"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/dimen_8"
+        android:layout_marginRight="@dimen/dimen_30"
+        android:visibility="gone" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_15"
+            android:layout_marginLeft="@dimen/dimen_24"
+            android:layout_marginTop="@dimen/dimen_12"
+            android:text="@string/trouble_time"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_24" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_24"
+            android:layout_marginRight="@dimen/dimen_24"
+            android:background="@drawable/seek_bg_click" />
+
+        <TextView
+            android:id="@+id/trouble_time_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_24"
+            android:layout_marginTop="@dimen/dimen_12"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_20"
+             />
+    </LinearLayout>
+
+</LinearLayout>

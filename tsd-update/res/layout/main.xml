@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<Button
+		android:id="@+id/btnUpdate"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="更新"
+		/>
+	<Button
+		android:id="@+id/btnInstall"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="安装"
+		/>
+	<Button
+		android:id="@+id/btnDisplay"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="显示信息"
+		/>
+</LinearLayout>

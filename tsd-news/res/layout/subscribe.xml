@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/music_bg" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+         >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/black" >
+
+            <TextView
+                android:id="@+id/back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_back_select"
+                android:gravity="right|center_vertical"
+                android:paddingRight="@dimen/dimen_10"
+                android:text="@string/music_back"
+                android:textColor="@drawable/text_color" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/subscribe_title"
+                android:textSize="@dimen/text_size_20"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/had_subscribe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="@string/subscribe_title"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dimen_10" />
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/subscribe_list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="@android:color/transparent"
+            android:listSelector="@android:color/transparent"
+            android:divider="@drawable/music_line"
+            android:paddingLeft="@dimen/dimen_10"
+            >
+        </ListView>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/can_not_bg"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
+        android:background="@android:color/transparent"
+        android:visibility="gone" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/cannot_bg"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_centerInParent="true" >
+
+                <TextView
+                    android:id="@+id/can_not_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/cannot_message"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_18" />
+
+                <Button
+                    android:id="@+id/can_not_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/can_not_message"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/dimen_20"
+                    android:background="@drawable/know_select"
+                    android:text="@string/know"
+                    android:textColor="@drawable/text_w_g_select"
+                    android:textSize="@dimen/text_size_18" />
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

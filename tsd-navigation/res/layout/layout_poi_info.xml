@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_pop_wait"
+    android:gravity="center"
+    android:orientation="horizontal" >
+
+    <Button
+        android:id="@+id/btn_poi_periphery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_poi_periphery_selecter"
+        android:text="@string/txt_mian_periphery"
+        android:textColor="@drawable/txt_poi_periphery_selecter"
+        android:textSize="@dimen/text_size_20" />
+
+    <TextView
+        android:id="@+id/txt_poi_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_10"
+        android:layout_marginRight="@dimen/dimen_10"
+        android:maxEms="7"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size_20" />
+
+    <Button
+        android:id="@+id/btn_poi_nav"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_poi_nav_selecter"
+        android:text="@string/txt_poi_ok"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size_20" />
+
+</LinearLayout>

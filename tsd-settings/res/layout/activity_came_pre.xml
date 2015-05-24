@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bg_main"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/black80"
+        android:gravity="center_vertical" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="@string/txt_preview_title"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_25" />
+
+        <TextView
+            android:id="@+id/btn_camera_preview_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/btn_back_selector"
+            android:paddingLeft="@dimen/dimen_30"
+            android:text="@string/back"
+            android:gravity="center_vertical"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_20" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <TextureView
+            android:id="@+id/textureView_layout_came_preview_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:id="@+id/layout_preview_ts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dimen_70"
+            android:background="@drawable/bg_camera_tip"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/dimen_10" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_preview_t1"
+                android:textColor="@drawable/white"
+                android:textSize="@dimen/text_size_20" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_preview_t2"
+                android:textColor="@drawable/white"
+                android:textSize="@dimen/text_size_20" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

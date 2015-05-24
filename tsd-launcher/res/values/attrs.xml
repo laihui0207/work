@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <declare-styleable name="SlotButton">
+       <attr name="imgSrc" format="reference|color" />
+       <attr name="text" format="string" />
+   </declare-styleable>
+
+   <declare-styleable name="ImageTextView">
+       <attr name="backImg" format="reference|color" />
+       <attr name="content" format="string" />
+       <attr name="content_marginLeft" format="dimension"  />
+       <attr name="content_marginTop" format="dimension"  />
+       <attr name="content_marginRight" format="dimension"  />
+       <attr name="content_marginBottom" format="dimension"  />
+   </declare-styleable>
+</resources>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_power"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_main"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/black80"
+        android:gravity="center_vertical" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="@string/setting_power"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_25" />
+
+        <TextView
+            android:id="@+id/btn_power_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/btn_back_selector"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/dimen_30"
+            android:text="@string/back"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_20" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_40"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/txt_off_sceen_title"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_25" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="("
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_25" />
+
+        <TextView
+            android:id="@+id/txt_power_off_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/txt_off_sceen_unit"
+            android:textColor="@drawable/txt_fm_sum"
+            android:textSize="@dimen/text_size_25" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=")"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_25" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_20"
+        android:background="@drawable/bg_off_sceen"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_power_off_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_off_sceen_item"
+            android:text="@string/txt_off_screen_time_1"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_30" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/bg_off_sceen_fgx" />
+
+        <Button
+            android:id="@+id/btn_power_off_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_off_sceen_item"
+            android:text="@string/txt_off_screen_time_2"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_30" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/bg_off_sceen_fgx" />
+
+        <Button
+            android:id="@+id/btn_power_off_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_off_sceen_item"
+            android:text="@string/txt_off_screen_time_3"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_30" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/bg_off_sceen_fgx" />
+
+        <Button
+            android:id="@+id/btn_power_off_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_off_sceen_item"
+            android:text="@string/txt_off_screen_time_4"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_30" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/bg_off_sceen_fgx" />
+
+        <Button
+            android:id="@+id/btn_power_off_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_off_sceen_item"
+            android:text="@string/txt_off_screen_time_5"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_30" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    >
+
+    <RelativeLayout
+        android:layout_width="@dimen/dimen_180"
+        android:layout_height="@dimen/dimen_100"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:gravity="center" >
+
+        <ImageView
+            android:id="@+id/img_list_item"
+            android:layout_width="@dimen/dimen_180"
+            android:layout_height="@dimen/dimen_100" />
+        <TextView 
+            android:id="@+id/event_point"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="事故"
+            android:layout_alignRight="@id/img_list_item"
+            android:textColor="@color/white"
+            android:layout_marginTop="@dimen/dimen_8"
+            android:background="@drawable/vedio_event_point"
+            android:gravity="right"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/text_list_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/img_list_item"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_20"
+            android:background="@color/black_63"
+            android:paddingBottom="@dimen/dimen_4"
+            android:paddingTop="@dimen/dimen_4"
+            />
+    </RelativeLayout>
+
+</RelativeLayout>

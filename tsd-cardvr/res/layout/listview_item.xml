@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+    <TextView 
+        android:id="@+id/listview_item_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/dimen_20"
+        android:layout_marginLeft="@dimen/dimen_10"
+        android:layout_marginRight="@dimen/dimen_20"
+        android:visibility="invisible"
+        android:textColor="@color/blue"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/listview_item_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/dimen_20"
+        android:layout_marginLeft="@dimen/dimen_10"
+        android:layout_marginRight="@dimen/dimen_20"
+        android:layout_below="@id/listview_item_time"
+        android:gravity="center" 
+        android:textColor="@color/white"/>
+
+    <com.tuyou.tsd.cardvr.customView.NoScrollGridView
+        android:id="@+id/listview_item_gridview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numColumns="3" 
+        android:layout_toRightOf="@id/listview_item_text"
+        android:layout_marginLeft="@dimen/dimen_20"
+        android:horizontalSpacing="@dimen/dimen_10"
+        android:verticalSpacing="@dimen/dimen_10"
+        android:listSelector="@android:color/transparent"
+        android:layout_marginTop="@dimen/dimen_20"
+        android:layout_marginRight="@dimen/dimen_20"
+        android:scrollbars="none"/>
+    <ImageView 
+        android:layout_height="fill_parent"
+        android:layout_width="@dimen/dimen_1"
+        android:layout_below="@id/listview_item_text"
+        android:background="@color/white_60"
+        android:layout_marginLeft="@dimen/dimen_40"
+        android:layout_alignBottom="@id/listview_item_gridview"/>
+
+</RelativeLayout>

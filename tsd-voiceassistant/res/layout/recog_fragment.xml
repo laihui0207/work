@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageButton
+        android:id="@+id/recog_close_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/close_btn_bg" />
+
+    <TextView android:id="@+id/recog_result_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/feedback_bg"
+        android:gravity="center"
+        android:padding="30dp"
+        android:maxEms="10"
+        android:textSize="30sp"
+        android:textColor="@color/textColor3" />
+
+    <ImageView android:id="@+id/recog_thinking_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
+
+    <TextView android:id="@+id/recog_status_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/recog_result_view"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:text="@string/recognizing"
+        android:textSize="20sp"
+        android:textColor="@color/textColor2" />
+</RelativeLayout>

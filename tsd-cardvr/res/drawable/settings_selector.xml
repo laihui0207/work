@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 关于永辉 -->
+    <item android:drawable="@color/settings_pressed" android:state_pressed="true"/>
+    <item android:drawable="@color/settings_normal"/>
+
+</selector>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">音乐</string>
+    <string name="music_name_default">He Wasn\'t There</string>
+    <string name="music_author_default">Lily Allen</string>
+    <string name="music_back">返回</string>
+    <string name="add_love">收藏成功</string>
+    <string name="re_love">已取消收藏</string>
+    <string name="music_order_1">顺序播放</string>
+    <string name="music_order_2">单曲循环</string>
+    <string name="music_order_3">随机播放</string>
+    <string name="cannot_play_music">网络不顺畅，小宝帮您切到下一首咯</string>
+    <string name="play_music_error">对不起，网络不顺畅，播放失败了</string>
+</resources>
