@@ -265,10 +265,12 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 	}
 
 	void onStateSearch() {
+		LogUtil.i(LOG_TAG,"onStateSearch ");
 		if (mCurrentSemanticProtocolResult != null) {
 			doSendMessage(CommonMessage.VoiceEngine.SEARCH_BEGIN, null);
 
 			String searchType = mCurrentSemanticProtocolResult.type;
+			LogUtil.i(LOG_TAG,"onStateSearch searchType="+searchType);
 			if (searchType.equals(AnswerType.LOCATION.value)) {
 				// search POI
 				Intent poiIntent = new Intent(TSDEvent.Navigation.POI_SEACH);
@@ -280,6 +282,8 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 				new MusicSearchTask().execute(mCurrentSemanticProtocolResult.result[0],
 						mCurrentSemanticProtocolResult.result[1],
 						mCurrentSemanticProtocolResult.result[2]);
+			}else{
+				LogUtil.i(LOG_TAG,"onStateSearch no searchType");
 			}
 
 			mCurrentSemanticProtocolResult = null;
@@ -890,7 +894,9 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 				String name = params[0];
 				String author = params[1];
 				String genre = params[2];
+				LogUtil.w(LOG_TAG, "MusicSearchTask name="+name+" author="+author+" genre="+genre);
 				String result = JsonOA2.getInstance(mContext).queryAudio(name, author, genre);
+				LogUtil.w(LOG_TAG, "MusicSearchTask result="+result);
 				if (result != null && !result.matches(".+errorCode.+")) {
 					try {
 						JSONObject data = new JSONObject(result);
@@ -910,6 +916,11 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
+				}else{
+					LogUtil.w(LOG_TAG, "MusicSearchTask result="+result);
+					preFinishInteraction();
+					mCurrentDialogError = ErrorType.ERR_SEARCH;
+					changeState(State.STATE_ERROR);
 				}
 			}
 			return null;
