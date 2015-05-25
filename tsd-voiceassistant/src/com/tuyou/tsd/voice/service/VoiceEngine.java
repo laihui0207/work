@@ -220,7 +220,7 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 	}
 
 	public void changeState(State destState) {
-		LogUtil.i(LOG_TAG, "prepare change state: " + mState + " ==> " + destState);
+		LogUtil.i(LOG_TAG, "************************prepare change state: " + mState + " ==> " + destState);
 
 		if ((mState == State.STATE_READY ||
 			 mState == State.STATE_SUCCESS ||
@@ -556,12 +556,15 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 					success = false;
 				} else {
 					// need to switch to search state
-					Bundle data = new Bundle();
-					data.putString("result", mRecognitionResult);
-					doSendMessage(CommonMessage.VoiceEngine.RECOGNITION_COMPLETE, data);
 					finish = false;
 					gotoSearch = true;
 				}
+				Bundle data = null;
+				if(gotoSearch){
+					data = new Bundle();
+					data.putString("result", mRecognitionResult);
+				}
+				doSendMessage(CommonMessage.VoiceEngine.RECOGNITION_COMPLETE, data);
 			}
 			if (finish) {
 				preFinishInteraction();

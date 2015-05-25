@@ -49,12 +49,29 @@ public class InteractingActivity extends Activity {
 		ERROR
 	}
 	
+	enum VOICE_STATE{
+		VOICE_STATE_NONE,
+		VOICE_STATE_RECORDING,
+		VOICE_STATE_RECOGNITION,
+		VOICE_STATE_FINISH
+	}
+	private static boolean CANCEL_RECONG = false;
+	private boolean INTERACTION_ING = false;
+	private boolean mbIsSearchView = false;
+	private VOICE_STATE mVoiceState = VOICE_STATE.VOICE_STATE_NONE;
+	private void setVoiceState(VOICE_STATE state){
+		LogUtil.d(TAG,"setVoiceState ---------- > "+state);
+		mVoiceState = state;
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "onCreate...");
+		LogUtil.d(TAG,"onCreate...");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.interacting_activity);
-
+		setCancelRecong(false);
+		setVoiceState(VOICE_STATE.VOICE_STATE_NONE);
+		mbIsSearchView = false;
 		initView();
 
 		bindService(new Intent(this, VoiceAssistant.class), mVoiceServiceConnection, Service.BIND_AUTO_CREATE);
@@ -67,7 +84,7 @@ public class InteractingActivity extends Activity {
 
 	@Override
 	protected void onResume() {
-		Log.d(TAG, "onResume...");
+		LogUtil.d(TAG, "onResume...");
 		if (mVoiceService != null) {
 			try {
 				// Register self for reply message
@@ -84,7 +101,7 @@ public class InteractingActivity extends Activity {
 
 	@Override
 	protected void onPause() {
-		Log.d(TAG, "onPause...");
+		LogUtil.d(TAG, "onPause...");
 		if (mVoiceService != null) {
 			try {
 				// Register self for reply message
@@ -101,9 +118,12 @@ public class InteractingActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		Log.d(TAG, "onDestroy...");
+		LogUtil.d(TAG, "onDestroy...");
 		unbindService(mVoiceServiceConnection);
 		unregisterReceiver(mReceiver);
+		
+		setCancelRecong(false);
+		
 		super.onDestroy();
 	}
 
@@ -134,8 +154,9 @@ public class InteractingActivity extends Activity {
 
 	private FRAGMENT_TYPE mFragmentType = FRAGMENT_TYPE.RECORD;
 	private void transFragment(FRAGMENT_TYPE type) {
-		Log.v(TAG,"transFragment FRAGMENT_TYPE "+type);
+		LogUtil.d(TAG,"transFragment FRAGMENT_TYPE "+type);
 		Fragment fragment = null;
+		mbIsSearchView = false;
 		mFragmentType = type;
 		switch(type){
 		case RECORD:
@@ -146,6 +167,7 @@ public class InteractingActivity extends Activity {
 			break;
 		case SEARCH:
 			fragment = mSearchFragment;
+			mbIsSearchView = true;
 			break;
 		case ERROR:
 			fragment = mErrorFragment;
@@ -212,19 +234,24 @@ public class InteractingActivity extends Activity {
 //				mFaceButton.setBackgroundResource(R.drawable.intact_face_speaking);
 //				break;
 
-//			case CommonMessage.VoiceEngine.INTERACTION_START:
-//				mCloseButton.setVisibility(View.GONE);
-//				break;
+			case CommonMessage.VoiceEngine.INTERACTION_START:
+				LogUtil.d(TAG,"@@@@@@@@@@@@@@@@@@@@@@@@@  INTERACTION_START ---------->");
+				INTERACTION_ING = true;
+				break;
 
-//			case CommonMessage.VoiceEngine.INTERACTION_STOP:
-//				mCloseButton.setVisibility(View.VISIBLE);
-//				break;
+			case CommonMessage.VoiceEngine.INTERACTION_STOP:
+				LogUtil.d(TAG,"@@@@@@@@@@@@@@@@@@@@@@@@@  INTERACTION_START <----------");
+				INTERACTION_ING = false;
+				break;
 
 			case CommonMessage.VoiceEngine.RECORDING_START:
+				LogUtil.d(TAG,"@@@@@@@@@@@@@@@@@@@@@@@@@  RECORDING_START");
+				setVoiceState(VOICE_STATE.VOICE_STATE_RECORDING);
 				((RecordFragment)mRecordFragment).startAnimation();
 				break;
 
 			case CommonMessage.VoiceEngine.RECORDING_STOP:
+				LogUtil.d(TAG,"@@@@@@@@@@@@@@@@@@@@@@@@@  RECORDING_STOP");
 				((RecordFragment)mRecordFragment).stopAnimation();
 				break;
 
@@ -232,16 +259,25 @@ public class InteractingActivity extends Activity {
 				break;
 
 			case CommonMessage.VoiceEngine.RECOGNITION_START:
+				LogUtil.d(TAG,"@@@@@@@@@@@@@@@@@@@@@@@@@  RECOGNITION_START");
+				setVoiceState(VOICE_STATE.VOICE_STATE_RECOGNITION);
 				transFragment(FRAGMENT_TYPE.RECOG);
 				break;
 
 			case CommonMessage.VoiceEngine.RECOGNITION_COMPLETE:
-				((RecognitionFragment)mRecogFragment).setResultText(msg.getData().getString("result"));
-				playBing();
+				LogUtil.d(TAG,"@@@@@@@@@@@@@@@@@@@@@@@@@  RECOGNITION_COMPLETE");
+				setVoiceState(VOICE_STATE.VOICE_STATE_FINISH);
+				Bundle tempBundle = msg.getData();
+				if(tempBundle != null){
+					((RecognitionFragment)mRecogFragment).setResultText(tempBundle.getString("result"));
+					playBing();
+				}
 				break;
 
 			case CommonMessage.VoiceEngine.RECOGNITION_CANCEL:
 			case CommonMessage.VoiceEngine.RECOGNITION_ERROR:
+				LogUtil.d(TAG,"@@@@@@@@@@@@@@@@@@@@@@@@@  RECOGNITION_CANCEL || RECOGNITION_ERROR");
+				setVoiceState(VOICE_STATE.VOICE_STATE_FINISH);
 				String error = msg.getData().getString("result");
 				if ( !error.equals("用户取消") ) {
 					transFragment(FRAGMENT_TYPE.ERROR);
@@ -251,10 +287,12 @@ public class InteractingActivity extends Activity {
 				break;
 
 			case CommonMessage.VoiceEngine.SEARCH_BEGIN:
+				LogUtil.d(TAG,"@@@@@@@@@@@@@@@@@@@@@@@@@  SEARCH_BEGIN");
 				((RecognitionFragment)mRecogFragment).setStatusText(getResources().getString(R.string.searching));
 				break;
 
 			case CommonMessage.VoiceEngine.SEARCH_END:
+				LogUtil.d(TAG,"@@@@@@@@@@@@@@@@@@@@@@@@@  SEARCH_END");
 				transFragment(FRAGMENT_TYPE.SEARCH);
 				((SearchFragment)mSearchFragment).setResultData(msg.getData().getString("result"));
 				break;
@@ -266,23 +304,28 @@ public class InteractingActivity extends Activity {
 
 	}
 	
+	public static void setCancelRecong(boolean bOn){
+		LogUtil.d(TAG,"setCancelRecong = "+bOn);
+		CANCEL_RECONG = bOn;
+	}
+	public static boolean isCancelRecong(){
+		LogUtil.d(TAG,"isCancelRecong = "+CANCEL_RECONG);
+		return CANCEL_RECONG;
+	}
+	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
-		Log.v(TAG,"keycode = "+keyCode);
-		switch (keyCode) {
-		case KeyEvent.KEYCODE_F4:
-			Log.v(TAG,"onKeyDown mFragmentType="+mFragmentType);
-			Log.v(TAG,"onKeyDown VoiceAssistant getState="+VoiceAssistant.getState());
-			if(mFragmentType!=FRAGMENT_TYPE.SEARCH){
-				Log.v(TAG,"onKeyDown not in search view");
-				break;
+		LogUtil.d(TAG,"keycode = "+keyCode);
+		if(!isCancelRecong()){
+			if(KeyEvent.KEYCODE_F4 == keyCode){
+				if(mbIsSearchView){
+					Log.v(TAG,"onKeyDown in search view");
+				}
 			}
 
-			break;
-		default:
-				
 		}
+
 		return super.onKeyDown(keyCode, event);
 	}
 

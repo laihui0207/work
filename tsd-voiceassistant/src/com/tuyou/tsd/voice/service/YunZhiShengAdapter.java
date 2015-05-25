@@ -183,7 +183,7 @@ final class YunZhiShengAdapter {
 		if (!mWakeupRecordingState) {
 			mRequestToStartRecog = false;
 			mRecognizer.start();
-			LogUtil.d(LOG_TAG, "Start to recognize...");
+			LogUtil.d(LOG_TAG, "requestStartTalk Start to recognize...");
 		}
 	}
 
@@ -194,20 +194,20 @@ final class YunZhiShengAdapter {
 
 		@Override
 		public void onInitDone() {
-			LogUtil.v(LOG_TAG, "IWakeupListener.onInitDone");
+			LogUtil.v(LOG_TAG, "#####################IWakeupListener######## onInitDone");
 			mWakeupInitDone = true;
 			setRequestToStartWakeUp(!requestStartWakeup());
 		}
 
 		@Override
 		public void onStart() {
-			LogUtil.v(LOG_TAG, "IWakeupListener.onStart");
+			LogUtil.v(LOG_TAG, "#####################IWakeupListener######## onStart");
 			mWakeupRecordingState = true;
 		}
 
 		@Override
 		public void onStop() {
-			LogUtil.v(LOG_TAG, "IWakeupListener.onStop");
+			LogUtil.v(LOG_TAG, "#####################IWakeupListener######## onStop");
 			mWakeupRecordingState = false;
 			if (mRequestToStartRecog) {
 				// 若已有识别请求，则开始语音识别
@@ -217,6 +217,7 @@ final class YunZhiShengAdapter {
 
 		@Override
 		public void onSuccess(String arg0) {
+			LogUtil.v(LOG_TAG, "#####################IWakeupListener######## onSuccess");
 			String word = arg0.trim();
 			LogUtil.v(LOG_TAG, "IWakeupListener.onSuccess, word = " + word);
 			mCallback.onWakeUp(word);
@@ -224,6 +225,7 @@ final class YunZhiShengAdapter {
 
 		@Override
 		public void onError(ErrorUtil arg0) {
+			LogUtil.v(LOG_TAG, "#####################IWakeupListener######## onError");
 			LogUtil.v(LOG_TAG, "IWakeupListener.onError " + arg0);
 		}
 	
@@ -243,7 +245,7 @@ final class YunZhiShengAdapter {
 
 		@Override
 		public void onInitDone() {
-			LogUtil.v(LOG_TAG, "IRecognizerTalkListener.onInitDone");
+			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onInitDone");
 			mRecognitionInitDone = true;
 
 //			public static final String TAG_CONTACT = "Contact"; // 联系人
@@ -264,7 +266,7 @@ final class YunZhiShengAdapter {
 
 		@Override
 		public void onDataDone() {
-			LogUtil.v(LOG_TAG, "IRecognizerTalkListener.onDataDone");
+			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onDataDone");
 			mDataInitDone = true;
 			reuqestToWake();
 		}
@@ -272,27 +274,29 @@ final class YunZhiShengAdapter {
 		@Override
 		public void onUserDataCompile() {
 			// TODO Auto-generated method stub
+			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onUserDataCompile");
 			
 		}
 
 		@Override
 		public void onUserDataCompileDone() {
 			// TODO Auto-generated method stub
-			
+			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onUserDataCompileDone");
 		}
 
 		@Override
 		public void onTalkStart() {
-			LogUtil.v(LOG_TAG, "IRecognizerTalkListener.onTalkStart");
+			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkStart");
 		}
 
 		@Override
 		public void onTalkStop() {
-			LogUtil.v(LOG_TAG, "IRecognizerTalkListener.onTalkStop");
+			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkStop");
 		}
 
 		@Override
 		public void onTalkRecordingStart() {
+			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkRecordingStart");
             StartTalkPerf[1] = System.currentTimeMillis();
 		    LogUtil.d(LOG_TAG, "YunZhiShengAdapter.java::onTalkRecordingStart=> 语音引擎待监听中间态耗时=>[" + (StartTalkPerf[1]-StartTalkPerf[0]) + "] ms.");
 			mRecognitionRecordingState = true;
@@ -301,7 +305,7 @@ final class YunZhiShengAdapter {
 
 		@Override
 		public void onTalkRecordingStop() {
-			LogUtil.v(LOG_TAG, "IRecognizerTalkListener.onTalkRecordingStop");
+			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkRecordingStop");
 			mRecognitionRecordingState = false;
 			mRecognitionState = true;
 			reuqestToWake();
@@ -312,16 +316,18 @@ final class YunZhiShengAdapter {
 
 		@Override
 		public void onVolumeUpdate(int volume) {
+			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onVolumeUpdate="+volume);
 			mCallback.onVolume(volume);
 		}
 
 		@Override
 		public void onActiveStatusChanged(int arg0) {
-			LogUtil.v(LOG_TAG, "IRecognizerTalkListener.onActiveStatusChanged: " + arg0);
+			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onActiveStatusChanged="+arg0);
 		}
 
 		@Override
 		public void onTalkResult(String result) {
+			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkResult");
 			LogUtil.v(LOG_TAG, "IRecognizerTalkListener.onTalkResult: " + result);
 			// 此问题为云知声最新sdk在识别结果的句子末尾增加了一个句号，导致后续进行指令匹配时出现问题。
 			// 现将末尾句号过滤以临时解决此问题。2015-4-9
@@ -332,7 +338,7 @@ final class YunZhiShengAdapter {
 
 		@Override
 		public void onTalkCancel() {
-			LogUtil.v(LOG_TAG, "IRecognizerTalkListener.onTalkCancel ");
+			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkCancel");
 			mRecognitionState = false;
 			mRecognitionRecordingState = false;
 			mCallback.onCancelRecognition();
@@ -343,7 +349,7 @@ final class YunZhiShengAdapter {
 
 		@Override
 		public void onTalkError(ErrorUtil arg0) {
-			LogUtil.e(LOG_TAG, "IRecognizerTalkListener.onTalkError, error: " + arg0);
+			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkCancel="+arg0);
 			mRecognitionState = false;
 			mCallback.onFailedRecognition(arg0.code, arg0.message);
 
@@ -353,11 +359,12 @@ final class YunZhiShengAdapter {
 
 		@Override
 		public void onTalkParticalResult(String arg0) {
-//			LogUtil.v(LOG_TAG, "IRecognizerTalkListener.onTalkParticalResult, result: " + arg0);
+			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkResult="+ arg0);
 		}
 
 		@Override
 		public void onTalkProtocal(String protocol) {
+			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkResult");
 			LogUtil.v(LOG_TAG, "IRecognizerTalkListener.onTalkProtocal: " + protocol);
 			mRecognitionState = false;
 			if (protocol.matches(".+semantic.+")) {
@@ -373,7 +380,7 @@ final class YunZhiShengAdapter {
 		@Override
 		public void isActive(boolean arg0) {
 			// TODO Auto-generated method stub
-			
+			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************isActive="+arg0);
 		}
 
 	}

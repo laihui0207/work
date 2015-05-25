@@ -628,6 +628,7 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 							LogUtil.v(LOG_TAG, "当前队列内无交互模板，等待...");
 							((VoiceAssistant)context).changeState(VoiceAssistant.State.STATE_LISTENING);
 							mLock.wait();
+							LogUtil.v(LOG_TAG,"mLock up ###########################################");
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
@@ -647,6 +648,8 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+				}else{
+					LogUtil.v(LOG_TAG,"no currentScene !!!!!!!!!!!!!!!!!!!!!!");
 				}
 				LogUtil.d(LOG_TAG, "Prepare to execute the next interaction...");
 			};
@@ -690,6 +693,7 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 
 			// Start the interaction
 			if (scene != null) {
+				LogUtil.d(LOG_TAG," scene !!!!!!!!!!!!!!!!!!!!!!!!! in");
 				context.sendBroadcast(new Intent(TSDEvent.Interaction.INTERACTION_START));
 
 				// Notify interaction start
@@ -703,6 +707,9 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 				// Notify interaction end
 				msg = Message.obtain(null, CommonMessage.VoiceEngine.INTERACTION_STOP);
 				notifyClients(msg);
+				LogUtil.d(LOG_TAG," scene !!!!!!!!!!!!!!!!!!!!!!!!! out");
+			}else{
+				LogUtil.d(LOG_TAG,"no scene !!!!!!!!!!!!!!!!!!!!!!!!!");
 			}
 	
 			mEngine.unregisterListener(this);
