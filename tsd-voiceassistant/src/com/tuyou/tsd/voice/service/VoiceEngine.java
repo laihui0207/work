@@ -580,6 +580,14 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 		}
 	}
 
+	public void onTalkStart() {
+//		doSendMessage(VoiceAssistant.VOICEASSISTANT_START_INTERACTION, null);
+		
+		LogUtil.w(LOG_TAG," onTalkStart BACK_TO_LISTENING="+VoiceAssistant.BACK_TO_LISTENING
+				+"BACK_TO_WAKING = "+VoiceAssistant.BACK_TO_WAKING);
+
+	}
+	
 	void onFailedRecognition(int code, String error) {
 		LogUtil.w(LOG_TAG, "onFailedRecognition, code=" + code + ", error=" + error);
 		preFinishInteraction();

@@ -81,6 +81,9 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 		STATE_INTERACTING,	// 交互状态
 	}
 	private static State mState = State.STATE_NONE;
+	public static boolean BACK_TO_LISTENING = false;
+	public static boolean BACK_TO_WAKING = false;
+	public static final int CMD_VOICE_LISTEN = 0x1001;
 
 	void changeState(State destState) {
 		LogUtil.i(LOG_TAG, "prepare to change state: " + mState + " ==> " + destState);
@@ -738,9 +741,10 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 
 		@Override
 		public void onInteractSuccessful(String answerType, String answer) {
-			LogUtil.d(LOG_TAG, "onInteractSuccessful, answer = " + answer + ", type = " + answerType);
+			LogUtil.d(LOG_TAG, "######### onInteractSuccessful, answer = " + answer + ", type = " + answerType);
 
 			if (currentDialog == null) {
+				LogUtil.d(LOG_TAG, "onInteractSuccessful,continueToInvokeInteraction return !!!");
 				continueToInvokeInteraction();
 				return;
 			}
@@ -754,6 +758,7 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 			// Check the next steps according to the current answer
 			SuccessfulAction[] nextSteps = currentDialog.getSuccessActions();
 			if (nextSteps != null && nextSteps.length > 0) {
+				LogUtil.d(LOG_TAG, "nextSteps");
 				int i = 0;
 				// find the match action
 				while (i < nextSteps.length) {
@@ -784,10 +789,13 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 				}
 			} else {
 				// 若未定义跳转动作则返回当前交互结果
+				LogUtil.d(LOG_TAG, "notifyInteractionFinish");
 				notifyInteractionFinish(answerType, matchedAnswer, answer);
 				nextDialogId = ENG_DIALOG;
 			}
 
+			LogUtil.d(LOG_TAG,"currentDialogFinished = "+currentDialogFinished);
+					
 			lastAnswer = answer;
 			if (currentDialogFinished) {
 				LogUtil.d(LOG_TAG, "本此对话结束（成功）");
@@ -797,9 +805,10 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 
 		@Override
 		public void onInteractFailed(ErrorType error) {
-			LogUtil.w(LOG_TAG, "onInteractFail, error = " + error);
+			LogUtil.w(LOG_TAG, "#######################onInteractFail, error = " + error);
 
 			if (currentDialog == null) {
+				LogUtil.w(LOG_TAG, "onInteractFail,continueToInvokeInteraction"); 
 				continueToInvokeInteraction();
 				return;
 			}
@@ -808,9 +817,11 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 			FailedAction[] failSteps = currentDialog.getFailureActions();
 			if (failSteps == null) {
 				// 若未定义跳转动作则返回Unknown
+				LogUtil.w(LOG_TAG, "onInteractFail notifyInteractionError");
 				notifyInteractionError(error.name(), error.value);
 				nextDialogId = ENG_DIALOG;
 			} else {
+				LogUtil.w(LOG_TAG, "onInteractFail failSteps");
 				if (failSteps != null && failSteps.length > 0) {
 					int i = 0;
 					while (i < failSteps.length) {
@@ -835,12 +846,14 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 						}
 					} else {
 						// Undefined, use default action
+						LogUtil.w(LOG_TAG, "onInteractFail failSteps notifyInteractionError");
 						notifyInteractionError(error.name(), error.value);
 						nextDialogId = ENG_DIALOG;
 					}
 				}
 			}
 
+			LogUtil.d(LOG_TAG, "currentDialogFinished="+currentDialogFinished);
 			if (currentDialogFinished) {
 				LogUtil.d(LOG_TAG, "本此对话结束（失败）");
 				continueToInvokeInteraction();

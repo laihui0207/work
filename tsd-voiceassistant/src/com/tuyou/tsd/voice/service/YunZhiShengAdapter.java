@@ -111,6 +111,7 @@ final class YunZhiShengAdapter {
 
 	void stopWakeUpListening() {
 		if (mWakeupRecordingState) {
+			LogUtil.d(LOG_TAG, "################### stopWakeup #######################");
 			mWakeupOperate.stopWakeup();
 		}
 	}
@@ -127,6 +128,7 @@ final class YunZhiShengAdapter {
 			Log.d(LOG_TAG, "mRecognizer.stopWakeup();");
 			mRequestToStartRecog = true;
 			// 否则先将唤醒识别停止，以释放录音设备资源
+			LogUtil.d(LOG_TAG, "################### stopWakeup #######################");
 			mWakeupOperate.stopWakeup();
 		}
 	}
@@ -166,6 +168,7 @@ final class YunZhiShengAdapter {
 			mWakeupOperate.setCommandData(command);
 
 			StartTalkPerf[0] = System.currentTimeMillis();
+			LogUtil.d(LOG_TAG, "################### startWakeup #######################");
 			mWakeupOperate.startWakeup();
 			LogUtil.d(LOG_TAG, "Start wakeup listening...");
 			return true;
@@ -203,6 +206,7 @@ final class YunZhiShengAdapter {
 		public void onStart() {
 			LogUtil.v(LOG_TAG, "#####################IWakeupListener######## onStart");
 			mWakeupRecordingState = true;
+			
 		}
 
 		@Override
@@ -287,6 +291,7 @@ final class YunZhiShengAdapter {
 		@Override
 		public void onTalkStart() {
 			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkStart");
+			mCallback.onTalkStart();
 		}
 
 		@Override
@@ -316,7 +321,7 @@ final class YunZhiShengAdapter {
 
 		@Override
 		public void onVolumeUpdate(int volume) {
-			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onVolumeUpdate="+volume);
+//			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onVolumeUpdate="+volume);
 			mCallback.onVolume(volume);
 		}
 

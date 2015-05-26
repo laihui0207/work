@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 
 import com.tuyou.tsd.common.CommonMessage;
+import com.tuyou.tsd.common.CommonMessage.VoiceEngine;
 import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.common.util.HelperUtil;
 import com.tuyou.tsd.common.util.LogUtil;
@@ -58,6 +59,7 @@ public class InteractingActivity extends Activity {
 	private static boolean CANCEL_RECONG = false;
 	private boolean INTERACTION_ING = false;
 	private boolean mbIsSearchView = false;
+	private volatile boolean mbCanceling = false;
 	private VOICE_STATE mVoiceState = VOICE_STATE.VOICE_STATE_NONE;
 	private void setVoiceState(VOICE_STATE state){
 		LogUtil.d(TAG,"setVoiceState ---------- > "+state);
@@ -69,9 +71,9 @@ public class InteractingActivity extends Activity {
 		LogUtil.d(TAG,"onCreate...");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.interacting_activity);
-		setCancelRecong(false);
 		setVoiceState(VOICE_STATE.VOICE_STATE_NONE);
 		mbIsSearchView = false;
+		mbCanceling = false;
 		initView();
 
 		bindService(new Intent(this, VoiceAssistant.class), mVoiceServiceConnection, Service.BIND_AUTO_CREATE);
@@ -121,9 +123,7 @@ public class InteractingActivity extends Activity {
 		LogUtil.d(TAG, "onDestroy...");
 		unbindService(mVoiceServiceConnection);
 		unregisterReceiver(mReceiver);
-		
-		setCancelRecong(false);
-		
+		mbCanceling = false;
 		super.onDestroy();
 	}
 
@@ -161,6 +161,7 @@ public class InteractingActivity extends Activity {
 		switch(type){
 		case RECORD:
 			fragment = mRecordFragment;
+			mbCanceling = false;
 			break;
 		case RECOG:
 			fragment = mRecogFragment;
@@ -168,6 +169,14 @@ public class InteractingActivity extends Activity {
 		case SEARCH:
 			fragment = mSearchFragment;
 			mbIsSearchView = true;
+/*			try {
+				// Register self for reply message
+				Message msg = Message.obtain(null,CommonMessage.VoiceEngine.CANCEL_RECOGNITION);
+				msg.replyTo = mMessenger;
+				mVoiceService.send(msg);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}*/
 			break;
 		case ERROR:
 			fragment = mErrorFragment;
@@ -316,14 +325,13 @@ public class InteractingActivity extends Activity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
-		LogUtil.d(TAG,"keycode = "+keyCode);
-		if(!isCancelRecong()){
-			if(KeyEvent.KEYCODE_F4 == keyCode){
-				if(mbIsSearchView){
-					Log.v(TAG,"onKeyDown in search view");
-				}
+		LogUtil.d(TAG, "keycode = " + keyCode);
+		if (KeyEvent.KEYCODE_F4 == keyCode) {
+			if (mbIsSearchView && !mbCanceling) {
+				Log.v(TAG, "onKeyDown in search view");
+				mbCanceling = true;
+//				sendBroadcast(new Intent(TSDEvent.Interaction.CANCEL_INTERACTION_BY_TP));
 			}
-
 		}
 
 		return super.onKeyDown(keyCode, event);
