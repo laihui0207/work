@@ -27,6 +27,7 @@ import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.common.util.HelperUtil;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.voice.service.VoiceAssistant;
+import com.tuyou.tsd.voice.service.VoiceEngine.ErrorType;
 
 public class InteractingActivity extends Activity {
 	private static final String TAG = "InteractingActivity";
@@ -169,14 +170,9 @@ public class InteractingActivity extends Activity {
 		case SEARCH:
 			fragment = mSearchFragment;
 			mbIsSearchView = true;
-/*			try {
-				// Register self for reply message
-				Message msg = Message.obtain(null,CommonMessage.VoiceEngine.CANCEL_RECOGNITION);
-				msg.replyTo = mMessenger;
-				mVoiceService.send(msg);
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			}*/
+			Intent searchIntent = new Intent(TSDEvent.Interaction.CANCEL_INTERACTION_BY_TP);
+			searchIntent.putExtra(VoiceAssistant.INTO_SEARCH_VIEW, true);
+			sendBroadcast(searchIntent);
 			break;
 		case ERROR:
 			fragment = mErrorFragment;
@@ -330,11 +326,35 @@ public class InteractingActivity extends Activity {
 			if (mbIsSearchView && !mbCanceling) {
 				Log.v(TAG, "onKeyDown in search view");
 				mbCanceling = true;
-//				sendBroadcast(new Intent(TSDEvent.Interaction.CANCEL_INTERACTION_BY_TP));
+				notifyInteractionError();
 			}
 		}
 
 		return super.onKeyDown(keyCode, event);
+	}
+	
+	private void notifyInteractionError() {
+		LogUtil.d(TAG, "notifyInteractionError return to laucher!");
+		ErrorType error = ErrorType.ERR_USER_CANCELLED;
+		String template_wakeup = "GENERIC";
+		String reason = error.name();
+		String description = error.value;
+		
+		Intent intent = new Intent(TSDEvent.Interaction.INTERACTION_ERROR);
+		intent.putExtra("template", template_wakeup);
+		intent.putExtra("reason", reason);
+		intent.putExtra("description", description);
+		sendBroadcast(intent);
+		
+	/*	try {
+			Thread.sleep(50);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		
+		Intent resultIntent = new Intent(CommonMessage.VOICE_COMM_WAKEUP);
+		sendBroadcast(resultIntent);
 	}
 
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -348,7 +368,12 @@ public class InteractingActivity extends Activity {
 			if (action.equals(TSDEvent.Interaction.FINISH_ACTIVITY)) {
 				HelperUtil.finishActivity(InteractingActivity.this, android.R.anim.fade_in, android.R.anim.fade_out);
 			}else if(action.equals(CommonMessage.VOICE_COMM_WAKEUP)){
-				
+				LogUtil.d(TAG, "BroadcastReceiver VOICE_COMM_WAKEUP xxx");
+				if (mbIsSearchView && !mbCanceling) {
+					Log.v(TAG, "VOICE_COMM_WAKEUP in search view");
+					mbCanceling = true;
+					notifyInteractionError();
+				}
 			}
 		}
 	};

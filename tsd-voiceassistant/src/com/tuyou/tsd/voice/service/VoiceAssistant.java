@@ -84,6 +84,8 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 	public static boolean BACK_TO_LISTENING = false;
 	public static boolean BACK_TO_WAKING = false;
 	public static final int CMD_VOICE_LISTEN = 0x1001;
+	public static final String INTO_SEARCH_VIEW = "com.tuyou.tsd.voice.service.searchview";
+	public volatile static boolean mbStopInSearchView = false;
 
 	void changeState(State destState) {
 		LogUtil.i(LOG_TAG, "prepare to change state: " + mState + " ==> " + destState);
@@ -258,11 +260,17 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 				}
 			}
 			else if (action.equals(TSDEvent.Interaction.CANCEL_INTERACTION_BY_TP)) {
+				boolean inSearchView = intent.getBooleanExtra(INTO_SEARCH_VIEW, false);
+				if(inSearchView){
+					mbStopInSearchView = true;
+				}
 				boolean gohome = intent.getBooleanExtra("gohome", false);
 				if (mEngine != null) {
 					mEngine.stopDialog(gohome ?
 							ErrorType.ERR_USER_CANCELLED_AND_GO_HOME : ErrorType.ERR_USER_CANCELLED);
 				}
+				
+				LogUtil.v(LOG_TAG, "CANCEL_INTERACTION_BY_TP inSearchView="+inSearchView+" gohome="+gohome);
 			}
 			// POI Search Result
 			else if (action.equals(TSDEvent.Navigation.POI_SEARCH_RESULT)) {
@@ -846,8 +854,12 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 						}
 					} else {
 						// Undefined, use default action
-						LogUtil.w(LOG_TAG, "onInteractFail failSteps notifyInteractionError");
-						notifyInteractionError(error.name(), error.value);
+						LogUtil.w(LOG_TAG, "onInteractFail failSteps notifyInteractionError "+mbStopInSearchView);
+						if(!mbStopInSearchView){
+							notifyInteractionError(error.name(), error.value);
+						}else{
+							mbStopInSearchView = false;
+						}
 						nextDialogId = ENG_DIALOG;
 					}
 				}
