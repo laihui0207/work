@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.common.util.HelperUtil;
 import com.tuyou.tsd.common.widget.ArrayListAdapter;
+import com.tuyou.tsd.voice.service.VoiceEngine.ErrorType;
 
 public class SearchFragment extends Fragment {
 	private Activity mParentActivity;
@@ -55,7 +56,17 @@ public class SearchFragment extends Fragment {
 		mCloseBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				mParentActivity.sendBroadcast(new Intent(TSDEvent.Interaction.CANCEL_INTERACTION_BY_TP));
+				ErrorType error = ErrorType.ERR_USER_CANCELLED;
+				String template_wakeup = "GENERIC";
+				String reason = error.name();
+				String description = error.value;
+				
+				Intent intent = new Intent(TSDEvent.Interaction.INTERACTION_ERROR);
+				intent.putExtra("template", template_wakeup);
+				intent.putExtra("reason", reason);
+				intent.putExtra("description", description);
+				mParentActivity.sendBroadcast(intent);
+//				mParentActivity.sendBroadcast(new Intent(TSDEvent.Interaction.CANCEL_INTERACTION_BY_TP));
 			}
 		});
 		

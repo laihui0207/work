@@ -562,8 +562,12 @@ public class CoreService extends Service {
 		SharedPreferences pref = HelperUtil.getCommonPreference(this,
 				TSDComponent.CORE_SERVICE_PACKAGE,
 				TSDShare.SYSTEM_SETTING_PREFERENCES);
-		boolean r = pref != null ? Boolean.parseBoolean(pref.getString("system_init", "false")) : false;
-		LogUtil.v(LOG_TAG, "checkFirstInitFinished, return " + r);
+		boolean r = false;
+		if(pref != null){
+			r = Boolean.parseBoolean(pref.getString("system_init", "false"));
+			pref.edit().putString("system_init", "true").commit();
+		}
+		LogUtil.v(LOG_TAG, "checkFirstInitFinished, return " + r+"  pref="+pref);
 		return r;
 	}
 
