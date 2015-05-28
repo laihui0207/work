@@ -981,7 +981,6 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 			intent.putExtra("answerType", answerType);
 			intent.putExtra("answer", answer);
 			intent.putExtra("extra", extra);
-
 			context.sendBroadcast(intent);			
 		}
 

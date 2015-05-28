@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.common.util.HelperUtil;
+import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.common.widget.ArrayListAdapter;
 import com.tuyou.tsd.voice.service.VoiceEngine.ErrorType;
 
@@ -165,18 +166,39 @@ public class SearchFragment extends Fragment {
 			String rawData = (String) view.getTag();
 			Log.d("SearchFragment", "SearchResultAdapter.onItemClick, position=" + position + ", rawData=" + rawData);
 
-			Intent finishIntent = new Intent(TSDEvent.Interaction.FINISH_INTERACTION_BY_TP);
+			Intent finishIntent = new Intent(TSDEvent.Interaction.INTERACTION_FINISH);
 			ResultItem item = mAdapter.getItem(position);
+			String template_wakeup = "GENERIC";
+			String answerType = null;
+			String answer = null;
+			String extra = null;
+			
 			if (item.isNavData) {
-				finishIntent.putExtra("type", "#location");
-				finishIntent.putExtra("answer", rawData);
+				/*finishIntent.putExtra("type", "#location");
+				finishIntent.putExtra("answer", rawData);*/
+				answerType = answer = "#location";
+				extra = rawData;
 			} else {
 				finishIntent.putExtra("type", "#music");
 				// 封装成Json array类型进行传递
 				String formattedData = String.format("[%s]", rawData);
 				finishIntent.putExtra("answer", formattedData);
+				
+				answerType = answer = "#music";
+				extra = String.format("[%s]", rawData);
 			}
 
+			finishIntent.putExtra("template", template_wakeup);
+			finishIntent.putExtra("answerType", answerType);
+			finishIntent.putExtra("answer", answer);
+			finishIntent.putExtra("extra", extra);
+			
+			LogUtil.d(TAG,"#################fq#######################");
+			LogUtil.d(TAG,"template ="+template_wakeup);
+			LogUtil.d(TAG,"answerType ="+answerType);
+			LogUtil.d(TAG,"answer ="+answer);
+			LogUtil.d(TAG,"extra ="+extra);
+			
 			mParentActivity.sendBroadcast(finishIntent);
 		}
 	};
