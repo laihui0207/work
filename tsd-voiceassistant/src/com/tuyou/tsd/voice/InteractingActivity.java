@@ -253,6 +253,7 @@ public class InteractingActivity extends Activity {
 				LogUtil.d(TAG,"@@@@@@@@@@@@@@@@@@@@@@@@@  RECORDING_START");
 				setVoiceState(VOICE_STATE.VOICE_STATE_RECORDING);
 				((RecordFragment)mRecordFragment).startAnimation();
+				((RecordFragment)mRecordFragment).setBtnClickable(true);
 				break;
 
 			case CommonMessage.VoiceEngine.RECORDING_STOP:
