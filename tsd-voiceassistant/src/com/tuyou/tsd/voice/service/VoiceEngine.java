@@ -417,6 +417,7 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 
 	public void stopDialog(ErrorType reason) {
 		if (mCurrentDialog != null) {
+			Log.d(LOG_TAG, "stopDialog "+reason);
 			// 首先取消当前语音识别
 			cancelRecognition();
 			// 然后结束当前对话
@@ -424,6 +425,10 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 			// 最后通知上层交互结束
 			mCurrentDialogError = reason;
 			changeState(State.STATE_ERROR);
+		}else{
+			Log.d(LOG_TAG, "stopDialog FINISH_ACTIVITY");
+			Intent intent = new Intent(TSDEvent.Interaction.FINISH_ACTIVITY);
+			mContext.sendBroadcast(intent);
 		}
 	}
 

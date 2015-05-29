@@ -489,6 +489,12 @@ public class CoreService extends Service {
 	public WorkingMode getCurrentWorkingMode() {
 		return mCurrentMode;
 	}
+	
+	public void reSetWorkingMode(){
+		LogUtil.v(LOG_TAG, "reSetWorkingMode");
+	    mCurrentMode = WorkingMode.MODE_NONE;	
+	    mPrevMode = WorkingMode.MODE_NONE;
+	}
 
 	public boolean isLoadingCompleted() {
 		return mLoadingCompleted;

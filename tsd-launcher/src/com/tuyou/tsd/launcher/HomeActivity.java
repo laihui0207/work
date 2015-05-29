@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -110,6 +111,12 @@ public class HomeActivity extends BaseActivity {
 		Log.v(TAG, "onResume");
 		super.onResume();
 		setIconClick(false);
+		if(mCoreService != null){
+			mCoreService.reSetWorkingMode();
+		}
+		Intent intent = new Intent(TSDEvent.Interaction.FINISH_ACTIVITY);
+		sendBroadcast(intent);
+		
 		registerReceiver(mReceiver, mIntentFilter);
 		bindService(new Intent(this, CoreService.class), mServiceConnection, Service.BIND_AUTO_CREATE);
 	}
@@ -236,6 +243,10 @@ public class HomeActivity extends BaseActivity {
 				break;
 			case R.id.home_icall_btn:
 				// TODO:
+				// 用intent启动拨打电话
+				Intent intent = new Intent(Intent.ACTION_CALL, Uri
+						.parse("tel:4008936008"));
+				startActivity(intent);
 				break;
 			case R.id.home_allapps_btn:
 				startActivity(new Intent(HomeActivity.this, AppsActivity.class));
