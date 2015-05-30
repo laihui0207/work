@@ -1238,12 +1238,12 @@ public class SystemController {
      */
     private static class IdleCheckThread implements Runnable {
     	private static final int SLEEP_TIME = 5 * 1000;
-    	private static int IDLE_TIME = 2 * 1000;
+    	private static int IDLE_TIME = 30 * 1000;
 
     	private Object lock = new Object();
     	private boolean stop, paused;
 
-    	private long idleTime = System.currentTimeMillis();;
+    	private long idleTime = System.currentTimeMillis();
 
     	IdleCheckThread() {}
 
@@ -1259,7 +1259,7 @@ public class SystemController {
     	}
 
     	void setIdleTime(int seconds) {
-    		IDLE_TIME = 2 * 1000;
+    		IDLE_TIME = seconds * 1000;
     	}
 
     	@Override

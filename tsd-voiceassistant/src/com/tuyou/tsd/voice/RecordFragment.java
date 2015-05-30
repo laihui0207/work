@@ -3,9 +3,11 @@ package com.tuyou.tsd.voice;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -20,6 +22,7 @@ public class RecordFragment extends Fragment {
 	private ImageView mCloseButton;
 	private ImageView mHomeButton;
 	private ImageView mVoiceMask;
+	private ImageView mIcallButton;
 	private final String TAG = "RecordFragment";
 
 	@Override
@@ -57,6 +60,22 @@ public class RecordFragment extends Fragment {
 		});
 
 		mVoiceMask = (ImageView) view.findViewById(R.id.img_voice_mask);
+		
+		mIcallButton = (ImageView) view.findViewById(R.id.record_icall_btn);
+		mIcallButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				setBtnClickable(false);
+				if (mParentActivity != null) {
+					((InteractingActivity)mParentActivity).sendMessageToService(
+							CommonMessage.VoiceEngine.CANCEL_RECOGNITION, null);
+				}
+				mParentActivity.sendBroadcast(new Intent(TSDEvent.Interaction.CANCEL_INTERACTION_BY_TP));	
+				Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:4008936008"));
+				startActivity(intent);
+			}
+		});
 		
 		setBtnClickable(false);
 		LogUtil.d(TAG, "onCreateView done!!");

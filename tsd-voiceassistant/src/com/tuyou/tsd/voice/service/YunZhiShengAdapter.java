@@ -206,7 +206,7 @@ final class YunZhiShengAdapter {
 		public void onStart() {
 			LogUtil.v(LOG_TAG, "#####################IWakeupListener######## onStart");
 			mWakeupRecordingState = true;
-			
+			mCallback.onStart();
 		}
 
 		@Override

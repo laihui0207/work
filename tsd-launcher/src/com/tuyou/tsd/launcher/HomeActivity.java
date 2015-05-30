@@ -19,8 +19,10 @@ import android.widget.ImageView;
 
 import com.tuyou.tsd.R;
 import com.tuyou.tsd.common.CommonMessage;
+import com.tuyou.tsd.common.TSDComponent;
 import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.common.base.BaseActivity;
+import com.tuyou.tsd.common.util.HelperUtil;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.core.CoreService;
 import com.tuyou.tsd.core.CoreService.ContentType;
@@ -242,6 +244,8 @@ public class HomeActivity extends BaseActivity {
 				break;
 			case R.id.home_setting_btn:
 				// TODO:
+				HelperUtil.startActivityWithFadeInAnim(HomeActivity.this, 
+					"com.tuyou.tsd.settings", "com.tuyou.tsd.settings.SettingsActivity");
 				// 用intent启动拨打电话
 			/*	Intent intent = new Intent(Intent.ACTION_CALL, Uri
 						.parse("tel:4008936008"));

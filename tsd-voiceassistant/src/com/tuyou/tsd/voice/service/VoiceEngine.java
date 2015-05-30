@@ -475,6 +475,10 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 			}
 		}
 	}
+	
+	void onStart(){
+		
+	}
 
 	void onStartRecording() {
 		doSendMessage(CommonMessage.VoiceEngine.RECORDING_START, null);
