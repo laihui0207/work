@@ -252,7 +252,6 @@ public class InteractingActivity extends Activity {
 			case CommonMessage.VoiceEngine.RECORDING_START:
 				LogUtil.d(TAG,"@@@@@@@@@@@@@@@@@@@@@@@@@  RECORDING_START");
 				setVoiceState(VOICE_STATE.VOICE_STATE_RECORDING);
-				((RecordFragment)mRecordFragment).startAnimation();
 				((RecordFragment)mRecordFragment).setBtnClickable(true);
 				break;
 
@@ -262,6 +261,8 @@ public class InteractingActivity extends Activity {
 				break;
 
 			case CommonMessage.VoiceEngine.RECORDING_VOLUME:
+				Bundle tempvolume = msg.getData();
+				((RecordFragment)mRecordFragment).doVoiceView(tempvolume.getInt("volume"));
 				break;
 
 			case CommonMessage.VoiceEngine.RECOGNITION_START:

@@ -10,14 +10,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.tuyou.tsd.R;
 import com.tuyou.tsd.common.CommonMessage;
@@ -36,7 +34,7 @@ public class HomeActivity extends BaseActivity {
 
 	private ImageView mFaceView;
 	private ImageButton mMusicBtn, mNewsBtn, mNavBtn, mPodBtn;
-	private TextView mCallBtn, mAllAppsBtn;
+	private ImageButton mSettingBtn, mAllAppsBtn;
 
 	private CoreService mCoreService;
 
@@ -95,6 +93,7 @@ public class HomeActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.v(TAG, "onCreate");
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.home_activity_2);
 
 		mIntentFilter = new IntentFilter();
@@ -148,14 +147,14 @@ public class HomeActivity extends BaseActivity {
 		mNewsBtn  = (ImageButton) findViewById(R.id.home_news_btn);
 		mNavBtn   = (ImageButton) findViewById(R.id.home_nav_btn);
 		mPodBtn   = (ImageButton) findViewById(R.id.home_pod_btn);
-		mCallBtn  = (TextView) findViewById(R.id.home_icall_btn);
-		mAllAppsBtn = (TextView) findViewById(R.id.home_allapps_btn);
+		mSettingBtn  = (ImageButton) findViewById(R.id.home_setting_btn);
+		mAllAppsBtn = (ImageButton) findViewById(R.id.home_allapps_btn);
 
 		mMusicBtn.setOnClickListener(mClickListener);
 		mNewsBtn.setOnClickListener(mClickListener);
 		mNavBtn.setOnClickListener(mClickListener);
 		mPodBtn.setOnClickListener(mClickListener);
-		mCallBtn.setOnClickListener(mClickListener);
+		mSettingBtn.setOnClickListener(mClickListener);
 		mAllAppsBtn.setOnClickListener(mClickListener);
 	}
 	
@@ -165,7 +164,7 @@ public class HomeActivity extends BaseActivity {
 	}
 
 	private void onWakeUp() {
-		mFaceView.setImageResource(R.drawable.xiaobao_wakeup);
+		mFaceView.setBackgroundResource(R.drawable.xiaobao_wakeup);
 	}
 
 	private void onPrepare() {
@@ -241,12 +240,12 @@ public class HomeActivity extends BaseActivity {
 					mCoreService.changeMode(WorkingMode.MODE_AUDIO, ContentType.TYPE_JOKE);
 				}
 				break;
-			case R.id.home_icall_btn:
+			case R.id.home_setting_btn:
 				// TODO:
 				// 用intent启动拨打电话
-				Intent intent = new Intent(Intent.ACTION_CALL, Uri
+			/*	Intent intent = new Intent(Intent.ACTION_CALL, Uri
 						.parse("tel:4008936008"));
-				startActivity(intent);
+				startActivity(intent);*/
 				break;
 			case R.id.home_allapps_btn:
 				startActivity(new Intent(HomeActivity.this, AppsActivity.class));

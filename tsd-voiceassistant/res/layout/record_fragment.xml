@@ -2,32 +2,77 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/recording_bg" >
+    android:background="@android:color/black" >
 
-    <ImageButton
-        android:id="@+id/record_close_btn"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/close_btn_bg" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp" >
 
-    <Button
-        android:id="@+id/record_home_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:background="@drawable/home_btn_bg"
-        android:text="@string/go_home"
-        android:textSize="20sp"
-        android:textColor="@color/textColor1"
-         />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
 
-    <com.tuyou.tsd.voice.widget.MicrophoneView
-        android:id="@+id/record_mic_View"
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/voice_up" />
+
+            <ImageView
+                android:id="@+id/img_voice_mask"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/voice_mask" />
+
+            <FrameLayout
+                android:layout_width="330px"
+                android:layout_height="330px"
+                android:layout_marginTop="165px"
+                android:background="@android:color/black" >
+            </FrameLayout>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="78dp"
+                android:background="@drawable/icon_mic" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/please_speak" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/record_close_btn"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/record_close_btn" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/icon_icall_btn" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/record_home_btn"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/icon_home_btn" />
 
 </RelativeLayout>
