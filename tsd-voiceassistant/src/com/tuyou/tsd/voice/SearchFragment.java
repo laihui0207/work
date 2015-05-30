@@ -32,6 +32,7 @@ public class SearchFragment extends Fragment {
 	private Activity mParentActivity;
 	private ImageButton mCloseBtn;
 	private ImageView mNoResult;
+	private static boolean mbIsMusic = false;
 	private ListView mListView;
 	private SearchResultAdapter mAdapter;
 	private ArrayList<ResultItem> mObjects = new ArrayList<ResultItem>();
@@ -79,6 +80,7 @@ public class SearchFragment extends Fragment {
 				mNoResult.setVisibility(View.VISIBLE);
 			}
 		}
+		
 		return view;
 	}
 
@@ -87,6 +89,7 @@ public class SearchFragment extends Fragment {
 		if(mObjects!=null){
 			mObjects.clear();
 		}
+		mbIsMusic = false;
 		try {
 			JSONObject obj = new JSONObject(result);
 			String type = obj.getString("type");
@@ -96,6 +99,7 @@ public class SearchFragment extends Fragment {
 				addPOIList(data);
 			} else if (type.equals("music")) {
 				addMusicList(data);
+				mbIsMusic = true;
 			} else if (type.equals("news") || type.equals("podcast")) {
 				addProgramList(data);
 			}
@@ -221,6 +225,9 @@ public class SearchFragment extends Fragment {
 			TextView tv2 = (TextView) view.findViewById(R.id.result_title_textView);
 			TextView tv3 = (TextView) view.findViewById(R.id.result_subtitle_textView);
 			TextView tv4 = (TextView) view.findViewById(R.id.result_memo_textView);
+			
+			ImageView musicPlay = (ImageView) view.findViewById(R.id.img_music_play);
+			musicPlay.setVisibility(mbIsMusic ? View.VISIBLE : View.INVISIBLE);
 
 			ResultItem item = getItem(position);
 			tv.setText(item.num);

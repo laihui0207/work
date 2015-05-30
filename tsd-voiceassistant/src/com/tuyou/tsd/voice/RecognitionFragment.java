@@ -1,13 +1,14 @@
 package com.tuyou.tsd.voice;
 
-import com.tuyou.tsd.common.TSDEvent;
-import com.tuyou.tsd.common.util.HelperUtil;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +16,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tuyou.tsd.common.TSDEvent;
+
 public class RecognitionFragment extends Fragment {
 	private Activity mParentActivity;
 	private ImageButton mCloseBtn;
 	private TextView mResultView, mStatusView;
 	private ImageView mThinkingView;
+	private Timer mTimerAnim = null;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -43,6 +47,28 @@ public class RecognitionFragment extends Fragment {
 
 		mThinkingView = (ImageView) view.findViewById(R.id.recog_thinking_view);
 		mThinkingView.setBackgroundResource(R.drawable.thinking_anim);
+		
+		TimerTask timeoutTask = new TimerTask() {
+
+			@Override
+			public void run() {
+				Activity activity = getActivity();
+				if(activity != null){
+					activity.runOnUiThread(new Runnable() {
+						
+						@Override
+						public void run() {
+							if(mThinkingView != null){
+								mThinkingView.setBackgroundResource(R.drawable.thinking_deep_anim);
+							}	
+						}
+					});
+				}
+			}
+		};
+
+		mTimerAnim = new Timer("TimeoutTask", true);
+		mTimerAnim.schedule(timeoutTask, 3000);
 
 		mCloseBtn = (ImageButton) view.findViewById(R.id.recog_close_btn);
 		mCloseBtn.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +108,10 @@ public class RecognitionFragment extends Fragment {
 		}
 		if (mResultView != null) {
 			mResultView.setText(text);
+		}
+		if (mTimerAnim != null) {
+			mTimerAnim.cancel();
+			mTimerAnim = null;
 		}
 	}
 
