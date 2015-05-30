@@ -16,6 +16,9 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +43,14 @@ public class SleepingActivity extends BaseActivity {
 	private CoreService mBindService;
 	private int mClickdTimes;
 	private Toast mToast;
+	
+	//music 
+	private RelativeLayout mMusicLayout = null;
+	private TextView mMusicName = null;
+	private ImageView mMusicPre = null;
+	private ImageView mMusicPlay = null;
+	private ImageView mMusicNext = null;
+			
 
 	private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -58,7 +69,7 @@ public class SleepingActivity extends BaseActivity {
 	private Handler mHandler = new Handler(Looper.getMainLooper()) {
 		@Override
 		public void handleMessage(Message msg) {
-			switch (msg.what) {
+			switch (msg.what) { 
 			case 100:
 				updateTime();
 				break;
@@ -140,6 +151,16 @@ public class SleepingActivity extends BaseActivity {
 		// 根据需求定义，暂时设为不显示
 		mFaceView.setVisibility(View.GONE);
 		
+		mMusicLayout = (RelativeLayout) findViewById(R.id.sleep_music_view);
+		mMusicName = (TextView) findViewById(R.id.sleep_music_name);
+		mMusicPre = (ImageView) findViewById(R.id.sleep_music_pre);
+		mMusicPre.setOnClickListener(mMusicListen);
+		mMusicPlay = (ImageView) findViewById(R.id.sleep_music_play);
+		mMusicPlay.setOnClickListener(mMusicListen);
+		mMusicNext = (ImageView) findViewById(R.id.sleep_music_next);
+		mMusicNext.setOnClickListener(mMusicListen);
+		mMusicLayout.setVisibility(View.INVISIBLE);
+		
 		// Temporary solution
 		findViewById(R.id.sleeping_layout).setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -167,6 +188,22 @@ public class SleepingActivity extends BaseActivity {
 		canWakeUpFromSleep();
 	}
 
+	private OnClickListener mMusicListen = new OnClickListener() {
+		
+		@Override
+		public void onClick(View arg0) {
+			switch(arg0.getId()){
+			case R.id.sleep_music_pre:
+				break;
+			case R.id.sleep_music_play:
+				mMusicPlay.setBackgroundResource(R.drawable.music_ctl_pause);
+				break;
+			case R.id.sleep_music_next:
+				break;
+			}
+		}
+	};
+	
 	private void canWakeUpFromSleep() {
 		if (mBindService != null) {
 			if (mBindService.getCurrentState() == CoreService.ServiceState.STATE_RESUME) {
