@@ -8,7 +8,6 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,6 +117,16 @@ public class RecognitionFragment extends Fragment {
 	void setStatusText(String text) {
 		if (mStatusView != null) {
 			mStatusView.setText(text);
+		}
+	}
+	
+	@Override
+	public void onDestroyView() {
+		// TODO Auto-generated method stub
+		super.onDestroyView();
+		if (mTimerAnim != null) {
+			mTimerAnim.cancel();
+			mTimerAnim = null;
 		}
 	}
 }

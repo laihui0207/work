@@ -21,6 +21,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.AssetManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
@@ -56,6 +58,7 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 	static final String WAKE_UP_COMMAND_1 = "小宝小宝";
 	static final String WAKE_UP_COMMAND_2 = "小宝拍照";
 	static final String WAKE_UP_COMMAND_3 = "小宝闭嘴";
+	static final String WAKE_UP_COMMAND_OPEN_WIFI_AP = "打开热点";
 
 	private static final String LOG_TAG = "VoiceAssistant";
 
@@ -243,6 +246,7 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 			}
 			// 交互消息
 			else if (action.equals(TSDEvent.Interaction.RUN_INTERACTION)) {
+				checkNetworkEnabled();
 				executeInteraction(intent.getStringExtra("template"), true);
 			}
 			// 交互过程中收到硬按键消息
@@ -295,6 +299,27 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 		}
 	}
 
+    /**
+	 * Check the network connection and enable it if necessary
+	 */
+	@SuppressWarnings("unused")
+	private boolean checkNetworkEnabled() {
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNet = cm.getActiveNetworkInfo();
+		if (activeNet != null) {
+			LogUtil.d(LOG_TAG, "Active network: " + activeNet.getTypeName() + ", " + activeNet.getState());
+			return true;
+		} else {
+			LogUtil.w(LOG_TAG, "No active network found...");
+			if (TSDConst.useGPRSNetwork && !HelperUtil.getMobileDataEnabled(this)) {
+				LogUtil.d(LOG_TAG, "Trying to enable GPRS...");
+				HelperUtil.setMobileDataEnabled(this, true);
+			}
+			return false;
+		}
+
+	}
+	
 	@Override
 	public void onCreate() {
 		LogUtil.v(LOG_TAG, "create VoiceAssistant service.");
@@ -366,12 +391,16 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 		Log.d(LOG_TAG, "onWakeUp: " + word);
 		if (word.equals(WAKE_UP_COMMAND_1)) {
 			Intent resultIntent = new Intent(CommonMessage.VOICE_COMM_WAKEUP);
+			Log.d(LOG_TAG, "xiaobaoxiaoba");
 			sendBroadcast(resultIntent);
 		} else if (word.equals(WAKE_UP_COMMAND_2)) {
 			Intent resultIntent = new Intent(CommonMessage.VOICE_COMM_TAKE_PICTURE);
 			sendBroadcast(resultIntent);
 		} else if (word.equals(WAKE_UP_COMMAND_3)) {
 			Intent resultIntent = new Intent(CommonMessage.VOICE_COMM_SHUT_UP);
+			sendBroadcast(resultIntent);
+		} else if (word.equals(WAKE_UP_COMMAND_OPEN_WIFI_AP)) {
+			Intent resultIntent = new Intent(CommonMessage.VOICE_COMM_OPEN_WIFI_AP);
 			sendBroadcast(resultIntent);
 		}
 	}

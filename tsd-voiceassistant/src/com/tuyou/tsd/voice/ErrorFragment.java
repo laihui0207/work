@@ -16,6 +16,7 @@ public class ErrorFragment extends Fragment {
 	private Activity mParentActivity;
 	private ImageButton mCloseBtn;
 	private TextView mMsgView;
+	private TextView mErrorStatus ;
 	private String mErrorText;
 
 	@Override
@@ -29,10 +30,12 @@ public class ErrorFragment extends Fragment {
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.error_fragment, container, false);
 
-		mMsgView = (TextView) view.findViewById(R.id.error_txtView);
-		mMsgView.setText(mErrorText);
+		mMsgView = (TextView) view.findViewById(R.id.err_result_view);
+		
+		mErrorStatus = (TextView) view.findViewById(R.id.err_status_view);
+		mErrorStatus.setText(mErrorText);
 
-		mCloseBtn = (ImageButton) view.findViewById(R.id.error_close_btn);
+		mCloseBtn = (ImageButton) view.findViewById(R.id.err_close_btn);
 		mCloseBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

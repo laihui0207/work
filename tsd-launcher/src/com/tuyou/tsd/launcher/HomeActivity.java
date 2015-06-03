@@ -76,6 +76,8 @@ public class HomeActivity extends BaseActivity {
 
 			if (action.equals(CommonMessage.VOICE_COMM_WAKEUP)) {
 				onWakeUp();
+			}else if (action.equals(TSDEvent.System.HARDKEY4_PRESSED)) {
+				onWakeUp();
 			}
 
 			if (action.equals(TSDEvent.System.LOADING_COMPLETE)) {
@@ -101,6 +103,7 @@ public class HomeActivity extends BaseActivity {
 		mIntentFilter = new IntentFilter();
 		mIntentFilter.addAction(TSDEvent.System.LOADING_COMPLETE);
 		mIntentFilter.addAction(CommonMessage.VOICE_COMM_WAKEUP);
+		mIntentFilter.addAction(TSDEvent.System.HARDKEY4_PRESSED);
 
 		initView();
 		initService();
@@ -117,6 +120,8 @@ public class HomeActivity extends BaseActivity {
 		}
 		Intent intent = new Intent(TSDEvent.Interaction.FINISH_ACTIVITY);
 		sendBroadcast(intent);
+		
+		mFaceView.setBackgroundResource(R.drawable.xiaobao_nor);
 		
 		registerReceiver(mReceiver, mIntentFilter);
 		bindService(new Intent(this, CoreService.class), mServiceConnection, Service.BIND_AUTO_CREATE);
@@ -169,9 +174,6 @@ public class HomeActivity extends BaseActivity {
 		mFaceView.setBackgroundResource(R.drawable.xiaobao_wakeup);
 	}
 
-	private void onPrepare() {
-		mFaceView.setImageResource(R.drawable.xiaobao_nor);
-	}
 
 	private void showLoadingDialog() {
 //		LogUtil.v(TAG, "showLoadingDialog()");

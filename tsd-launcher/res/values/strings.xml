@@ -20,4 +20,10 @@
 
     <string name="NetworkDisconnected">网络连接丢失，请检查网络设置</string>
     <string name="LoginFailedMsg">设备认证失败，请与供应商联系</string>
+    <string name="wifi_ssid">XiaoBao_WIFI</string>
+    <string name="wifi_psd">12345678</string>
+    <string name="wifi_open_ts">小宝热点开启，密码是12345678</string>
+    <string name="wifi_open_failed_ts">小宝热点开启失败</string>
+    <string name="wifi_off_ts">小宝热点关闭</string>
+    <string name="wifi_off_failed_ts">小宝热点关闭失败</string>
 </resources>

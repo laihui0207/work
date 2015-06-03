@@ -7,8 +7,10 @@ import android.content.Intent;
 import android.view.KeyEvent;
 
 import com.tuyou.tsd.common.TSDEvent;
+import com.tuyou.tsd.common.util.LogUtil;
 
 public class BaseActivity extends Activity{
+	private String TAG = "common-BaseActivity";
 	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -36,5 +38,14 @@ public class BaseActivity extends Activity{
 		}
 		return super.onKeyDown(keyCode, event);
 	}
+	
+	/**
+	 * 点击操作时发送空闲更新给导航
+	 */
+	public boolean dispatchTouchEvent(android.view.MotionEvent ev) {
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
+		LogUtil.d(TAG, "send:"+TSDEvent.Navigation.IDLE_NAV_UPDATE);
+		return super.dispatchTouchEvent(ev);
+	};
 
 }

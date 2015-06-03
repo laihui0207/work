@@ -570,10 +570,17 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 				}
 				Bundle data = null;
 				if(gotoSearch){
+					
 					data = new Bundle();
 					data.putString("result", mRecognitionResult);
 				}
-				doSendMessage(CommonMessage.VoiceEngine.RECOGNITION_COMPLETE, data);
+				if(mCurrentSemanticProtocolResult != null && mCurrentSemanticProtocolResult.type.equals("act_open")){
+					Intent intent = new Intent();
+					intent.setAction(CommonMessage.VOICE_COMM_OPEN_WIFI_AP);
+					mContext.sendBroadcast(intent);
+				}
+				else
+					doSendMessage(CommonMessage.VoiceEngine.RECOGNITION_COMPLETE, data);
 			}
 			if (finish) {
 				preFinishInteraction();
@@ -790,6 +797,11 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 					break;
 				}
 			}
+			
+			if (analyzedAnswer.type.equals("act_open")){
+				mCurrentSemanticProtocolResult = analyzedAnswer;
+				foundAnswer = true;
+			}
 		}
 
 		return foundAnswer;
@@ -872,6 +884,19 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 			if (obj != null) {
 				r = new SemanticProtocolResult(AnswerType.MUSIC.value, new String[]{
 						obj.optString("section"),
+						"",
+						""
+				});
+			} else {
+				// Normally, we should never reach here.
+				LogUtil.w(LOG_TAG, "Json object is null, ignore...");
+			}
+		}
+		else if (service.equals("cn.yunzhisheng.setting")) {
+			JSONObject obj = json.getJSONObject("semantic").getJSONObject("intent");
+			if(obj != null) {
+				r = new SemanticProtocolResult("act_open", new String[]{
+						"",
 						"",
 						""
 				});

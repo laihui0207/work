@@ -23,7 +23,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tuyou.tsd.common.TSDEvent;
-import com.tuyou.tsd.common.util.HelperUtil;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.common.widget.ArrayListAdapter;
 import com.tuyou.tsd.voice.service.VoiceEngine.ErrorType;

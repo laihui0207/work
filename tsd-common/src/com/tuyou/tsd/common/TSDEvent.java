@@ -59,6 +59,14 @@ public interface TSDEvent {
 		 * 允许设备进入休眠（小宝睡觉页面）
 		 */
 		static final String ENABLE_IDLE_CHECK = "tsd.event.system.enable_idle_check";
+		/**
+		 * 手机心跳包检测指令
+		 */
+		static final String RECEIVE_KEEP_ALIVE = "tsd.event.system.receive_keep_alive";
+		/**
+		 * 手机关闭WIFI指令
+		 */
+		static final String RECEIVE_DISCONNECT = "tsd.event.system.receive";
 	}
 
 	interface Interaction {
@@ -90,6 +98,11 @@ public interface TSDEvent {
 		 * 交互结束（成功）, 由语音助手服务发送
 		 */
 		static final String INTERACTION_FINISH = "tsd.event.interaction.finish";
+		/**
+		 * 交互结束（成功）, 由CoreService发送，CoreService处理完INTERACTION_FINISH，如果不是播放音乐，新闻，播客，则广播此消息，由上述三个模块处理INTERACTION_FINISH_FROM_CORE_SERVICE，
+		 * 如果是播放音乐，新闻，播客，则发送专门的消息给上述某个模块
+		 */
+		static final String INTERACTION_FINISH_FROM_CORE_SERVICE = "tsd.event.interaction.finish.from.core.service";
 		/**
 		 * 交互结束（失败）, 由语音助手服务发送
 		 */
@@ -418,5 +431,21 @@ public interface TSDEvent {
 		 * 用户选择路线，跳转activity
 		 */
 		static final String START_NAVIGATION = "tsd.event.navigation.START_NAVIGATION";
+		/**
+		 * 开始导航时主动发送（指导航中）
+		 */
+		static final String NAV_STARTED = "tsd.event.navigation.nav_started";
+		/**
+		 * 结束导航时主动发送（指导航中）
+		 */
+		static final String NAV_STOPPED = "tsd.event.navigation.nav_stopped";
+		/**
+		 * 更新空闲无操作回导航中
+		 */
+		static final String IDLE_NAV_UPDATE = "tsd.event.navigation.idle_update";
+		/**
+		 * 停止空闲无操作回导航中
+		 */
+		static final String IDLE_NAV_STOP = "tsd.event.navigation.idle_stop";
 	}
 }

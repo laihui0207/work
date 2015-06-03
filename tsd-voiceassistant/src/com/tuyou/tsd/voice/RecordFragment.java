@@ -23,6 +23,7 @@ public class RecordFragment extends Fragment {
 	private ImageView mHomeButton;
 	private ImageView mVoiceMask;
 	private ImageView mIcallButton;
+	private ImageView mText;
 	private final String TAG = "RecordFragment";
 
 	@Override
@@ -77,9 +78,23 @@ public class RecordFragment extends Fragment {
 			}
 		});
 		
+		mText = (ImageView) view.findViewById(R.id.record_text);
+		
 		setBtnClickable(false);
 		LogUtil.d(TAG, "onCreateView done!!");
 		return view;
+	}
+	
+	public void setListenView(){
+		if(mText!=null){
+			mText.setBackgroundResource(R.drawable.text_destination);
+		}
+		if(mHomeButton!=null){
+			mHomeButton.setVisibility(View.INVISIBLE);
+		}
+		if(mIcallButton!=null){
+			mIcallButton.setVisibility(View.INVISIBLE);
+		}
 	}
 
 	public void setBtnClickable(boolean bClickable){

@@ -25,6 +25,7 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.RemoteException;
+import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -106,15 +107,20 @@ public class SystemController {
 	private double mileage;
 
 	private Timer mTimer = null;
+	
+	private Timer mKeepAliveTimer = null;
+	private long tickCountForKeepAlive = 0;
 
 	public SystemController(CoreService context) {
 		mService = context;
 		mTimer = new Timer(true);
+		mKeepAliveTimer = new Timer(true);
 	    registerBroadcastReceiver();
 
 		LogUtil.d(LOG_TAG, "create the instance of Message service.");
 		mMessageClient = MessageService.getInstance(mService);
 		// 启动messageClient在登录成功后进行，因为需要deviceId
+		tickCountForKeepAlive = SystemClock.uptimeMillis();
 	}
 
 	public void start() {
@@ -123,6 +129,7 @@ public class SystemController {
 
 	public void stop() {
 		mTimer.cancel();
+		mKeepAliveTimer.cancel();
 		unregisterBroadcastReceiver();
 	}
 
@@ -148,6 +155,17 @@ public class SystemController {
 			}
 			else if (action.equals(TSDEvent.System.HARDKEY4_PRESSED)) {
 				onWakeUp();
+			}
+			else if (action.equals(TSDEvent.Navigation.IDLE_NAV_UPDATE)) {
+				stopIdleCheckThread();
+				resumeIdleCheckThread();
+			}
+			else if (action.equals(TSDEvent.System.RECEIVE_KEEP_ALIVE)) {
+				tickCountForKeepAlive = SystemClock.uptimeMillis(); 
+			}
+			else if (action.equals(TSDEvent.System.RECEIVE_DISCONNECT)) {
+				onCloseWifiAp();
+				tickCountForKeepAlive = SystemClock.uptimeMillis();
 			}
 			// Network connection
 			else if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
@@ -232,6 +250,60 @@ public class SystemController {
 			}
 		}
 	};
+	
+	
+	
+	/**
+	 * 函数名称 : playBroadcast 功能描述 : 开始播报语音广播 参数及返回值说明：
+	 */
+	public void playBroadcast(String content, int pid) {
+		Intent intent = new Intent();
+		intent.setAction(CommonMessage.TTS_PLAY);
+		// 要发送的内容
+		intent.putExtra("package", mService.getPackageName());
+		intent.putExtra("id", pid);
+		intent.putExtra("content", content);
+		// 发送 一个无序广播
+		mService.sendBroadcast(intent);
+	}
+
+	/**
+	 * 函数名称 : stopBroadcast 功能描述 : 主动停止语音播报广播 参数及返回值说明：
+	 */
+	public void stopBroadcast() {
+		Intent intent = new Intent();
+		intent.setAction(CommonMessage.TTS_CLEAR);
+		// 发送 一个无序广播
+		mService.sendBroadcast(intent);
+	}
+	
+	private void onOpenWifiAp() {
+		if(!HelperUtil.isWifiApEnabled(mService)){
+			if(HelperUtil.setWifiApEnabled(mService, true)){
+				stopBroadcast();
+				playBroadcast(mService.getResources().getString(R.string.wifi_open_ts), 0);
+			}
+			else{
+				Log.v(LOG_TAG,"Open Wifi Ap failed");
+				stopBroadcast();
+				playBroadcast(mService.getResources().getString(R.string.wifi_open_failed_ts), 0);
+			}
+		}
+	}
+	
+	private void onCloseWifiAp() {
+		if(HelperUtil.isWifiApEnabled(mService)){
+			if(HelperUtil.setWifiApEnabled(mService, false)){
+				stopBroadcast();
+				playBroadcast(mService.getResources().getString(R.string.wifi_off_ts), 0);
+			}
+			else{
+				Log.v(LOG_TAG,"Close Wifi Ap failed");
+				stopBroadcast();
+				playBroadcast(mService.getResources().getString(R.string.wifi_off_failed_ts), 0);
+			}
+		}
+	}
 
 	/**
 	 * 交互广播消息监听
@@ -253,6 +325,9 @@ public class SystemController {
 			}
 			else if (action.equals(CommonMessage.VOICE_COMM_SHUT_UP)) {
 				onStandbyMode();
+			}
+			else if(action.equals(CommonMessage.VOICE_COMM_OPEN_WIFI_AP)) {
+				onOpenWifiAp();
 			}
 			else if (action.equals(TSDEvent.Interaction.INTERACTION_START)) {
 				onInteractionStart();
@@ -285,6 +360,14 @@ public class SystemController {
 			// Picture has been taken
 			else if (action.equals(TSDEvent.CarDVR.PICTURE_TAKEN_COMPLETED)) {
 				onPictureHasBeenTaken();
+			}
+			else if (action.equals(TSDEvent.Interaction.CANCEL_INTERACTION_BY_TP)) {
+				boolean inSearchView = intent.getBooleanExtra("com.tuyou.tsd.voice.service.searchview", false);
+				if(inSearchView){
+					LogUtil.v(LOG_TAG, "inSearchView");
+					stopIdleCheckThread();
+					resumeIdleCheckThread();
+				}
 			}
 		}
 	};
@@ -507,7 +590,11 @@ public class SystemController {
 				template.equals(TEMPLATE_DEST_QUERY)) {
 				doActionAfterWakeUpInteraction(answerType, answer, extra);
 			}
+			else
+				mService.sendBroadcast(new Intent(TSDEvent.Interaction.INTERACTION_FINISH_FROM_CORE_SERVICE));
 		}
+		else
+			mService.sendBroadcast(new Intent(TSDEvent.Interaction.INTERACTION_FINISH_FROM_CORE_SERVICE));
 		mService.changeMode(WorkingMode.MODE_STANDBY);
 	}
 
@@ -747,8 +834,11 @@ public class SystemController {
 		filter.addAction(TSDEvent.System.HARDKEY2_PRESSED);
 		filter.addAction(TSDEvent.System.HARDKEY3_PRESSED);
 		filter.addAction(TSDEvent.System.HARDKEY4_PRESSED);
+		filter.addAction(TSDEvent.Navigation.IDLE_NAV_UPDATE);
 		// Network
 		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+		filter.addAction(TSDEvent.System.RECEIVE_KEEP_ALIVE);
+		filter.addAction(TSDEvent.System.RECEIVE_DISCONNECT);
 		// External storage
 		filter.addAction(Intent.ACTION_MEDIA_MOUNTED);
 		filter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
@@ -771,6 +861,7 @@ public class SystemController {
 		filter.addAction(CommonMessage.VOICE_COMM_MAP);			// 地图导航
 		filter.addAction(CommonMessage.VOICE_COMM_NEWS);		// 听新闻
 		filter.addAction(CommonMessage.VOICE_COMM_JOKE);
+		filter.addAction(CommonMessage.VOICE_COMM_OPEN_WIFI_AP);  //打开热点
 		// 交互结果
 		filter.addAction(TSDEvent.Interaction.INTERACTION_START);
 		filter.addAction(TSDEvent.Interaction.INTERACTION_FINISH);
@@ -778,6 +869,8 @@ public class SystemController {
 
 		filter.addAction(CommonMessage.TTS_PLAY_FINISHED);
 		filter.addAction(TSDEvent.CarDVR.PICTURE_TAKEN_COMPLETED);
+		
+		filter.addAction(TSDEvent.Interaction.CANCEL_INTERACTION_BY_TP);
 
 		mService.registerReceiver(mIntactEventsReceiver, filter);
 	}
@@ -829,6 +922,18 @@ public class SystemController {
 		// settings
 		mService.startService(new Intent(TSDComponent.SETTINGS_SERVICE));
 		LogUtil.v(LOG_TAG, "Start settings service.");
+		
+		long time = 60000;
+		Log.d(LOG_TAG, "Schedule keep alive " + time + " ms.");
+		mKeepAliveTimer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				if(HelperUtil.isWifiApEnabled(mService)&& (SystemClock.uptimeMillis() - tickCountForKeepAlive > 180000)){
+					onCloseWifiAp();
+					tickCountForKeepAlive = SystemClock.uptimeMillis();
+				}
+			}
+		}, 0, time);
 	}
 
 	/**
@@ -1020,6 +1125,7 @@ public class SystemController {
 
 	private void doActionAfterWakeUpInteraction(String answerType, String answer, String extra) {
 		if (answerType.equals("command")) {
+			mService.sendBroadcast(new Intent(TSDEvent.Interaction.INTERACTION_FINISH_FROM_CORE_SERVICE));
 			if (answer.equals(CommonMessage.VOICE_COMM_TAKE_PICTURE)) {
 				mService.changeMode(WorkingMode.MODE_TAKE_PICTURE);
 			}
@@ -1038,6 +1144,7 @@ public class SystemController {
 		}
 		else if (answerType.equals("#location")) {
 			Log.d(LOG_TAG, "sendBroadcast to start navigation.");
+			mService.sendBroadcast(new Intent(TSDEvent.Interaction.INTERACTION_FINISH_FROM_CORE_SERVICE));
 			Intent navIntent = new Intent(TSDEvent.Navigation.START_NAVIGATION);
 			navIntent.putExtra("destination", extra);
 			mService.sendBroadcast(navIntent);
@@ -1075,6 +1182,8 @@ public class SystemController {
 
 			mService.changeMode(WorkingMode.MODE_AUDIO);
 		}
+		else
+			mService.sendBroadcast(new Intent(TSDEvent.Interaction.INTERACTION_FINISH_FROM_CORE_SERVICE));
 
 		mService.sendBroadcast(new Intent(TSDEvent.Interaction.FINISH_ACTIVITY));
 	}

@@ -1,30 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@android:color/black" >
 
     <ImageButton
-        android:id="@+id/error_close_btn"
+        android:id="@+id/err_close_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:background="@drawable/close_btn_bg" />
-
-    <ImageView
-        android:id="@+id/error_imgView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:src="@drawable/error" />
+        android:background="@drawable/close_btn" />
 
     <TextView
-        android:id="@+id/error_txtView"
-        android:layout_width="wrap_content"
+        android:id="@+id/err_result_view"
+        android:layout_width="700px"
+        android:layout_height="250px"
+        android:layout_below="@+id/err_close_btn"
+        android:background="@drawable/text_bg"
+        android:layout_centerHorizontal="true"
+        android:ellipsize="end"
+        android:paddingLeft="20dp"
+        android:lines="4"
+        android:maxEms="10"
+        android:padding="10dp"
+        android:textColor="#13526E"
+        android:textSize="20sp"
+        android:text="你说的话..." />
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/error_imgView"
-        android:textColor="@color/textColor3"
-        android:textSize="30sp" />
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/err_warning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/icon_warning"
+            android:layout_gravity="center_vertical" />
+
+        <TextView
+            android:id="@+id/err_status_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical" 
+            android:text="小宝没听懂"
+            android:layout_marginLeft="5dp"
+            android:textColor="#EE4F63"
+            android:textSize="30sp" />
+    </LinearLayout>
 
 </RelativeLayout>

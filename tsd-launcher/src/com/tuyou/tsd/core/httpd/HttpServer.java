@@ -35,6 +35,7 @@ import com.tuyou.tsd.common.TSDConst;
 import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.common.videoMeta.PictureInf;
+import com.tuyou.tsd.core.httpd.NanoHTTPD.Response;
 
 public class HttpServer extends NanoHTTPD {
 	private static final String LOG_TAG = "HttpdService";
@@ -242,6 +243,16 @@ public class HttpServer extends NanoHTTPD {
                 }
             }
             return handleFiles(Collections.unmodifiableMap(header), session, uri);
+        }else if(uri.startsWith("/xbot/v1/keep-alive")){
+        	Intent itClear = new Intent();
+    		itClear.setAction(TSDEvent.System.RECEIVE_KEEP_ALIVE);
+    		broadcastor.broadcast(itClear);
+        	return  createResponse(Response.Status.OK, MIME_PLAINTEXT,"{\"status\":{\"code\":0}}");
+        }else if(uri.startsWith("/xbot/v1/disconnect")){
+        	Intent itClear = new Intent();
+    		itClear.setAction(TSDEvent.System.RECEIVE_DISCONNECT);
+    		broadcastor.broadcast(itClear);
+        	return  createResponse(Response.Status.OK, MIME_PLAINTEXT,"{\"status\":{\"code\":0}}");
         }
         else {
         	return getNotFoundResponse();
