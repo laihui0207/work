@@ -232,7 +232,8 @@ public class InteractingActivity extends Activity {
 
 		@Override
 		public void handleMessage(Message msg) {
-
+			Bundle tempBundle = null;
+			String resStr = null;
 			switch(msg.what) {
 //			case CommonMessage.VoiceEngine.TTS_PLAY_BEGIN:
 //				mFaceButton.setBackgroundResource(R.drawable.intact_face_speaking);
@@ -273,7 +274,7 @@ public class InteractingActivity extends Activity {
 			case CommonMessage.VoiceEngine.RECOGNITION_COMPLETE:
 				LogUtil.d(TAG,"@@@@@@@@@@@@@@@@@@@@@@@@@  RECOGNITION_COMPLETE");
 				setVoiceState(VOICE_STATE.VOICE_STATE_FINISH);
-				Bundle tempBundle = msg.getData();
+				tempBundle = msg.getData();
 				if(tempBundle != null){
 					((RecognitionFragment)mRecogFragment).setResultText(tempBundle.getString("result"));
 					playBing();
@@ -294,7 +295,12 @@ public class InteractingActivity extends Activity {
 
 			case CommonMessage.VoiceEngine.SEARCH_BEGIN:
 				LogUtil.d(TAG,"@@@@@@@@@@@@@@@@@@@@@@@@@  SEARCH_BEGIN");
-				((RecognitionFragment)mRecogFragment).setStatusText(getResources().getString(R.string.searching));
+				resStr = getResources().getString(R.string.searching);
+				tempBundle = msg.getData();
+				if(tempBundle != null){
+					resStr = msg.getData().getString("result");
+				}
+				((RecognitionFragment)mRecogFragment).setStatusText(resStr);
 				break;
 
 			case CommonMessage.VoiceEngine.SEARCH_END:

@@ -68,8 +68,7 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 		ERR_TIME_OUT("超时错误"),
 		ERR_USER_CANCELLED("用户取消"),
 		ERR_USER_CANCELLED_AND_GO_HOME("取消并回主页"), // 临时增加，后面考虑用更好的解决办法替换
-		ERR_SEARCH("搜索失败"),
-		ERR_WRONG_WORD("关键词无效");
+		ERR_SEARCH("搜索失败");
 		public String value;
 		private ErrorType(String v) {value = v;}
 	}
@@ -550,7 +549,7 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 							}
 						};
 						timer = new Timer("TimeoutTask", true);
-						timer.schedule(timeoutTask, 10000);
+						timer.schedule(timeoutTask, 3000);
 						Log.v(LOG_TAG, "schedule a new timer...");
 					} catch (IllegalStateException e) {
 						e.printStackTrace();
@@ -638,7 +637,7 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 				}
 			} else {
 				preFinishInteraction();
-				mCurrentDialogError = ErrorType.ERR_WRONG_WORD;
+				mCurrentDialogError = ErrorType.ERR_SEARCH;
 				changeState(State.STATE_ERROR);
 			}
 		}
@@ -964,9 +963,12 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 					}
 				}else{
 					LogUtil.w(LOG_TAG, "MusicSearchTask result="+result);
-					preFinishInteraction();
+					/*preFinishInteraction();
 					mCurrentDialogError = ErrorType.ERR_WRONG_WORD;
-					changeState(State.STATE_ERROR);
+					changeState(State.STATE_ERROR);*/
+					Bundle data = new Bundle();
+					data.putString("result","关键词无效");
+					doSendMessage(CommonMessage.VoiceEngine.SEARCH_BEGIN, data);
 				}
 			}
 			return null;
