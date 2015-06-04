@@ -72,6 +72,9 @@
     <string name="txt_dialog_wait">请稍后...</string>
     <string name="txt_preview_title">调节摄像头</string>
     <string name="tts_no_photograph">暂时无法拍照，请稍后</string>
+    <string name="txt_preview_start">正在请求停止行车记录仪</string>
+    <string name="txt_preview_failure">请求失败，请重试</string>
+  
 
     <!-- 初始化设置 -->
     <string name="txt_init_start">立即开始</string>

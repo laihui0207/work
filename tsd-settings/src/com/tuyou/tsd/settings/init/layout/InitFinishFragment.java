@@ -4,12 +4,15 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.tuyou.tsd.common.CommonMessage;
+import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.settings.R;
 import com.tuyou.tsd.settings.base.SettingsService;
 
@@ -42,13 +45,19 @@ public class InitFinishFragment extends BaseFragment {
 			public void onClick(View v) {
 				// 把系统是否初始化完成标记为完成/存入设备共享文件
 				if (editor != null) {
-					editor.putString("system_init", true + "");
+					Log.v("fq","SYSTEM_SETTING_PREFERENCES system_init true");
+					editor.putString("system_init", "true");
 					editor.putString("ssid",
 							getResources().getString(R.string.wifi_ssid));
 					editor.putString("ssid_psd",
 							getResources().getString(R.string.wifi_psd));
 					editor.commit();
 				}
+				
+				Intent intent = new Intent();
+				intent.setAction(TSDEvent.System.WELCOME_FINISHED);
+				getActivity().sendBroadcast(intent);
+				
 				// 通知服务保存fm状态
 				getActivity().sendBroadcast(
 						new Intent(SettingsService.SAVEFMACTION));

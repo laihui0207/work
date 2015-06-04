@@ -12,6 +12,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
+import android.view.Choreographer;
 import android.widget.Toast;
 
 import com.tuyou.tsd.common.CommonMessage;
@@ -244,6 +245,13 @@ public class CoreService extends Service {
     		else if (action.equals(TSDEvent.System.QUERY_SYSTEM_STATE) ||
     				 action.equals(TSDEvent.System.QUERY_SYSTEM_MODE)) {
     			// TODO:
+    		}else if(action.equals(TSDEvent.System.WELCOME_FINISHED)){
+    			SharedPreferences pref = HelperUtil.getCommonPreference(CoreService.this,
+    					TSDComponent.CORE_SERVICE_PACKAGE,
+    					TSDShare.SYSTEM_SETTING_PREFERENCES);
+    			if(pref != null){
+    				pref.edit().putString("system_init", "true").commit();
+    			}
     		}
 		}
 		
@@ -523,6 +531,7 @@ public class CoreService extends Service {
 		filter.addAction(Intent.ACTION_BATTERY_LOW);			// 低电
 		filter.addAction(TSDEvent.System.QUERY_SYSTEM_STATE);
 		filter.addAction(TSDEvent.System.QUERY_SYSTEM_MODE);
+		filter.addAction(TSDEvent.System.WELCOME_FINISHED);
 
 		registerReceiver(mSystemEventReceiver, filter);
 	}
@@ -571,7 +580,7 @@ public class CoreService extends Service {
 		boolean r = false;
 		if(pref != null){
 			r = Boolean.parseBoolean(pref.getString("system_init", "false"));
-			pref.edit().putString("system_init", "true").commit();
+//			pref.edit().putString("system_init", "true").commit();
 		}
 		LogUtil.v(LOG_TAG, "checkFirstInitFinished, return " + r+"  pref="+pref);
 		return r;

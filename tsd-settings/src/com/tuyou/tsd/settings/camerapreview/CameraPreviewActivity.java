@@ -182,7 +182,7 @@ public class CameraPreviewActivity extends BaseActivity implements
 	/**
 	 * 摄像头调节完成通知cardvr
 	 */
-	public void stopBroadcast() {
+	public void stopCameraBroadcast() {
 		Intent intent = new Intent();
 		intent.setAction(TSDEvent.CarDVR.STOP_CAM_PREVIEW);
 		LogUtil.d(TAG, "send action:" + TSDEvent.CarDVR.STOP_CAM_PREVIEW);
@@ -198,7 +198,7 @@ public class CameraPreviewActivity extends BaseActivity implements
 			mCamera.release();
 			mCamera = null;
 		}
-		stopBroadcast();
+		stopCameraBroadcast();
 	}
 
 	@Override

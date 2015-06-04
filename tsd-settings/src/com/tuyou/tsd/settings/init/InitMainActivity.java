@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,6 +23,7 @@ import android.widget.RelativeLayout;
 
 import com.tuyou.tsd.common.CommonMessage;
 import com.tuyou.tsd.common.TSDComponent;
+import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.common.TSDShare;
 import com.tuyou.tsd.common.util.HelperUtil;
 import com.tuyou.tsd.settings.R;
@@ -347,9 +349,17 @@ public class InitMainActivity extends FragmentActivity implements
 			break;
 		case R.id.btn_init_finish:
 			// 把系统是否初始化完成标记为完成/存入设备共享文件
-			if (editor != null) {
+			/*if (editor != null) {
 				editor.putString("system_init", true + "");
 				editor.commit();
+			}*/
+			SharedPreferences pref = HelperUtil.getCommonPreference(this,
+					TSDComponent.CORE_SERVICE_PACKAGE,
+					TSDShare.SYSTEM_SETTING_PREFERENCES);
+			Log.v("fq","SYSTEM_SETTING_PREFERENCES ");
+			if(pref != null){
+				Log.v("fq","SYSTEM_SETTING_PREFERENCES system_init true");
+				pref.edit().putString("system_init", "true").commit();
 			}
 			isInitFinish = true;
 			stopBroadcast();

@@ -1,6 +1,8 @@
 package com.tuyou.tsd.settings.camerapreview;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
@@ -8,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,18 +25,73 @@ import com.tuyou.tsd.settings.base.SysApplication;
 import com.tuyou.tsd.settings.base.WaitDialog;
 
 public class CameraBootActivity extends BaseActivity {
+	private String TAG = "CameraBootActivity";
 	private Button lookButton;
 	private TextView back;
 	private WaitDialog dialog;
+	private boolean isCanTimeOut = true;
+	private boolean isFirst = true;
+	private Timer timerOutTimer;
 	private BroadcastReceiver myReceiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			dialog.dismiss();
-			startActivity(new Intent(CameraBootActivity.this,
-					CameraPreviewActivity.class));
+			String action = intent.getAction();
+			LogUtil.d(TAG, "action = " + action);
+			if (action.equals(TSDEvent.CarDVR.CAM_AVAILABLE)) {
+				timerOutTimer.cancel();
+				if (isCanTimeOut) {
+					isCanTimeOut = false;
+					if (dialog != null) {
+						dialog.dismiss();
+					}
+					startActivity(new Intent(CameraBootActivity.this,
+							CameraPreviewActivity.class));
+				}
+			}
 		}
 
+	};
+	private Handler handler = new Handler() {
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.what) {
+			case 0:
+				timerOutTimer.cancel();
+				stopCameraBroadcast();
+				if (isCanTimeOut) {
+					isCanTimeOut = false;
+					if (dialog != null) {
+						dialog.dismiss();
+					}
+					tsDialog(getResources().getString(
+							R.string.txt_preview_failure));
+					Timer timer = new Timer();
+					timer.schedule(new TimerTask() {
+
+						@Override
+						public void run() {
+							handler.sendEmptyMessage(1);
+						}
+					}, 3000);
+				}
+				break;
+			case 1:
+				if (dialog != null) {
+					dialog.dismiss();
+				}
+				break;
+			case 2:
+				Intent intent = new Intent();
+				intent.setAction(TSDEvent.CarDVR.START_CAM_PREVIEW);
+				// 发送 一个无序广播
+				sendBroadcast(intent);
+				LogUtil.d("CameraBootActivity", "send:"
+						+ TSDEvent.CarDVR.START_CAM_PREVIEW);
+				break;
+			default:
+				break;
+			}
+		};
 	};
 
 	@Override
@@ -55,8 +113,17 @@ public class CameraBootActivity extends BaseActivity {
 			public void onClick(View v) {
 				if (isServiceRunning(CameraBootActivity.this,
 						"com.tuyou.tsd.cardvr.service.VideoRec")) {
+					isCanTimeOut = true;
 					startBroadcast();
 					waitDialog();
+					timerOutTimer = new Timer();
+					timerOutTimer.schedule(new TimerTask() {
+
+						@Override
+						public void run() {
+							handler.sendEmptyMessage(0);
+						}
+					}, 8000);
 				} else {
 					startActivity(new Intent(CameraBootActivity.this,
 							CameraPreviewActivity.class));
@@ -76,11 +143,29 @@ public class CameraBootActivity extends BaseActivity {
 	 * 发送广播通知cardvr要进行预览
 	 */
 	public void startBroadcast() {
+		if (isFirst) {
+			handler.sendEmptyMessage(2);
+			isFirst = false;
+		}else {
+			Timer timer = new Timer();
+			timer.schedule(new TimerTask() {
+
+				@Override
+				public void run() {
+					handler.sendEmptyMessage(2);
+				}
+			}, 3000);
+		}
+	}
+	/**
+	 * 摄像头调节完成通知cardvr
+	 */
+	public void stopCameraBroadcast() {
 		Intent intent = new Intent();
-		intent.setAction(TSDEvent.CarDVR.START_CAM_PREVIEW);
+		intent.setAction(TSDEvent.CarDVR.STOP_CAM_PREVIEW);
+		LogUtil.d(TAG, "send action:" + TSDEvent.CarDVR.STOP_CAM_PREVIEW);
 		// 发送 一个无序广播
 		sendBroadcast(intent);
-		LogUtil.d("CameraBootActivity", "send:"+TSDEvent.CarDVR.START_CAM_PREVIEW);
 	}
 
 	/**
@@ -93,8 +178,34 @@ public class CameraBootActivity extends BaseActivity {
 				new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						dialog.dismiss();
-						dialog = null;
+						if (dialog != null) {
+							dialog.dismiss();
+							dialog = null;
+						}
+					}
+				});
+
+		dialog = new WaitDialog(CameraBootActivity.this, layout);
+		dialog.show();
+	}
+
+	/**
+	 * 请求失败提示框
+	 */
+	public void tsDialog(String content) {
+		LayoutInflater inflater = CameraBootActivity.this.getLayoutInflater();
+		View layout = inflater.inflate(R.layout.dialog_wait, null);
+		TextView contentTXT = (TextView) layout
+				.findViewById(R.id.txt_dialog_content);
+		contentTXT.setText(content);
+		layout.findViewById(R.id.img_dialog_off).setOnClickListener(
+				new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						if (dialog != null) {
+							dialog.dismiss();
+							dialog = null;
+						}
 					}
 				});
 

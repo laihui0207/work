@@ -2,7 +2,10 @@ package com.tuyou.tsd.settings.trafficstats;
 
 import java.lang.reflect.Method;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiConfiguration.KeyMgmt;
 import android.net.wifi.WifiManager;
@@ -15,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tuyou.tsd.common.CommonMessage;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.settings.R;
 import com.tuyou.tsd.settings.base.BaseActivity;
@@ -40,6 +44,22 @@ public class WifiActivity extends BaseActivity implements OnClickListener {
 	 * 无线热点异常
 	 */
 	public static final int WIFI_AP_STATE_FAILED = 14;
+	
+	private String TAG = "WifiActivity";
+	
+	private BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			LogUtil.d(TAG, "action = " + action);
+			if (action.equals(CommonMessage.VOICE_COMM_OPEN_WIFI_AP)) {
+				if (!getWifiApState(wifiManager)) {
+					setWifiApEnabled(true);
+				}
+			}
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -85,12 +105,23 @@ public class WifiActivity extends BaseActivity implements OnClickListener {
 		if (getWifiApState(wifiManager)) {
 			open.setImageDrawable(getResources().getDrawable(
 					R.drawable.bg_wifi_open));
+			if (openLayout.getVisibility() != View.VISIBLE) {
+				openLayout.setVisibility(View.VISIBLE);
+				offLayout.setVisibility(View.GONE);
+			}
 		} else {
 			open.setImageDrawable(getResources().getDrawable(
 					R.drawable.bg_wifi_off));
+			if (offLayout.getVisibility() != View.VISIBLE) {
+				offLayout.setVisibility(View.VISIBLE);
+				openLayout.setVisibility(View.GONE);
+			}
 		}
 		open.invalidate();
 		// getWIFI(WifiActivity.this);
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(CommonMessage.VOICE_COMM_OPEN_WIFI_AP);
+		registerReceiver(wifiReceiver, filter);
 	}
 
 	/**

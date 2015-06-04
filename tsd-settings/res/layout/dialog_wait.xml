@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:paddingLeft="@dimen/dimen_10"
-        android:text="@string/txt_dialog_wait"
+        android:text="@string/txt_preview_start"
         android:textColor="@android:color/white"
         android:textSize="@dimen/text_size_20" />
 

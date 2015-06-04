@@ -41,7 +41,9 @@ public class InformationActivity extends BaseActivity implements
 	private Handler handler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			if (dialog != null && isRequrest) {
-				dialog.dismiss();
+				if (dialog != null) {
+					dialog.dismiss();
+				}
 				Toast.makeText(InformationActivity.this, "连接超时",
 						Toast.LENGTH_LONG).show();
 			}
@@ -187,12 +189,18 @@ public class InformationActivity extends BaseActivity implements
 	public void waitDialog() {
 		LayoutInflater inflater = InformationActivity.this.getLayoutInflater();
 		View layout = inflater.inflate(R.layout.dialog_wait, null);
+		TextView contentTextView = (TextView) layout
+				.findViewById(R.id.txt_dialog_content);
+		contentTextView.setText(getResources().getString(
+				R.string.txt_dialog_wait));
 		layout.findViewById(R.id.img_dialog_off).setOnClickListener(
 				new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						dialog.dismiss();
-						dialog = null;
+						if (dialog != null) {
+							dialog.dismiss();
+							dialog = null;
+						}
 					}
 				});
 

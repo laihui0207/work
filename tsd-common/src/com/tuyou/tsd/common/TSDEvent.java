@@ -6,6 +6,9 @@ public interface TSDEvent {
 	interface System {
 		// 系统初始化，资源加载完成，在此之前不允许用户操作
 		static final String LOADING_COMPLETE = "tsd.event.system.loading_complete";
+		
+		//完成初始化设置
+		static final String WELCOME_FINISHED = "tsd.event.system.welcome_finished";
 
 		// 主动查询系统状态和工作模式
 		static final String QUERY_SYSTEM_STATE = "tsd.event.system.query_state";

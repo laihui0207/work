@@ -179,7 +179,7 @@ public class InteractingActivity extends Activity {
 		}
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		transaction.replace(R.id.fragment_container, fragment);
-		transaction.commit();
+		transaction.commitAllowingStateLoss();
 	}
 
 	/**
@@ -358,6 +358,13 @@ public class InteractingActivity extends Activity {
 		sendBroadcast(resultIntent);
 	}
 
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		// TODO Auto-generated method stub
+		LogUtil.d(TAG, "onSaveInstanceState");
+		super.onSaveInstanceState(outState);
+	}
+	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		
 		@SuppressWarnings("unchecked")

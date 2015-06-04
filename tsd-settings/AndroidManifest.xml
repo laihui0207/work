@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tuyou.tsd.settings"
-    android:sharedUserId="com.tuyou.tsd"
     android:versionCode="17"
     android:versionName="0.4.2" >
 

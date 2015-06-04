@@ -68,7 +68,8 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 		ERR_TIME_OUT("超时错误"),
 		ERR_USER_CANCELLED("用户取消"),
 		ERR_USER_CANCELLED_AND_GO_HOME("取消并回主页"), // 临时增加，后面考虑用更好的解决办法替换
-		ERR_SEARCH("搜索失败");
+		ERR_SEARCH("搜索失败"),
+		ERR_WRONG_WORD("关键词无效");
 		public String value;
 		private ErrorType(String v) {value = v;}
 	}
@@ -637,7 +638,7 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 				}
 			} else {
 				preFinishInteraction();
-				mCurrentDialogError = ErrorType.ERR_SEARCH;
+				mCurrentDialogError = ErrorType.ERR_WRONG_WORD;
 				changeState(State.STATE_ERROR);
 			}
 		}
@@ -964,7 +965,7 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 				}else{
 					LogUtil.w(LOG_TAG, "MusicSearchTask result="+result);
 					preFinishInteraction();
-					mCurrentDialogError = ErrorType.ERR_SEARCH;
+					mCurrentDialogError = ErrorType.ERR_WRONG_WORD;
 					changeState(State.STATE_ERROR);
 				}
 			}
