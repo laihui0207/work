@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tuyou.tsd"
     android:versionCode="22"
+    android:sharedUserId="com.tuyou.tsd"
     android:versionName="0.6.4" >
 
     <uses-sdk android:minSdkVersion="14"

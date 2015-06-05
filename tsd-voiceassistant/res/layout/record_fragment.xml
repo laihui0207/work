@@ -42,39 +42,46 @@
     </RelativeLayout>
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/record_text"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/please_speak" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/record_close_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:background="@drawable/record_close_btn" />
 
-    <ImageView
+    <RelativeLayout
+        android:id="@+id/record_bottom_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/record_icall_btn"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="20dp"
-        android:layout_marginRight="10dp"
-        android:background="@drawable/icon_icall_btn" />
+        android:visibility="visible" >
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/record_home_btn"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="10dp"
-        android:background="@drawable/icon_home_btn" />
+        <ImageView
+            android:id="@+id/record_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/please_speak" />
+
+        <ImageView
+            android:id="@+id/record_icall_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/icon_icall_btn" />
+
+        <ImageView
+            android:id="@+id/record_home_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/icon_home_btn" />
+    </RelativeLayout>
 
 </RelativeLayout>

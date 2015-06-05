@@ -17,6 +17,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -103,6 +105,10 @@ public class SleepingActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		
 		setContentView(R.layout.sleeping_activity);
 		initView();
 		bindService(new Intent(this, CoreService.class), mConnection, Context.BIND_AUTO_CREATE);
@@ -159,7 +165,7 @@ public class SleepingActivity extends BaseActivity {
 		mMusicPlay.setOnClickListener(mMusicListen);
 		mMusicNext = (ImageView) findViewById(R.id.sleep_music_next);
 		mMusicNext.setOnClickListener(mMusicListen);
-		mMusicLayout.setVisibility(View.INVISIBLE);
+		mMusicLayout.setVisibility(View.VISIBLE);
 		
 		// Temporary solution
 		findViewById(R.id.sleeping_layout).setOnClickListener(new View.OnClickListener() {
@@ -187,6 +193,12 @@ public class SleepingActivity extends BaseActivity {
 	private void onWakeUp() {
 		canWakeUpFromSleep();
 	}
+	
+	public void setMusicLayout(boolean bVisible){
+		if(mMusicLayout!=null){
+			mMusicLayout.setVisibility(bVisible ? View.VISIBLE : View.VISIBLE);
+		}
+	}
 
 	private OnClickListener mMusicListen = new OnClickListener() {
 		
@@ -208,7 +220,8 @@ public class SleepingActivity extends BaseActivity {
 		if (mBindService != null) {
 			if (mBindService.getCurrentState() == CoreService.ServiceState.STATE_RESUME) {
 				mBindService.wakeUpDevice();
-				HelperUtil.finishActivity(this, android.R.anim.fade_out, android.R.anim.fade_in);
+//				finish();
+				HelperUtil.finishActivity(this, android.R.anim.fade_out, android.R.anim.fade_out);
 			} else {
 				if (TSDConst.buildForDevice) {
 					showText("小宝正在休息, 请勿打扰.");
@@ -219,7 +232,8 @@ public class SleepingActivity extends BaseActivity {
 						String text = String.format("再连续点击%d次即可唤醒小宝", (5-mClickdTimes));
 						showText(text);
 					} else if (mClickdTimes >= 5) {
-						HelperUtil.finishActivity(this, android.R.anim.fade_out, android.R.anim.fade_in);
+						finish();
+//						HelperUtil.finishActivity(this, android.R.anim.fade_out, android.R.anim.fade_in);
 					}
 				}
 			}

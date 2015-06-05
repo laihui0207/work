@@ -1,5 +1,6 @@
 package com.tuyou.tsd.core;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -686,17 +687,21 @@ public class SystemController {
 
 	private void onPictureHasBeenTaken() {
 	    LogUtil.d(LOG_TAG, "onPictureHasBeenTaken");
-	    Toast.makeText(mService, "拍照完毕.", Toast.LENGTH_SHORT).show();
 
-        MediaPlayer player = MediaPlayer.create(mService, R.raw.photo);
-        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                mp.release();
-                mp = null;
-            }
-        });
-	    player.start();
+	    File file = new File(TSDConst.CAR_ROOT_PATH);
+	    if(file.getTotalSpace()>0){
+	    	Toast.makeText(mService, "拍照完毕.", Toast.LENGTH_SHORT).show();
+	        MediaPlayer player = MediaPlayer.create(mService, R.raw.photo);
+	        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+	            @Override
+	            public void onCompletion(MediaPlayer mp) {
+	                mp.release();
+	                mp = null;
+	            }
+	        });
+		    player.start();
+	    }
+
 
 		// 拍照完毕后切换回standby模式
 		mService.changeMode(WorkingMode.MODE_STANDBY, ContentType.TYPE_NONE);

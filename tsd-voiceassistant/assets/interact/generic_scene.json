@@ -50,7 +50,7 @@
 			"reason":"err_search",
 			"action":"return",
 			"speech":{
-				"content":"小宝没有找到你的要东东.",
+				"content":"关键词无效.",
 				"mode":"tts"
 			}
 		},{

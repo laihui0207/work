@@ -10,10 +10,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.tuyou.tsd.common.CommonMessage;
 import com.tuyou.tsd.common.TSDComponent;
 import com.tuyou.tsd.common.TSDEvent;
+import com.tuyou.tsd.common.TSDLocation;
 import com.tuyou.tsd.common.util.HelperUtil;
 import com.tuyou.tsd.common.util.LogUtil;
 
@@ -24,6 +26,7 @@ public class RecordFragment extends Fragment {
 	private ImageView mVoiceMask;
 	private ImageView mIcallButton;
 	private ImageView mText;
+	private RelativeLayout mBottomLayout = null;
 	private final String TAG = "RecordFragment";
 
 	@Override
@@ -32,6 +35,9 @@ public class RecordFragment extends Fragment {
 		View view = inflater.inflate(R.layout.record_fragment, container, false);
 		LogUtil.d(TAG, "onCreateView");
 
+		mBottomLayout = (RelativeLayout)view.findViewById(R.id.record_bottom_view);
+		mBottomLayout.setVisibility(View.VISIBLE);
+		
 		mCloseButton = (ImageView) view.findViewById(R.id.record_close_btn);
 		mCloseButton.setOnClickListener(new View.OnClickListener() {
 			@Override

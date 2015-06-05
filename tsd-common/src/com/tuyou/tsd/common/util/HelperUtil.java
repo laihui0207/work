@@ -205,8 +205,9 @@ public final class HelperUtil {
 
 	public static void finishActivity(Activity activity, int enterAnim, int exitAnim) {
 		activity.finish();
+		activity.overridePendingTransition(0, 0);
 		if (enterAnim > 0 && exitAnim > 0) {
-			activity.overridePendingTransition(enterAnim, enterAnim);
+			activity.overridePendingTransition(0, 0);
 		}
 	}
 

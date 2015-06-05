@@ -59,6 +59,8 @@ public class RecognitionFragment extends Fragment {
 						public void run() {
 							if(mThinkingView != null){
 								mThinkingView.setBackgroundResource(R.drawable.thinking_deep_anim);
+								AnimationDrawable rocketAnimation = (AnimationDrawable) mThinkingView.getBackground();
+								rocketAnimation.start();
 							}	
 						}
 					});

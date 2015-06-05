@@ -409,7 +409,7 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 		Log.v(LOG_TAG, "=========initService");
 		long start = System.currentTimeMillis();
 
-		if (!checkResourceDir()) {
+		if (checkResourceDir()) {
 			prepareResources();
 		}
 
@@ -463,9 +463,9 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 
 		File resDir = new File(TSDConst.VOICE_ASSISTANT_PATH);
 		if (!resDir.exists()) {
-			resDir.mkdirs();
-			r = false;
+			r=resDir.mkdirs();
 		}
+		LogUtil.d(LOG_TAG,"checkResourceDir r="+r);
 		return r;
 	}
 

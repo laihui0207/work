@@ -19,12 +19,13 @@
         android:background="@drawable/text_bg"
         android:layout_centerHorizontal="true"
         android:ellipsize="end"
+        android:gravity="center"
         android:paddingLeft="20dp"
         android:lines="4"
         android:maxEms="10"
         android:padding="10dp"
         android:textColor="#13526E"
-        android:textSize="20sp"
+        android:textSize="30sp"
         android:text="你说的话..." />
 
     <LinearLayout

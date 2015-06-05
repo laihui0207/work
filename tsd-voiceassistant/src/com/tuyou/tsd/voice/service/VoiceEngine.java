@@ -19,6 +19,8 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Message;
@@ -29,8 +31,10 @@ import android.util.Log;
 import com.iflytek.tts.TtsService.Tts;
 import com.iflytek.tts.TtsService.TtsSpeaker;
 import com.tuyou.tsd.common.CommonMessage;
+import com.tuyou.tsd.common.TSDConst;
 import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.common.network.JsonOA2;
+import com.tuyou.tsd.common.util.HelperUtil;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.voice.R;
 import com.tuyou.tsd.voice.service.interaction.Dialog;
@@ -60,15 +64,15 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 	}
 
 	public enum ErrorType {
-		ERR_NET("网络错误"),
-		ERR_RECORD("录音错误"),
-		ERR_RECOG("识别错误"),
-		ERR_NO_SPEECH("没有检测到声音"),
-		ERR_NO_MATCH_ANSWER("没有匹配答案"),
+		ERR_NET("网络不给力"),
+		ERR_RECORD("小宝没听懂"),
+		ERR_RECOG("小宝没听懂"),
+		ERR_NO_SPEECH("监听超时"),
+		ERR_NO_MATCH_ANSWER("小宝没听懂"),
 		ERR_TIME_OUT("超时错误"),
 		ERR_USER_CANCELLED("用户取消"),
 		ERR_USER_CANCELLED_AND_GO_HOME("取消并回主页"), // 临时增加，后面考虑用更好的解决办法替换
-		ERR_SEARCH("搜索失败");
+		ERR_SEARCH("关键词无效");
 		public String value;
 		private ErrorType(String v) {value = v;}
 	}
@@ -499,10 +503,27 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 	}
 
 
+	private boolean checkNetwork() {
+		ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNet = cm.getActiveNetworkInfo();
+		LogUtil.d(LOG_TAG, "checkNetwork: ");
+		if (activeNet != null) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	void onFinishRecognition1(String result){
 		LogUtil.w(LOG_TAG, "onFinishRecognition1");
 		preFinishInteraction();
-		mCurrentDialogError = ErrorType.ERR_NET;
+		
+		if(checkNetwork()){
+			mCurrentDialogError = ErrorType.ERR_RECOG;
+		}else{
+			mCurrentDialogError = ErrorType.ERR_NET;
+		}
+		
 		changeState(State.STATE_ERROR);
 	}
 
@@ -544,12 +565,12 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 								LogUtil.w(LOG_TAG, "Time is out, cancel the recognition.");
 								mVoiceAdapter.cancelRecognition();
 
-								mCurrentDialogError = ErrorType.ERR_TIME_OUT;
+								mCurrentDialogError = ErrorType.ERR_SEARCH;
 								changeState(State.STATE_ERROR);
 							}
 						};
 						timer = new Timer("TimeoutTask", true);
-						timer.schedule(timeoutTask, 3000);
+						timer.schedule(timeoutTask, 10000);
 						Log.v(LOG_TAG, "schedule a new timer...");
 					} catch (IllegalStateException e) {
 						e.printStackTrace();
@@ -962,13 +983,13 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 						e.printStackTrace();
 					}
 				}else{
-					LogUtil.w(LOG_TAG, "MusicSearchTask result="+result);
-					/*preFinishInteraction();
-					mCurrentDialogError = ErrorType.ERR_WRONG_WORD;
-					changeState(State.STATE_ERROR);*/
-					Bundle data = new Bundle();
+					LogUtil.w(LOG_TAG, "MusicSearchTask error result="+result);
+					preFinishInteraction();
+					mCurrentDialogError = ErrorType.ERR_SEARCH;
+					changeState(State.STATE_ERROR);
+					/*Bundle data = new Bundle();
 					data.putString("result","关键词无效");
-					doSendMessage(CommonMessage.VoiceEngine.SEARCH_BEGIN, data);
+					doSendMessage(CommonMessage.VoiceEngine.SEARCH_BEGIN, data);*/
 				}
 			}
 			return null;

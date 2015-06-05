@@ -295,12 +295,7 @@ public class InteractingActivity extends Activity {
 
 			case CommonMessage.VoiceEngine.SEARCH_BEGIN:
 				LogUtil.d(TAG,"@@@@@@@@@@@@@@@@@@@@@@@@@  SEARCH_BEGIN");
-				resStr = getResources().getString(R.string.searching);
-				tempBundle = msg.getData();
-				if(tempBundle != null){
-					resStr = msg.getData().getString("result");
-				}
-				((RecognitionFragment)mRecogFragment).setStatusText(resStr);
+				((RecognitionFragment)mRecogFragment).setStatusText(getResources().getString(R.string.searching));
 				break;
 
 			case CommonMessage.VoiceEngine.SEARCH_END:

@@ -33,10 +33,9 @@
         android:id="@+id/img_no_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/separator_ImgView"
-        android:layout_marginTop="20dp"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/error" 
+        android:background="@drawable/error" 
         android:visibility="invisible"/>
 
     <ListView
@@ -44,5 +43,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/separator_ImgView"
-        android:dividerHeight="1dp" />
+        android:dividerHeight="1dp" 
+        android:visibility="visible"/>
 </RelativeLayout>
