@@ -247,6 +247,8 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 			// 交互消息
 			else if (action.equals(TSDEvent.Interaction.RUN_INTERACTION)) {
 				checkNetworkEnabled();
+				
+				LogUtil.w(LOG_TAG, "executeInteraction from RUN_INTERACTION");
 				executeInteraction(intent.getStringExtra("template"), true);
 			}
 			// 交互过程中收到硬按键消息
@@ -255,6 +257,7 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 					action.equals(TSDEvent.System.HARDKEY3_PRESSED) ||
 					action.equals(TSDEvent.System.HARDKEY4_PRESSED))
 			{
+				LogUtil.w(LOG_TAG, "MyBroadcastReceiver HARDKEY "+action);
 //				onHardKeyPressed(action);
 			}
 			// 交互过程中收到触屏消息
@@ -568,7 +571,18 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 	 * 执行交互
 	 * @param eventMsg
 	 */
+	public volatile static boolean mbRunningInteraction = false;
 	private void executeInteraction(String eventMsg, boolean isLocal) {
+		if(mEngine==null || !mEngine.INITDONE){
+			LogUtil.w(LOG_TAG, "executeInteraction from engine not ready");
+			return;
+		}
+		LogUtil.w(LOG_TAG, "executeInteraction from mbRunningInteraction="+mbRunningInteraction);
+		if(mbRunningInteraction){
+			return ;
+		}
+		mbRunningInteraction = true;
+		
 		Scene scene = null;
 		LogUtil.w(LOG_TAG, "executeInteraction isLocal="+isLocal);
 		if (isLocal) {
@@ -605,10 +619,12 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 			json = new JSONObject(message);
 			module = json.getString("module");
 
-	    	if (module.equals(CommonMessage.PUSH_MESSAGE_TYPE_INTERACTION)) {
+	    	if (module.equals(CommonMessage.PUSH_MESSAGE_TYPE_INTERACTION) && !mbRunningInteraction) {
 				content = json.getJSONObject("content").toString();
 
 				HelperUtil.startActivity(this, TSDComponent.VOICE_ASSISTANT_PACKAGE, TSDComponent.INTERACTION_ACTIVITY);
+				
+				LogUtil.w(LOG_TAG, "executeInteraction from handlePushMessage");
 	    		executeInteraction(content, false);
 	    	}
 		} catch (JSONException e) {
@@ -667,6 +683,9 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 						try {
 							LogUtil.v(LOG_TAG, "当前队列内无交互模板，等待...");
 							((VoiceAssistant)context).changeState(VoiceAssistant.State.STATE_LISTENING);
+							
+							LogUtil.w(LOG_TAG, "executeInteraction from to end !");
+							mbRunningInteraction = false;
 							mLock.wait();
 							LogUtil.v(LOG_TAG,"mLock up ###########################################");
 						} catch (InterruptedException e) {

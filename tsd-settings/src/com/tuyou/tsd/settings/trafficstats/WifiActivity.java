@@ -6,19 +6,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiConfiguration.KeyMgmt;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tuyou.tsd.common.CommonMessage;
+import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.settings.R;
 import com.tuyou.tsd.settings.base.BaseActivity;
@@ -53,10 +50,11 @@ public class WifiActivity extends BaseActivity implements OnClickListener {
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
 			LogUtil.d(TAG, "action = " + action);
-			if (action.equals(CommonMessage.VOICE_COMM_OPEN_WIFI_AP)) {
-				if (!getWifiApState(wifiManager)) {
-					setWifiApEnabled(true);
-				}
+			if (action.equals(TSDEvent.System.OPEN_WIFI_AP_FROM_CORE_SERVICE)) {
+				setWifiApEnabled(true, false);
+			}
+			else if(action.equals(TSDEvent.System.CLOSE_WIFI_AP_FROM_CORE_SERVICE)){
+				setWifiApEnabled(false, false);
 			}
 		}
 	};
@@ -120,7 +118,8 @@ public class WifiActivity extends BaseActivity implements OnClickListener {
 		open.invalidate();
 		// getWIFI(WifiActivity.this);
 		IntentFilter filter = new IntentFilter();
-		filter.addAction(CommonMessage.VOICE_COMM_OPEN_WIFI_AP);
+		filter.addAction(TSDEvent.System.OPEN_WIFI_AP_FROM_CORE_SERVICE);
+		filter.addAction(TSDEvent.System.CLOSE_WIFI_AP_FROM_CORE_SERVICE);
 		registerReceiver(wifiReceiver, filter);
 	}
 
@@ -133,40 +132,52 @@ public class WifiActivity extends BaseActivity implements OnClickListener {
 	 *         修改记录： 日期：2014-7-22 上午9:58:02 修改人：wanghh 描述 ：
 	 * 
 	 */
-	public boolean setWifiApEnabled(boolean enabled) {
-		if (enabled) { // disable WiFi in any case
+	public boolean setWifiApEnabled(boolean enabled, boolean bWithSendingMessages) {
+		//if (enabled) { // disable WiFi in any case
 			// wifi和热点不能同时打开，所以打开热点的时候需要关闭wifi
-			wifiManager.setWifiEnabled(false);
-		}
+		//	wifiManager.setWifiEnabled(false);
+		//}
 		if (enabled) {
-			stopBroadcast();
-			playBroadcast(getResources().getString(R.string.wifi_open_ts), 0);
+			//stopBroadcast();
+			//playBroadcast(getResources().getString(R.string.wifi_open_ts), 0);
 			open.setImageDrawable(getResources().getDrawable(
 					R.drawable.bg_wifi_open));
 			if (openLayout.getVisibility() != View.VISIBLE) {
 				openLayout.setVisibility(View.VISIBLE);
 				offLayout.setVisibility(View.GONE);
 			}
+			open.invalidate();
+			if(bWithSendingMessages){
+				Intent intent = new Intent();
+				intent.setAction(CommonMessage.SETTING_COMM_OPEN_WIFI_AP);
+				sendBroadcast(intent);
+			}
 			// Toast toast = Toast.makeText(WifiActivity.this, getResources()
 			// .getString(R.string.wifi_open_on), Toast.LENGTH_LONG);
 			// toast.setGravity(Gravity.BOTTOM, 0, 10);
 			// toast.show();
 		} else {
-			stopBroadcast();
-			playBroadcast(getResources().getString(R.string.wifi_off_ts), 0);
+			//stopBroadcast();
+			//playBroadcast(getResources().getString(R.string.wifi_off_ts), 0);
 			open.setImageDrawable(getResources().getDrawable(
 					R.drawable.bg_wifi_off));
 			if (offLayout.getVisibility() != View.VISIBLE) {
 				offLayout.setVisibility(View.VISIBLE);
 				openLayout.setVisibility(View.GONE);
 			}
+			open.invalidate();
+			if(bWithSendingMessages){
+				Intent intent = new Intent();
+				intent.setAction(CommonMessage.SETTING_COMM_CLOSE_WIFI_AP);
+				sendBroadcast(intent);
+			}
 			// Toast toast = Toast.makeText(WifiActivity.this, getResources()
 			// .getString(R.string.wifi_open_off), Toast.LENGTH_LONG);
 			// toast.setGravity(Gravity.BOTTOM, 0, 10);
 			// toast.show();
 		}
-		open.invalidate();
-		try {
+		return true;
+		/*try {
 			// 热点的配置类
 			WifiConfiguration apConfig = new WifiConfiguration();
 			// 配置热点的名称(可以在名字后面加点随机数什么的)
@@ -209,7 +220,7 @@ public class WifiActivity extends BaseActivity implements OnClickListener {
 			return (Boolean) method.invoke(wifiManager, apConfig, enabled);
 		} catch (Exception e) {
 			return false;
-		}
+		}*/
 	}
 
 	/**
@@ -267,9 +278,9 @@ public class WifiActivity extends BaseActivity implements OnClickListener {
 		// 开启关闭无线热点
 		case R.id.img_wifi_open:
 			if (getWifiApState(wifiManager)) {
-				setWifiApEnabled(false);
+				setWifiApEnabled(false, true);
 			} else {
-				setWifiApEnabled(true);
+				setWifiApEnabled(true, true);
 			}
 			break;
 		// 返回

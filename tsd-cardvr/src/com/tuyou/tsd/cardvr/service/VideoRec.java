@@ -27,6 +27,7 @@ import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.media.MediaRecorder.OnErrorListener;
 import android.media.MediaRecorder.OnInfoListener;
@@ -49,6 +50,7 @@ import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tuyou.tsd.cardvr.R;
 import com.tuyou.tsd.cardvr.service.videoMeta.PictureInfoDAO;
@@ -62,9 +64,9 @@ import com.tuyou.tsd.common.network.JsonOA2;
 import com.tuyou.tsd.common.network.SubmitAccidentInfoReq;
 import com.tuyou.tsd.common.util.HelperUtil;
 import com.tuyou.tsd.common.util.LogUtil;
+import com.tuyou.tsd.common.videoMeta.PictureInf;
 import com.tuyou.tsd.common.videoMeta.VideoInf;
 import com.tuyou.tsd.common.videoMeta.VideoManager;
-import com.tuyou.tsd.common.videoMeta.PictureInf;
 import com.tuyou.tsd.common.videoMeta.VideoStatInf.VIDEO_TYPE;
 
 public class VideoRec extends Service implements SurfaceHolder.Callback, TakePictureCallback{
@@ -81,7 +83,7 @@ public class VideoRec extends Service implements SurfaceHolder.Callback, TakePic
     private String PICTURES_PATH = TSDConst.CAR_DVR_PICTURES_PATH + "/";
     
     private static final int SERVICE_RUNNING = 0;
-    private static final int NO_SD_CARD_WARNING = 1;
+//    private static final int NO_SD_CARD_WARNING = 1;
     private static final int SD_CARD_MEM_NOT_ENOUGH_WARNING = 2;
 
 	private WindowManager mWindowManager;
@@ -208,8 +210,10 @@ public class VideoRec extends Service implements SurfaceHolder.Callback, TakePic
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-    	super.onStartCommand(intent, flags, startId);
-    	return START_STICKY;
+//    	super.onStartCommand(intent, flags, startId);
+//    	return START_STICKY;
+    	flags = START_STICKY; 
+    	return super.onStartCommand(intent, flags, startId);
     }
     
     @Override
@@ -238,8 +242,7 @@ public class VideoRec extends Service implements SurfaceHolder.Callback, TakePic
     			NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 				notificationManager.cancelAll();
 				break;
-			case 3:
-				break;
+			
 			case 4:
 				if(countService!=null){
 					toDoVideo();
@@ -268,7 +271,7 @@ public class VideoRec extends Service implements SurfaceHolder.Callback, TakePic
     	intentFilter.addAction(TSDEvent.CarDVR.STOP_CAM_PREVIEW);
     	intentFilter.addAction(TSDEvent.System.ACC_OFF);
     	intentFilter.addAction(TSDEvent.CarDVR.CLEAR_PHOTO);
-    	intentFilter.addAction(Intent.ACTION_MEDIA_REMOVED);
+    	intentFilter.addAction(Intent.ACTION_SHUTDOWN);
     	registerReceiver(mBroadcastReceiver, intentFilter);
     	
     	registerSDBroadcasts();
@@ -278,9 +281,9 @@ public class VideoRec extends Service implements SurfaceHolder.Callback, TakePic
     	
     	mBroadcastSDReceiver = new MyBroadcastSDReceiver();
     	IntentFilter iFilter = new IntentFilter();
+    	iFilter.addAction(Intent.ACTION_MEDIA_REMOVED);
     	iFilter.addAction(Intent.ACTION_MEDIA_EJECT);
-    	iFilter.addAction(Intent.ACTION_SHUTDOWN);
-    	iFilter.addAction(Intent.ACTION_MEDIA_CHECKING);
+    	iFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
     	iFilter.addDataScheme("file");
     	registerReceiver(mBroadcastSDReceiver , iFilter);
 
@@ -290,7 +293,6 @@ public class VideoRec extends Service implements SurfaceHolder.Callback, TakePic
      */
     void recording(final SurfaceHolder surfaceHolder, int videoQuality) {
 		System.out.println("Enter recording");
-		LogUtil.v(TAG,"recording init xxxxxxxxxxxxxxxxx");
     	try {
         	try{ 
         		if(mCamera == null) {
@@ -301,7 +303,6 @@ public class VideoRec extends Service implements SurfaceHolder.Callback, TakePic
         	}
         	
         	if(mMediaRecorder == null) { 
-        		LogUtil.v(TAG,"recording new MediaRecorder");
     			mMediaRecorder = new MediaRecorder();
     		    mMediaRecorder.setPreviewDisplay(surfaceHolder.getSurface());
         	}
@@ -319,7 +320,7 @@ public class VideoRec extends Service implements SurfaceHolder.Callback, TakePic
             
             File destDir = new File(VIDEO_PATH);
             if (!destDir.exists() && !destDir.mkdirs()) {
-            	sendNotification(NO_SD_CARD_WARNING);
+//            	sendNotification(NO_SD_CARD_WARNING);
             	return;
             }
             mPreRecordFilePath = mCurRecordFilePath;
@@ -470,6 +471,9 @@ public class VideoRec extends Service implements SurfaceHolder.Callback, TakePic
 			e.printStackTrace();
 		}
 //        System.out.println("======videoRec停止");
+        Intent localIntent = new Intent(); 
+        localIntent.setClass(this, VideoRec.class);
+        this.startService(localIntent); 
     }
 
     @Override
@@ -554,8 +558,6 @@ public class VideoRec extends Service implements SurfaceHolder.Callback, TakePic
     		Bitmap bitmap = null;  
             bitmap = ThumbnailUtils.createVideoThumbnail(mPreRecordFilePath, Thumbnails.MICRO_KIND);
             if(bitmap != null) {
-//	            System.out.println("w"+bitmap.getWidth());  
-//	            System.out.println("h"+bitmap.getHeight());  
 	            bitmap = ThumbnailUtils.extractThumbnail(bitmap, 96, 96,ThumbnailUtils.OPTIONS_RECYCLE_INPUT);  
 	            
 	            String thumbnailFile = mPreRecordFilePath.replace(VIDEO_FILE_SUFFIX, THUMBNAIL_FILE_SUFFIX);
@@ -587,27 +589,21 @@ public class VideoRec extends Service implements SurfaceHolder.Callback, TakePic
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction(); 
-			if(action.equals(Intent.ACTION_SHUTDOWN)){
-				mHandler.removeMessages(1);
-				ad.cancel();
-			}else if(action.equals(Intent.ACTION_MEDIA_EJECT)){  
+			if(action.equals(Intent.ACTION_MEDIA_EJECT)||action.equals(Intent.ACTION_MEDIA_REMOVED)){  
 				time = 6;
     			showTTS(getString(R.string.sd_sdeject));
     			showDialog(getString(R.string.sd_sdeject));
         		Message msg = new Message();
         		msg.what = 1;
-        		mHandler.sendMessageAtTime(msg, SHOW_TIME);
+        		mHandler.sendMessageDelayed(msg, SHOW_TIME);
         		cancelNotification();
         		releaseCamera();
     			mRunningMode = RUNNING_MODE.IDLE;
-			}else if(action.equals(Intent.ACTION_MEDIA_CHECKING)){
-				if(countService!=null){
-					toDoVideo();
-				}else{
-					Message msg = new Message();
-	        		msg.what = 4;
-	        		mHandler.sendMessageAtTime(msg, SHOW_TIME);
-				}
+			}else if(action.equals(Intent.ACTION_MEDIA_MOUNTED)){
+				
+				Message msg = new Message();
+        		msg.what = 4;
+        		mHandler.sendMessageDelayed(msg, SHOW_TIME);
 			}
 		}
     	
@@ -703,65 +699,44 @@ public class VideoRec extends Service implements SurfaceHolder.Callback, TakePic
         				sendBroadcast(new Intent(TSDEvent.CarDVR.PICTURE_TAKEN_COMPLETED));
         			}
         		} else if (TSDEvent.CarDVR.START_CAM_PREVIEW.equals(action)) {
-        			try {
-            			Intent resIntent = new Intent();
-            			resIntent.setAction(TSDEvent.CarDVR.CAM_AVAILABLE);
-            			
-            			if (mRunningMode == RUNNING_MODE.IDLE) {
-            				resIntent.putExtra(TSDConst.CAR_DVR_START_CAM_PREVIEW_RES, true);
-            				LogUtil.d(TAG, "Send broadcast: " + resIntent);
-            				sendBroadcast(resIntent);
-            			} else if (mRunningMode == RUNNING_MODE.RECORDING) {
-            				if(!mIsInAlert && !mIsInAccident) {
-        	    				cancelNotification();
-        	    				releaseCamera();
-        		    			resIntent.putExtra(TSDConst.CAR_DVR_START_CAM_PREVIEW_RES, true);
-            				} else { //It's in alert or accident, we will ignore the message.
-            					resIntent.putExtra(TSDConst.CAR_DVR_START_CAM_PREVIEW_RES, false);
-            				}
-            				LogUtil.d(TAG, "Send broadcast: " + resIntent);
-            				sendBroadcast(resIntent);
-            			}
-            			mRunningMode = RUNNING_MODE.CAM_PREVIEWING;
+        			if(mMediaRecorder!=null){
+            			try {
+                			Intent resIntent = new Intent();
+                			resIntent.setAction(TSDEvent.CarDVR.CAM_AVAILABLE);
+                			
+                			if (mRunningMode == RUNNING_MODE.IDLE) {
+                				resIntent.putExtra(TSDConst.CAR_DVR_START_CAM_PREVIEW_RES, true);
+                				LogUtil.d(TAG, "Send broadcast: " + resIntent);
+                				sendBroadcast(resIntent);
+                			} else if (mRunningMode == RUNNING_MODE.RECORDING) {
+                				if(!mIsInAlert && !mIsInAccident) {
+            	    				cancelNotification();
+            	    				releaseCamera();
+            		    			resIntent.putExtra(TSDConst.CAR_DVR_START_CAM_PREVIEW_RES, true);
+                				} else { //It's in alert or accident, we will ignore the message.
+                					resIntent.putExtra(TSDConst.CAR_DVR_START_CAM_PREVIEW_RES, false);
+                				}
+                				LogUtil.d(TAG, "Send broadcast: " + resIntent);
+                				sendBroadcast(resIntent);
+                			}
+                			mRunningMode = RUNNING_MODE.CAM_PREVIEWING;
+                		
+        				} catch (Exception e) {
+        					e.printStackTrace();
+        				}finally{
+        					try {
+        						if(mMediaRecorder!=null){
+        							releaseCamera();
+        						}
+    						} catch (Exception e2) {
+    							e2.printStackTrace();
+    						}
+        				}
             		
-    				} catch (Exception e) {
-    					e.printStackTrace();
-    				}finally{
-    					releaseCamera();
-    				}
-//        			File file = new File(TSDConst.CAR_ROOT_PATH);
-//        	    	if(file.getTotalSpace()>0){
-//        	    		try {
-//                			Intent resIntent = new Intent();
-//                			resIntent.setAction(TSDEvent.CarDVR.CAM_AVAILABLE);
-//                			
-//                			if (mRunningMode == RUNNING_MODE.IDLE) {
-//                				resIntent.putExtra(TSDConst.CAR_DVR_START_CAM_PREVIEW_RES, true);
-//                				LogUtil.d(TAG, "Send broadcast: " + resIntent);
-//                				sendBroadcast(resIntent);
-//                			} else if (mRunningMode == RUNNING_MODE.RECORDING) {
-//                				if(!mIsInAlert && !mIsInAccident) {
-//            	    				cancelNotification();
-//            	    				releaseCamera();
-//            		    			resIntent.putExtra(TSDConst.CAR_DVR_START_CAM_PREVIEW_RES, true);
-//                				} else { //It's in alert or accident, we will ignore the message.
-//                					resIntent.putExtra(TSDConst.CAR_DVR_START_CAM_PREVIEW_RES, false);
-//                				}
-//                				LogUtil.d(TAG, "Send broadcast: " + resIntent);
-//                				sendBroadcast(resIntent);
-//                			}
-//                			mRunningMode = RUNNING_MODE.CAM_PREVIEWING;
-//                		
-//        				} catch (Exception e) {
-//        					e.printStackTrace();
-//        				}finally{
-//        					releaseCamera();
-//        				}
-//        	    	}
+        			}
         		} else if (TSDEvent.CarDVR.STOP_CAM_PREVIEW.equals(action)) {
+        			Toast.makeText(getApplicationContext(), "接收到录像广播", Toast.LENGTH_SHORT).show();
         			if (mRunningMode == RUNNING_MODE.CAM_PREVIEWING) {
-//        				checkAndFreeMem();
-//        				recording(mSurfaceView.getHolder(), VIDEO_QUALITY);
         				File file = new File(TSDConst.CAR_ROOT_PATH);
             	    	if(file.getTotalSpace()>0){
             	    		playVideo();
@@ -797,11 +772,12 @@ public class VideoRec extends Service implements SurfaceHolder.Callback, TakePic
                 			}
         				}
         			}
-        		}else if(Intent.ACTION_MEDIA_REMOVED.equals(action)){
-        			time = 6;
-        			showTTS(getString(R.string.no_sd));
-        			showDialog(getString(R.string.no_sd));
-        		}
+        			
+        		}else if(action.equals(Intent.ACTION_SHUTDOWN)){
+        			unregisterReceiver(mBroadcastSDReceiver);
+    				mHandler.removeMessages(1);
+    				ad.cancel();
+    			}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -1030,7 +1006,6 @@ public class VideoRec extends Service implements SurfaceHolder.Callback, TakePic
     }
     
     private void handleAlertEvent() {
-    	LogUtil.v(TAG,"handleAlertEvent new MediaRecorder");
     	mCamera = Camera.open();
         mMediaRecorder = new MediaRecorder();
         mCamera.unlock();
@@ -1080,13 +1055,6 @@ public class VideoRec extends Service implements SurfaceHolder.Callback, TakePic
 			}
         });
 
-//        try { 
-//        	mMediaRecorder.prepare(); 
-//        } catch (Exception e) {
-//        	e.printStackTrace();
-//        }
-//        
-//        mMediaRecorder.start();
     }
 
     
@@ -1102,14 +1070,10 @@ public class VideoRec extends Service implements SurfaceHolder.Callback, TakePic
     }
     
     private void releaseCamera() {
-    	if(mMediaRecorder==null){
-    		LogUtil.v(TAG, "releaseCamera no mMediaRecorder");
-    		return;
-    	}
     	try {
-    		mMediaRecorder.setOnErrorListener(null);
-            mMediaRecorder.setPreviewDisplay(null);
 	    	if (mMediaRecorder != null) {
+	    		mMediaRecorder.setOnErrorListener(null);
+	            mMediaRecorder.setPreviewDisplay(null);
 		    	try {
 		    		mMediaRecorder.stop();
 				} catch (Exception e) {
@@ -1146,8 +1110,20 @@ public class VideoRec extends Service implements SurfaceHolder.Callback, TakePic
 
 		mRunningMode = mPreRunningMode;
     	mPreRunningMode = RUNNING_MODE.IDLE;
-    	
-    	Intent intent = new Intent();
+
+    	// 播放拍照音效
+//		MediaPlayer player = MediaPlayer.create(this, R.raw.photo);
+//		player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+//			@Override
+//			public void onCompletion(MediaPlayer mp) {
+//				mp.release();
+//				mp = null;
+//			}
+//		});
+//		player.start();
+
+		// 发送消息通知CoreService结束拍照模式
+		Intent intent = new Intent();
 		intent.setAction(TSDEvent.CarDVR.PICTURE_TAKEN_COMPLETED);
 		LogUtil.d(TAG, "Send broadcast: " + intent);
 		sendBroadcast(intent);
@@ -1164,12 +1140,12 @@ public class VideoRec extends Service implements SurfaceHolder.Callback, TakePic
 			        .setContentText(getString(R.string.noti_server_running_text));
 				break;
 				
-			case NO_SD_CARD_WARNING:
-				mBuilder = new NotificationCompat.Builder(this)
-			        .setSmallIcon(R.drawable.ic_launcher)
-			        .setContentTitle(getString(R.string.noti_no_sd_card_running_title))
-			        .setContentText(getString(R.string.noti_no_sd_card_running_text));
-				break;
+//			case NO_SD_CARD_WARNING:
+//				mBuilder = new NotificationCompat.Builder(this)
+//			        .setSmallIcon(R.drawable.ic_launcher)
+//			        .setContentTitle(getString(R.string.noti_no_sd_card_running_title))
+//			        .setContentText(getString(R.string.noti_no_sd_card_running_text));
+//				break;
 			
 			case SD_CARD_MEM_NOT_ENOUGH_WARNING:
 				mBuilder = new NotificationCompat.Builder(this)

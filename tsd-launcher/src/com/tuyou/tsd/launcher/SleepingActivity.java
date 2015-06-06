@@ -165,7 +165,7 @@ public class SleepingActivity extends BaseActivity {
 		mMusicPlay.setOnClickListener(mMusicListen);
 		mMusicNext = (ImageView) findViewById(R.id.sleep_music_next);
 		mMusicNext.setOnClickListener(mMusicListen);
-		mMusicLayout.setVisibility(View.VISIBLE);
+		mMusicLayout.setVisibility(View.INVISIBLE);
 		
 		// Temporary solution
 		findViewById(R.id.sleeping_layout).setOnClickListener(new View.OnClickListener() {

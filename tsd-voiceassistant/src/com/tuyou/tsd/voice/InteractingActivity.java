@@ -30,6 +30,7 @@ import com.tuyou.tsd.voice.service.VoiceEngine.ErrorType;
 
 public class InteractingActivity extends Activity {
 	private static final String TAG = "InteractingActivity";
+	private boolean mbFinishActivity = false;
 
 	private Fragment mRecordFragment, mRecogFragment, mSearchFragment, mErrorFragment;
 //	private ListView mResultListView;
@@ -69,11 +70,13 @@ public class InteractingActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		LogUtil.d(TAG,"onCreate...");
+		LogUtil.d("fq","InteractingActivity onCreate...");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.interacting_activity);
 		setVoiceState(VOICE_STATE.VOICE_STATE_NONE);
 		mbIsSearchView = false;
 		mbCanceling = false;
+		mbFinishActivity = false;
 		initView();
 
 		bindService(new Intent(this, VoiceAssistant.class), mVoiceServiceConnection, Service.BIND_AUTO_CREATE);
@@ -104,6 +107,7 @@ public class InteractingActivity extends Activity {
 	@Override
 	protected void onPause() {
 		LogUtil.d(TAG, "onPause...");
+		mbFinishActivity = true;
 		if (mVoiceService != null) {
 			try {
 				// Register self for reply message
@@ -114,13 +118,24 @@ public class InteractingActivity extends Activity {
 				e.printStackTrace();
 			}
 		}
-
+		
+		sendMessageToService(CommonMessage.VoiceEngine.CANCEL_RECOGNITION, null);
+		sendBroadcast(new Intent(TSDEvent.Interaction.CANCEL_INTERACTION_BY_TP));
 		super.onPause();
+		finish();
 	}
 
 	@Override
+	public void finish() {
+		mbFinishActivity = true;
+		super.finish();
+	}
+	
+	@Override
 	protected void onDestroy() {
 		LogUtil.d(TAG, "onDestroy...");
+		LogUtil.d("fq","InteractingActivity onDestroy...");
+		mbFinishActivity = true;
 		unbindService(mVoiceServiceConnection);
 		unregisterReceiver(mReceiver);
 		mbCanceling = false;
@@ -154,7 +169,11 @@ public class InteractingActivity extends Activity {
 
 	private FRAGMENT_TYPE mFragmentType = FRAGMENT_TYPE.RECORD;
 	private void transFragment(FRAGMENT_TYPE type) {
-		LogUtil.d(TAG,"transFragment FRAGMENT_TYPE "+type);
+		LogUtil.d(TAG,"transFragment FRAGMENT_TYPE "+type+"  mbFinishActivity="+mbFinishActivity);
+		if(mbFinishActivity){
+			return;
+		}
+		
 		Fragment fragment = null;
 		mbIsSearchView = false;
 		mFragmentType = type;

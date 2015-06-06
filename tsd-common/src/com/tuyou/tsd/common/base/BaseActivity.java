@@ -11,14 +11,23 @@ import com.tuyou.tsd.common.util.LogUtil;
 
 public class BaseActivity extends Activity{
 	private String TAG = "common-BaseActivity";
-	
+	public static long timeout = 0;
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
+
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_F4:
-			Intent itF1 = new Intent();
-			itF1.setAction(TSDEvent.System.HARDKEY4_PRESSED);
-			sendBroadcast(itF1);
+			timeout = (System.currentTimeMillis()-timeout);
+			if(timeout<2000){
+				timeout = System.currentTimeMillis();
+				LogUtil.w("fq", "onKeyDown time wait !!!");
+				break;
+			}else{
+				LogUtil.w("fq", "onKeyDown time ="+System.currentTimeMillis());
+				Intent itF1 = new Intent();
+				itF1.setAction(TSDEvent.System.HARDKEY4_PRESSED);
+				sendBroadcast(itF1);
+			}
 			break;
 		case KeyEvent.KEYCODE_F3:
 			Intent itF2 = new Intent();
@@ -40,7 +49,7 @@ public class BaseActivity extends Activity{
 	}
 	
 	/**
-	 * µã»÷²Ù×÷Ê±·¢ËÍ¿ÕÏÐ¸üÐÂ¸øµ¼º½
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Í¿ï¿½ï¿½Ð¸ï¿½ï¿½Â¸ï¿½
 	 */
 	public boolean dispatchTouchEvent(android.view.MotionEvent ev) {
 		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));

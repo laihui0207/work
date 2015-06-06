@@ -167,6 +167,9 @@ public class SystemController {
 			else if (action.equals(TSDEvent.System.RECEIVE_DISCONNECT)) {
 				onCloseWifiAp();
 				tickCountForKeepAlive = SystemClock.uptimeMillis();
+				Intent intentCloseWifi = new Intent();
+				intentCloseWifi.setAction(TSDEvent.System.CLOSE_WIFI_AP_FROM_CORE_SERVICE);
+				mService.sendBroadcast(intentCloseWifi);
 			}
 			// Network connection
 			else if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
@@ -329,6 +332,18 @@ public class SystemController {
 			}
 			else if(action.equals(CommonMessage.VOICE_COMM_OPEN_WIFI_AP)) {
 				onOpenWifiAp();
+				tickCountForKeepAlive = SystemClock.uptimeMillis();
+				Intent intentOpenWifi = new Intent();
+				intentOpenWifi.setAction(TSDEvent.System.OPEN_WIFI_AP_FROM_CORE_SERVICE);
+				mService.sendBroadcast(intentOpenWifi);
+			}
+			else if(action.equals(CommonMessage.SETTING_COMM_OPEN_WIFI_AP)) {
+				onOpenWifiAp();
+				tickCountForKeepAlive = SystemClock.uptimeMillis();
+			}
+			else if(action.equals(CommonMessage.SETTING_COMM_CLOSE_WIFI_AP)) {
+				onCloseWifiAp();
+				tickCountForKeepAlive = SystemClock.uptimeMillis();
 			}
 			else if (action.equals(TSDEvent.Interaction.INTERACTION_START)) {
 				onInteractionStart();
@@ -702,7 +717,6 @@ public class SystemController {
 		    player.start();
 	    }
 
-
 		// 拍照完毕后切换回standby模式
 		mService.changeMode(WorkingMode.MODE_STANDBY, ContentType.TYPE_NONE);
 	}
@@ -876,6 +890,9 @@ public class SystemController {
 		filter.addAction(TSDEvent.CarDVR.PICTURE_TAKEN_COMPLETED);
 		
 		filter.addAction(TSDEvent.Interaction.CANCEL_INTERACTION_BY_TP);
+		
+		filter.addAction(CommonMessage.SETTING_COMM_OPEN_WIFI_AP);  //打开热点
+		filter.addAction(CommonMessage.SETTING_COMM_CLOSE_WIFI_AP);  //关闭热点
 
 		mService.registerReceiver(mIntactEventsReceiver, filter);
 	}
@@ -936,6 +953,9 @@ public class SystemController {
 				if(HelperUtil.isWifiApEnabled(mService)&& (SystemClock.uptimeMillis() - tickCountForKeepAlive > 180000)){
 					onCloseWifiAp();
 					tickCountForKeepAlive = SystemClock.uptimeMillis();
+					Intent intentCloseWifi = new Intent();
+					intentCloseWifi.setAction(TSDEvent.System.CLOSE_WIFI_AP_FROM_CORE_SERVICE);
+					mService.sendBroadcast(intentCloseWifi);
 				}
 			}
 		}, 0, time);

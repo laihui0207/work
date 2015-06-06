@@ -187,6 +187,7 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 		}
 	}
 
+	public boolean INITDONE = false;
 	public void startEngine(String resPath) {
 		LogUtil.d(LOG_TAG, "startEngine...");
 
@@ -206,11 +207,14 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 
 		mPlayer = new AudioPlayer(mContext);
 		mPlayer.init();
+		
+		INITDONE = true;
 		LogUtil.v(LOG_TAG, "TTS Engine started, total used " + (System.currentTimeMillis() - start) + " ms.");
 	}
 
 	public void stopEngine() {
 		LogUtil.d(LOG_TAG, "stopEngine...");
+		INITDONE = false;
 
 		mVoiceAdapter.quit();
 
@@ -252,7 +256,7 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 		}
 
 		mState = destState;
-		LogUtil.i(LOG_TAG, "state changed: " + destState);
+		LogUtil.i(LOG_TAG, "state changed out : " + destState);
 	}
 
 	void onStateRecognition() {
@@ -680,6 +684,7 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 	}
 
 	private void preFinishInteraction() {
+		LogUtil.d(LOG_TAG, "preFinishInteraction");
 		// mCurrentDialog要在回调VoiceAssistant之前执行,
 		// 否则有可能会出现后面的Dialog交互不能正确执行的问题.
 		// 其原因是在VoiceAssistant.onInteractFail()或onInteractSuccessful()中最后会调用notify()恢复被
@@ -736,14 +741,18 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 	private void doSendMessage(int message, Bundle data) {
 		// Send the result back to service
 		Message msg = Message.obtain(null, message);
-		if (data != null)
+		LogUtil.d(LOG_TAG, "doSendMessage ");
+		if (data != null){
+			LogUtil.d(LOG_TAG, "doSendMessage setData");
 			msg.setData(data);
+		}
 
 		synchronized (this) {
 			if (mHandler != null) {
+				LogUtil.d(LOG_TAG, "doSendMessage mHandler size = "+mHandler.size());
 				try {
 					for (Messenger h : mHandler) {
-//						LogUtil.d(LOG_TAG, "doSendMessage to " + h);
+						LogUtil.d(LOG_TAG, "doSendMessage to " + h);
 						h.send(msg);
 					}
 				} catch (RemoteException e) {
@@ -824,7 +833,7 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 				foundAnswer = true;
 			}
 		}
-
+		Log.v(LOG_TAG, "checkProtocolAnswer foundAnswer="+foundAnswer);
 		return foundAnswer;
 	}
 
@@ -916,11 +925,16 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 		else if (service.equals("cn.yunzhisheng.setting")) {
 			JSONObject obj = json.getJSONObject("semantic").getJSONObject("intent");
 			if(obj != null) {
-				r = new SemanticProtocolResult("act_open", new String[]{
-						"",
-						"",
-						""
-				});
+				String strOperaror = obj.getString("operator");
+				String strOperands = obj.getString("operands");
+				if(strOperaror != null && strOperands != null && strOperaror.equals("ACT_OPEN") 
+						&& strOperands.equals("OBJ_WIFI_SPOT")){
+					r = new SemanticProtocolResult("act_open", new String[]{
+							"",
+							"",
+							""
+					});
+				}
 			} else {
 				// Normally, we should never reach here.
 				LogUtil.w(LOG_TAG, "Json object is null, ignore...");

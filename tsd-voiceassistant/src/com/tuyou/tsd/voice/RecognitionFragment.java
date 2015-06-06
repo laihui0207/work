@@ -102,18 +102,43 @@ public class RecognitionFragment extends Fragment {
 	}
 
 	void setResultText(String text) {
-		if (mThinkingView != null) {
-			AnimationDrawable anim = (AnimationDrawable) mThinkingView.getBackground();
-			anim.stop();
-			mThinkingView.setVisibility(View.INVISIBLE);
-		}
-		if (mResultView != null) {
-			mResultView.setText(text);
-		}
 		if (mTimerAnim != null) {
 			mTimerAnim.cancel();
 			mTimerAnim = null;
 		}
+		
+		if (mThinkingView != null) {
+			mThinkingView.setBackgroundResource(R.drawable.thinking_anim);
+			AnimationDrawable rocketAnimation = (AnimationDrawable) mThinkingView.getBackground();
+			rocketAnimation.start();
+			TimerTask timeoutTask = new TimerTask() {
+
+				@Override
+				public void run() {
+					Activity activity = getActivity();
+					if(activity != null){
+						activity.runOnUiThread(new Runnable() {
+							
+							@Override
+							public void run() {
+								if(mThinkingView != null){
+									mThinkingView.setBackgroundResource(R.drawable.thinking_deep_anim);
+									AnimationDrawable rocketAnimation = (AnimationDrawable) mThinkingView.getBackground();
+									rocketAnimation.start();
+								}	
+							}
+						});
+					}
+				}
+			};
+
+			mTimerAnim = new Timer("TimeoutTask", true);
+			mTimerAnim.schedule(timeoutTask, 3000);
+		}
+		if (mResultView != null) {
+			mResultView.setText(text);
+		}
+
 	}
 
 	void setStatusText(String text) {

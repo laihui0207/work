@@ -69,7 +69,15 @@ public interface TSDEvent {
 		/**
 		 * 手机关闭WIFI指令
 		 */
-		static final String RECEIVE_DISCONNECT = "tsd.event.system.receive";
+		static final String RECEIVE_DISCONNECT = "tsd.event.system.receive_disconnect";
+		/**
+		 * CoreService关闭WIFI指令
+		 */
+		static final String CLOSE_WIFI_AP_FROM_CORE_SERVICE = "tsd.event.system.close_wifi_ap_from_core_service";
+		/**
+		 * CoreService打开WIFI指令
+		 */
+		static final String OPEN_WIFI_AP_FROM_CORE_SERVICE = "tsd.event.system.open_wifi_ap_from_core_service";
 	}
 
 	interface Interaction {

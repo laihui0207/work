@@ -369,7 +369,7 @@ final class YunZhiShengAdapter {
 
 		@Override
 		public void onTalkProtocal(String protocol) {
-			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkResult");
+			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkProtocal");
 			LogUtil.v(LOG_TAG, "IRecognizerTalkListener.onTalkProtocal: " + protocol);
 			mRecognitionState = false;
 			if (protocol.matches(".+semantic.+")) {
