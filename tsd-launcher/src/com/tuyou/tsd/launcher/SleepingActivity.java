@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tuyou.tsd.R;
+import com.tuyou.tsd.common.CommonApps;
 import com.tuyou.tsd.common.CommonMessage;
 import com.tuyou.tsd.common.TSDConst;
 import com.tuyou.tsd.common.TSDEvent;
@@ -87,6 +89,20 @@ public class SleepingActivity extends BaseActivity {
 		public void onReceive(Context context, Intent intent) {
 			LogUtil.d(TAG, "receive the broadcast: " + intent);
 			String action = intent.getAction();
+			
+    		if(action.equals(CommonApps.SLEEP_SHOW_CONTENT)){
+    			String musictitle = intent.getStringExtra(CommonApps.SLEEP_CONTENT_TITLE);
+    			Log.v(TAG,"SLEEP_SHOW_CONTENT ="+musictitle);
+    			if(musictitle==null || musictitle.equals("")){
+    				setMusicLayout(false);
+    			}else{
+    				setMusicLayout(true);
+    				mMusicName.setText(musictitle);
+    			}
+    		}else if(action.equals(CommonApps.SLEEP_BEEN_PLAY_MUSIC)){
+    			boolean isPlay = intent.getBooleanExtra(CommonApps.SLEEP_PLAY_MUSIC_NEED_PLAY, true);
+    			mMusicPlay.setBackgroundResource(isPlay ? R.drawable.music_ctl_play : R.drawable.music_ctl_pause);
+    		}
 
 			if (action.equals(CommonMessage.VOICE_COMM_WAKEUP)) {
 				onWakeUp();
@@ -112,8 +128,10 @@ public class SleepingActivity extends BaseActivity {
 		setContentView(R.layout.sleeping_activity);
 		initView();
 		bindService(new Intent(this, CoreService.class), mConnection, Context.BIND_AUTO_CREATE);
+		
 	}
 
+	
 	@Override
 	protected void onDestroy() {
 		unbindService(mConnection);
@@ -132,6 +150,9 @@ public class SleepingActivity extends BaseActivity {
 		}
 		// 请求天气信息
 		sendBroadcast(new Intent(TSDEvent.System.QUERY_WEATHER));
+		
+		mMusicName.setText(CoreService.SLEEP_MUSIC_NAME);
+		setMusicLayout(CoreService.SLEEP_MUSIC_IS_PLAYING);
 	}
 
 	@Override
@@ -188,6 +209,8 @@ public class SleepingActivity extends BaseActivity {
 		mIntentFilter = new IntentFilter();
 		mIntentFilter.addAction(CommonMessage.VOICE_COMM_WAKEUP);
 		mIntentFilter.addAction(TSDEvent.System.WEATHER_UPDATED);
+		mIntentFilter.addAction(CommonApps.SLEEP_SHOW_CONTENT);
+		mIntentFilter.addAction(CommonApps.SLEEP_BEEN_PLAY_MUSIC);
 	}
 
 	private void onWakeUp() {
@@ -195,6 +218,7 @@ public class SleepingActivity extends BaseActivity {
 	}
 	
 	public void setMusicLayout(boolean bVisible){
+		Log.v(TAG,"setMusicLayout "+bVisible);
 		if(mMusicLayout!=null){
 			mMusicLayout.setVisibility(bVisible ? View.VISIBLE : View.VISIBLE);
 		}
@@ -204,17 +228,36 @@ public class SleepingActivity extends BaseActivity {
 		
 		@Override
 		public void onClick(View arg0) {
+			Intent intent ;
 			switch(arg0.getId()){
 			case R.id.sleep_music_pre:
+				intent= new Intent(CommonApps.SLEEP_PLAY_PRE);
+				sendBroadcast(intent);
 				break;
 			case R.id.sleep_music_play:
-				mMusicPlay.setBackgroundResource(R.drawable.music_ctl_pause);
+				setPlayState();
 				break;
 			case R.id.sleep_music_next:
+				intent= new Intent(CommonApps.SLEEP_PLAY_NEXT);
+				sendBroadcast(intent);
 				break;
 			}
 		}
 	};
+	
+	boolean mbIsMusicPlay = true;
+	private void setPlayState(){
+		mbIsMusicPlay = !mbIsMusicPlay;
+		Intent intent = new Intent(CommonApps.SLEEP_PLAY_MUSIC);
+		if(mbIsMusicPlay){
+//			mMusicPlay.setBackgroundResource(R.drawable.music_ctl_play);
+			intent.putExtra(CommonApps.SLEEP_PLAY_MUSIC_NEED_PLAY, true);
+		}else{
+//			mMusicPlay.setBackgroundResource(R.drawable.music_ctl_pause);
+			intent.putExtra(CommonApps.SLEEP_PLAY_MUSIC_NEED_PLAY, false);
+		}
+		sendBroadcast(intent);
+	}
 	
 	private void canWakeUpFromSleep() {
 		if (mBindService != null) {

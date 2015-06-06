@@ -12,9 +12,10 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
-import android.view.Choreographer;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.tuyou.tsd.common.CommonApps;
 import com.tuyou.tsd.common.CommonMessage;
 import com.tuyou.tsd.common.TSDComponent;
 import com.tuyou.tsd.common.TSDEvent;
@@ -86,6 +87,10 @@ public class CoreService extends Service {
 		TYPE_MAP,			// 导航首页
 		TYPE_NAVIGATION		// 路线查看
 	}
+	
+	//music
+	public static String SLEEP_MUSIC_NAME = "";
+	public static boolean SLEEP_MUSIC_IS_PLAYING = false;
 
 	// 业务逻辑控制器，将来要把跟业务逻辑相关的内容放到这个类中去
 	// CoreService只做为一个纯粹的状态机
@@ -266,6 +271,16 @@ public class CoreService extends Service {
 		public void onReceive(Context context, Intent intent) {
     		String action = intent.getAction();
     		LogUtil.v(LOG_TAG, "Received the broadcast: " + action);
+    		
+    		if(action.equals(CommonApps.SLEEP_SHOW_CONTENT)){
+    			String musictitle = intent.getStringExtra(CommonApps.SLEEP_CONTENT_TITLE);
+    			Log.v(LOG_TAG,"SLEEP_SHOW_CONTENT ="+musictitle);
+    			if(musictitle==null || musictitle.equals("")){
+    				SLEEP_MUSIC_NAME = "";
+    			}else{
+    				SLEEP_MUSIC_NAME = musictitle;
+    			}
+    		}
 			
     		// 各个服务的启动和销毁的通知
     		if (action.equals(TSDEvent.Interaction.SERVICE_STARTED)) {
@@ -560,6 +575,9 @@ public class CoreService extends Service {
 		filter.addAction(TSDEvent.Audio.APP_STOPPED);
 		filter.addAction(TSDEvent.Navigation.APP_STARTED);
 		filter.addAction(TSDEvent.Navigation.APP_STOPPED);
+		
+		//sleep activity
+		filter.addAction(CommonApps.SLEEP_SHOW_CONTENT);
 		
 		registerReceiver(mServicesEventReceiver, filter);
 	}

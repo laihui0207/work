@@ -21,6 +21,7 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.view.KeyEvent;
 
+import com.tuyou.tsd.common.CommonApps;
 import com.tuyou.tsd.common.CommonMessage;
 import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.common.util.HelperUtil;
@@ -85,6 +86,10 @@ public class InteractingActivity extends Activity {
 		filter.addAction(TSDEvent.Interaction.FINISH_ACTIVITY);
 		filter.addAction(CommonMessage.VOICE_COMM_WAKEUP);
 		registerReceiver(mReceiver, filter);
+		
+		Intent intent = new Intent(CommonApps.APP_VOICE_INTERACTINGACTIVITY);
+		intent.putExtra(CommonApps.APP_VOICE_INTERACTINGACTIVITY_RUNNING, true);
+		sendBroadcast(intent);
 	}
 
 	@Override
@@ -140,6 +145,10 @@ public class InteractingActivity extends Activity {
 		unregisterReceiver(mReceiver);
 		mbCanceling = false;
 		super.onDestroy();
+		
+		Intent intent = new Intent(CommonApps.APP_VOICE_INTERACTINGACTIVITY);
+		intent.putExtra(CommonApps.APP_VOICE_INTERACTINGACTIVITY_RUNNING, false);
+		sendBroadcast(intent);
 	}
 
 	private void initView() {
