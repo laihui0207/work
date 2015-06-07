@@ -198,6 +198,7 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 		filter.addAction(Contents.KILL_ALL_APP1);
 		filter.addAction(Contents.KILL_ALL_APP2);
 		filter.addAction(Contents.DATA_REFRESH_PUSH);
+		filter.addAction(TSDEvent.System.HARDKEY3_PRESSED);
 		registerReceiver(cast, filter);
 	}
 
@@ -219,8 +220,6 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 		setOnClick(R.id.music_prew);
 		setOnClick(R.id.music_play);
 		setOnClick(R.id.music_next);
-		
-//		musicNull = (ImageView) findViewById(R.id.music_null);
 		
 		flow = (CoverFlow) findViewById(R.id.cover_flow);
 		flow.setOnItemClickListener(MusicActivity.this);
@@ -721,6 +720,10 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 			}else if(intent.getAction().equals(Contents.DATA_REFRESH_PUSH)){
 				list = countService.getCategoryListPush();
 				setAdapter();
+			}else if(intent.getAction().equals(TSDEvent.System.HARDKEY3_PRESSED)){
+				Message msglove = new Message();
+				msglove.what =8;
+				textViewHandler.sendMessageDelayed(msglove, 400);
 			}
 		}
 	}
@@ -952,9 +955,6 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 				try {
 					musicNowCategory = list.get(index).category;
 					flow.setSelection(index);
-//					Message msgtitle = textViewHandler.obtainMessage();
-//					msgtitle.what =1;
-//					textViewHandler.sendMessage(msgtitle);
 					Intent it = new Intent();
 					it.setAction(Contents.PLAY_MUSIC_NEWS_NEXT);
 					it.putExtra("music_now_category", item);
@@ -963,22 +963,18 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 					e.printStackTrace();
 				}
 				}
-//			case 8:
-//				musicNull.setVisibility(View.GONE);
-//				flow.setVisibility(View.VISIBLE);
-//				setViewEnable(R.id.music_love, true);
-//				setViewEnable(R.id.music_prew, true);
-//				setViewEnable(R.id.music_next, true);
-//				setViewEnable(R.id.music_play, true);
-//				break;
-//			case 9:
-//				musicNull.setVisibility(View.VISIBLE);
-//				flow.setVisibility(View.GONE);
-//				setViewEnable(R.id.music_love, false);
-//				setViewEnable(R.id.music_prew, false);
-//				setViewEnable(R.id.music_next, false);
-//				setViewEnable(R.id.music_play, false);
-//				break;
+				break;
+			case 8:
+				try {
+					if(countService.isSubscription(item.albumId)){
+						setFavourite(true);
+					}else{
+						setFavourite(false);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				break;
 			default:
 				break;
 			}

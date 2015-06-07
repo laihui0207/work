@@ -20,9 +20,6 @@ public interface IAudioPlayerService {
 	abstract public int getCacheProgress();
 	abstract public int setMusicOrder();
 	abstract public boolean isPlaying();
-	abstract public boolean addFavourite(AudioItem item);
-	abstract public boolean deleteFavourite(AudioItem item);
-	abstract public boolean isFavourite(AudioItem item);
 	abstract public AudioCategory getPlayingCatogory();
 	abstract public AudioCategory getHeardCatogory();
 	abstract public void showButtonNotify(AudioItem item,boolean isplay,boolean isLove);

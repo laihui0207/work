@@ -22,16 +22,6 @@
         android:layout_marginTop="-20dp"
         android:src="@drawable/line" />
 
-   <!--   <ImageView
-        android:id="@+id/music_null"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
-        android:layout_above="@+id/music_line"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
-        android:src="@drawable/music_category_default"
-       android:visibility="gone" />-->
-
     <com.tuyou.tsd.news.weight.CoverFlow
         android:id="@+id/cover_flow"
         android:layout_width="460dp"

@@ -528,7 +528,9 @@ public class SystemController {
 		}).start();
 
     	// 熄火后跳转到睡觉页面
-    	HelperUtil.startActivityWithFadeInAnim(mService, TSDComponent.LAUNCHER_PACKAGE, TSDComponent.SLEEPING_ACTIVITY);
+//    	HelperUtil.startActivityWithFadeInAnim(mService, TSDComponent.LAUNCHER_PACKAGE, TSDComponent.SLEEPING_ACTIVITY);
+    	HelperUtil.startActivityWithFadeInAnim(mService, 
+    			TSDComponent.LAUNCHER_PACKAGE,"com.tuyou.tsd.launcher.SimpleSleepingActivity");
 	}
 
 	public void onSystemStopped() {
@@ -641,7 +643,7 @@ public class SystemController {
 
 	public void onIdleMode() {
 		stopIdleCheckThread();
-		HelperUtil.startActivityWithFadeInAnim(mService, TSDComponent.LAUNCHER_PACKAGE, TSDComponent.SLEEPING_ACTIVITY);
+//		HelperUtil.startActivityWithFadeInAnim(mService, TSDComponent.LAUNCHER_PACKAGE, TSDComponent.SLEEPING_ACTIVITY);
 	}
 
 	public void onInteractingMode(ContentType param) {
@@ -941,6 +943,10 @@ public class SystemController {
 		mService.startService(new Intent(TSDComponent.NAVIGATOR_SERVICE));
 		LogUtil.v(LOG_TAG, "Start navigation service.");	
 		
+		//blue tooth 
+		mService.startService(new Intent(TSDComponent.BLUETOOTH_SERVICE));
+		LogUtil.v(LOG_TAG, "Start blue tooth service.");
+		
 		// settings
 		mService.startService(new Intent(TSDComponent.SETTINGS_SERVICE));
 		LogUtil.v(LOG_TAG, "Start settings service.");
@@ -978,6 +984,9 @@ public class SystemController {
 		mService.stopService(new Intent(TSDComponent.PODCAST_SERVICE));
 		mService.stopService(new Intent(TSDComponent.NEWS_SERVICE));
 		LogUtil.v(LOG_TAG, "Stop Audio service.");
+		
+		//blue tooth
+		mService.stopService(new Intent(TSDComponent.BLUETOOTH_SERVICE));
 	
 		// Stop push listening.
 		mMessageClient.stopWork();
@@ -1104,7 +1113,7 @@ public class SystemController {
 	 * 恢复空闲检查线程
 	 */
 	private void resumeIdleCheckThread() {
-		if (mIdleThread != null) {
+		/*if (mIdleThread != null) {
 			LogUtil.v(LOG_TAG, "resume IdleCheckThread");
 			mIdleThread.resumeIfNecessary();
 		} else {
@@ -1118,21 +1127,21 @@ public class SystemController {
 			mIdleThread = new IdleCheckThread();
 			mIdleThread.setIdleTime(idleTime);
 	    	new Thread(mIdleThread).start();
-		}
+		}*/
 	}
 
 	/**
 	 * 停止空闲检查线程
 	 */
 	private void stopIdleCheckThread() {
-    	if (mIdleThread != null) {
+    /*	if (mIdleThread != null) {
     		LogUtil.v(LOG_TAG, "stopIdleCheckThread...");
     		// 若线程当前为wait()状态，则需先notify后恢复其执行，才能将其停止
     		// 否则会导致ANR错误
     		mIdleThread.resumeIfNecessary();
     		mIdleThread.stop = true;
     		mIdleThread = null;
-    	}
+    	}*/
 	}
 
 	/**
@@ -1372,7 +1381,7 @@ public class SystemController {
      */
     private static class IdleCheckThread implements Runnable {
     	private static final int SLEEP_TIME = 5 * 1000;
-    	private static int IDLE_TIME = 30 * 1000;
+    	private static int IDLE_TIME = 2 * 1000;
 
     	private Object lock = new Object();
     	private boolean stop, paused;
@@ -1393,7 +1402,7 @@ public class SystemController {
     	}
 
     	void setIdleTime(int seconds) {
-    		IDLE_TIME = seconds * 1000;
+    		IDLE_TIME = 2 * 1000;
     	}
 
     	@Override

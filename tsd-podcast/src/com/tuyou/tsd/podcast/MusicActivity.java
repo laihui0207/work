@@ -200,6 +200,8 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 		filter.addAction(Contents.KILL_ALL_APP2);
 		filter.addAction(Contents.TSD_AUDIO_PLAY_MUSIC_RESULT);
 		filter.addAction(Contents.DATA_REFRESH_PUSH);
+		
+		filter.addAction(TSDEvent.System.HARDKEY3_PRESSED);
 		registerReceiver(cast, filter);
 	}
 
@@ -719,6 +721,10 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 			}else if(intent.getAction().equals(Contents.DATA_REFRESH_PUSH)){
 				list = countService.getCategoryListPush();
 				setAdapter();
+			}else if(intent.getAction().equals(TSDEvent.System.HARDKEY3_PRESSED)){
+				Message msglove = new Message();
+				msglove.what = 8;
+				textViewHandler.sendMessageDelayed(msglove, 400);
 			}
 		}
 	}
@@ -851,12 +857,6 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 					musicAuthor.setText(item.album);
 					setFavourite(countService.isSubscription(item.albumId));
 					musicState.setImageResource(R.drawable.music_play_select);
-					
-//					if(countService.isSubscription(item.albumId)){
-//						setFavourite(true);
-//					}else{
-//						setFavourite(false);
-//					}
 				try {
 					musicNowCategory = list.get(index).category;
 					Intent it = new Intent();
@@ -866,6 +866,13 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				}
+				break;
+			case 8:
+				if(countService.isSubscription(item.albumId)){
+					setFavourite(true);
+				}else{
+					setFavourite(false);
 				}
 				break;
 			default:

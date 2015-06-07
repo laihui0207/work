@@ -18,6 +18,7 @@ public class ErrorFragment extends Fragment {
 	private TextView mMsgView;
 	private TextView mErrorStatus ;
 	private String mErrorText;
+	private String mText;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -31,6 +32,7 @@ public class ErrorFragment extends Fragment {
 		View view = inflater.inflate(R.layout.error_fragment, container, false);
 
 		mMsgView = (TextView) view.findViewById(R.id.err_result_view);
+		mMsgView.setText(mText);
 		
 		mErrorStatus = (TextView) view.findViewById(R.id.err_status_view);
 		mErrorStatus.setText(mErrorText);
@@ -47,5 +49,9 @@ public class ErrorFragment extends Fragment {
 
 	void setErrorText(String error) {
 		mErrorText = error;
+	}
+	
+	void setTalkText(String text) {
+		mText = text;
 	}
 }

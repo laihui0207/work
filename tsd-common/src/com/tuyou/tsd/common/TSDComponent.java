@@ -40,6 +40,9 @@ public interface TSDComponent {
 
 	// 图声微博service
 	static final String WEIBO_SERVICE = "com.tuyou.tsd.weibo.WBService";
+	
+	// blue tooth service
+	static final String BLUETOOTH_SERVICE = "com.jinglingtec.ijiazublctor.bluetooth.BlueToothService";
 
 	// 地图导航app
 	static final String NAVIGATOR_PACKAGE = "com.tuyou.tsd.navigation";

@@ -75,6 +75,18 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        
+        
+        <activity
+            android:name=".launcher.SimpleSleepingActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <activity 
             android:name=".launcher.ErrorActivity"
@@ -106,6 +118,15 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
+        
+        
+        <service
+            android:name="com.jinglingtec.ijiazublctor.bluetooth.BlueToothService"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+            </intent-filter>
+        </service>
 
         <receiver android:name="com.tuyou.tsd.core.TelephonyReceiver">
             <intent-filter android:priority="100">

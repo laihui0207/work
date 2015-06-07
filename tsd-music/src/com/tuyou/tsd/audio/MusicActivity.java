@@ -169,6 +169,8 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 		filter.addAction(Contents.KILL_ALL_APP2);
 		filter.addAction(Contents.TSD_AUDIO_PLAY_MUSIC_RESULT);
 		
+		filter.addAction(TSDEvent.System.HARDKEY3_PRESSED);
+		
 		registerReceiver(cast, filter);
 	}
 
@@ -578,11 +580,6 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 					musicLoading.clearAnimation();
 					musicLoading.setVisibility(View.GONE);
 					
-//					try {
-//						Notify.showButtonNotify(item, MusicActivity.this, countService.isPlaying(), countService.isFavourite(item));
-//					} catch (Exception e) {
-//						e.printStackTrace();
-//					}
 					
 					break;
 				case 2:
@@ -591,24 +588,12 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 					musicLoading.setVisibility(View.VISIBLE);
 					Animation animation = AnimationUtils.loadAnimation(MusicActivity.this, R.anim.loading_rotate); 
 					musicLoading.startAnimation(animation);
-					
-//					try {
-//						Notify.showButtonNotify(item, MusicActivity.this, countService.isPlaying(), countService.isFavourite(item));
-//					} catch (Exception e) {
-//						e.printStackTrace();
-//					}
 					break;
 				case 3:
 					musicState.setImageResource(R.drawable.music_pause_select);
 					musicState.setEnabled(true);
 					musicLoading.clearAnimation();
 					musicLoading.setVisibility(View.GONE);
-					
-//					try {
-//						Notify.showButtonNotify(item, MusicActivity.this, countService.isPlaying(), countService.isFavourite(item));
-//					} catch (Exception e) {
-//						e.printStackTrace();
-//					}
 					break;
 				default:
 					break;
@@ -628,6 +613,19 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 				bar.setSecondaryProgress(0);
 				bar.setProgress(0);
 				playItemNow((AudioItem)intent.getParcelableExtra("audio"));
+				for(int i=0;i<list.size();i++){
+					if(countService.getPlayingCatogory().category.equals(list.get(i).category)){
+						index = i;
+						flow.setSelection(i);
+						try {
+							setTitleEnable(index);
+							title.setText(list.get(index).name);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						break;
+					}
+				}
 			}else 
 			if(intent.getAction().equals(Contents.MUSICPLAY_CATEGORY)){
 				ArrayList<AudioItem> listChild = intent.getParcelableArrayListExtra("music_list");
@@ -652,14 +650,12 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 					audio.name = "最近听的歌";
 					ArrayList<AudioItem> itemAudio = new ArrayList<AudioItem>();
 					audio.category ="myheard";
-//					audio.image = item.icon;
 					itemAudio.add(item);
 					audio.item = itemAudio;
 					list.add(audio);
 					OrderUtils order = new OrderUtils();
 					Collections.sort(list,order);
 					imageAdapter.notifyDataSetChanged();
-//					flow.setSelection(list.size()*1000+index);
 					flow.setSelection(index);
 					try {
 						setTitleEnable(index);
@@ -712,6 +708,10 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 				msg.what = 7;
 				msg.obj = intent.getStringExtra("item");
 				textViewHandler.sendMessageDelayed(msg, 500);
+			}else if(intent.getAction().equals(TSDEvent.System.HARDKEY3_PRESSED)){
+				Message msglove = new Message();
+				msglove.what = 8;
+				textViewHandler.sendMessageDelayed(msglove, 400);
 			}
 		}
 	}
@@ -818,13 +818,7 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 					isPlayMusic();
 				}
 				break;
-//			case 3:
-//				if(countService.isPlaying()){
-//					musicState.setImageResource(R.drawable.music_play_select);
-//				}else{
-//					musicState.setImageResource(R.drawable.music_pause_select);
-//				}
-//				break;
+//			
 			case 4:
 				if(countService.isFavourite(item)){
 					((ImageView)findViewById(R.id.music_love)).setImageResource(R.drawable.music_love);
@@ -852,10 +846,17 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 						title.setText(list.get(index).name);
 						setTitleEnable(index);
 						countService.StartPlayer("favourite", String.valueOf(msg.obj));
-						System.out.println("===="+String.valueOf(msg.obj));
+//						System.out.println("===="+String.valueOf(msg.obj));
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
+				}
+				break;
+			case 8:
+				if(countService.isFavourite(item)){
+					((ImageView)findViewById(R.id.music_love)).setImageResource(R.drawable.music_love);
+				}else{
+					((ImageView)findViewById(R.id.music_love)).setImageResource(R.drawable.music_unlove);
 				}
 				break;
 			default:

@@ -85,6 +85,7 @@ public class InteractingActivity extends Activity {
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(TSDEvent.Interaction.FINISH_ACTIVITY);
 		filter.addAction(CommonMessage.VOICE_COMM_WAKEUP);
+		filter.addAction(TSDEvent.System.HARDKEY4_PRESSED);
 		registerReceiver(mReceiver, filter);
 		
 		Intent intent = new Intent(CommonApps.APP_VOICE_INTERACTINGACTIVITY);
@@ -256,6 +257,7 @@ public class InteractingActivity extends Activity {
 	/**
 	 * 用于同VoiceAssistant service通信
 	 */
+	String mRecongText ;
 	private class VoiceEngineMsgHandler extends Handler {
 
 		@Override
@@ -303,8 +305,9 @@ public class InteractingActivity extends Activity {
 				LogUtil.d(TAG,"@@@@@@@@@@@@@@@@@@@@@@@@@  RECOGNITION_COMPLETE");
 				setVoiceState(VOICE_STATE.VOICE_STATE_FINISH);
 				tempBundle = msg.getData();
+				mRecongText = tempBundle.getString("result");
 				if(tempBundle != null){
-					((RecognitionFragment)mRecogFragment).setResultText(tempBundle.getString("result"));
+					((RecognitionFragment)mRecogFragment).setResultText(mRecongText);
 					playBing();
 				}
 				break;
@@ -317,6 +320,7 @@ public class InteractingActivity extends Activity {
 				if ( !error.equals("用户取消") ) {
 					transFragment(FRAGMENT_TYPE.ERROR);
 					((ErrorFragment)mErrorFragment).setErrorText(error);
+					((ErrorFragment)mErrorFragment).setTalkText(mRecongText);
 					playBing();
 				}
 				break;
@@ -355,16 +359,26 @@ public class InteractingActivity extends Activity {
 		if (KeyEvent.KEYCODE_F4 == keyCode) {
 			if (mbIsSearchView && !mbCanceling) {
 				Log.v(TAG, "onKeyDown in search view");
-				mbCanceling = true;
-				notifyInteractionError();
+				quit();
 			}
 		}
 
 		return super.onKeyDown(keyCode, event);
 	}
 	
+	private void quit(){
+		mbCanceling = true;
+		notifyInteractionError();
+	}
+	
+	boolean finishOut = false;
 	private void notifyInteractionError() {
-		LogUtil.d(TAG, "notifyInteractionError return to laucher!");
+		LogUtil.d(TAG, "notifyInteractionError return to laucher! finishOut="+finishOut);
+		if(finishOut){
+			return;
+		}
+		finishOut = true;
+		
 		ErrorType error = ErrorType.ERR_USER_CANCELLED;
 		String template_wakeup = "GENERIC";
 		String reason = error.name();
@@ -408,8 +422,13 @@ public class InteractingActivity extends Activity {
 				LogUtil.d(TAG, "BroadcastReceiver VOICE_COMM_WAKEUP xxx");
 				if (mbIsSearchView && !mbCanceling) {
 					Log.v(TAG, "VOICE_COMM_WAKEUP in search view");
-					mbCanceling = true;
-					notifyInteractionError();
+					quit();
+				}
+			}else if(action.equals(TSDEvent.System.HARDKEY4_PRESSED)){
+				Log.v(TAG, "HARDKEY4_PRESSED");
+				if (mbIsSearchView && !mbCanceling) {
+					Log.v(TAG, "HARDKEY4_PRESSED in search view");
+					quit();
 				}
 			}
 		}

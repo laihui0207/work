@@ -12,14 +12,20 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.jinglingtec.ijiazublctor.bluetooth.AppConstants;
+import com.jinglingtec.ijiazublctor.bluetooth.BlueToothService;
+import com.jinglingtec.ijiazublctor.bluetooth.IjiazuController;
+import com.jinglingtec.ijiazublctor.sdk.aidl.IDeviceCallback;
+import com.jinglingtec.ijiazublctor.sdk.aidl.IjiazuCallback;
+import com.jinglingtec.ijiazublctor.sdk.aidl.IjiazuKeyEvent;
 import com.tuyou.tsd.R;
 import com.tuyou.tsd.common.CommonMessage;
-import com.tuyou.tsd.common.TSDComponent;
 import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.common.base.BaseActivity;
 import com.tuyou.tsd.common.util.HelperUtil;
@@ -93,6 +99,39 @@ public class HomeActivity extends BaseActivity {
 		
 	};
 
+	
+    private IDeviceListener mDeviceListener = new IDeviceListener();
+    private IjiazuListener mIjiazuListener = new IjiazuListener();
+    private class IjiazuListener extends IjiazuCallback.Stub {
+
+        @Override
+        public void onInit(boolean result) throws RemoteException {
+            Log.d("fq", "onInit result " + result);
+            if (result) {
+                // set with appID
+                IjiazuController.getInstance().setForeground(AppConstants.APP_ID);
+            }
+        }
+
+        @Override
+        public void onStatusChange(boolean active) throws RemoteException {
+            Log.d("fq", "onStatusChange active" + active);
+        }
+
+        @Override
+        public void onRequestUpdateAppStatus() throws RemoteException {
+            Log.d("fq", "onRequestUpdateAppStatus");
+            // TODO notify app status to ijiazu sdk
+        }
+    }
+
+    private class IDeviceListener extends IDeviceCallback.Stub {
+
+        @Override
+        public void onIjiazuKeyEvent(final IjiazuKeyEvent event) throws RemoteException {
+            Log.d("fq", "onIjiazuKeyEvent event is " + event.toString());
+        }
+    }
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.v(TAG, "onCreate");
@@ -108,6 +147,10 @@ public class HomeActivity extends BaseActivity {
 		initView();
 		initService();
 		showLoadingDialog();
+		
+		//blue tooth
+		startService(new Intent(this,BlueToothService.class));
+		LogUtil.v("fq", "Start blue tooth service.");
 	}
 
 	@Override

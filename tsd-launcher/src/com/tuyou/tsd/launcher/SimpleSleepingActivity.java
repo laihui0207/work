@@ -36,8 +36,8 @@ import com.tuyou.tsd.common.util.HelperUtil;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.core.CoreService;
 
-public class SleepingActivity extends BaseActivity {
-	private static final String TAG = "SleepingActivity";
+public class SimpleSleepingActivity extends BaseActivity {
+	private static final String TAG = "SimpleSleepingActivity";
 
 	private View mFaceView;
 	private TextView mTimeView, mDateView, mWeatherTextView, mHighTempView, mLowTempView;
@@ -150,11 +150,6 @@ public class SleepingActivity extends BaseActivity {
 		}
 		// 请求天气信息
 		sendBroadcast(new Intent(TSDEvent.System.QUERY_WEATHER));
-		
-		if(CoreService.SLEEP_MUSIC_NAME.length()>0){
-			mMusicName.setText(CoreService.SLEEP_MUSIC_NAME);
-			setMusicLayout(CoreService.SLEEP_MUSIC_IS_PLAYING);
-		}
 	}
 
 	@Override
