@@ -23,6 +23,7 @@ import com.tuyou.tsd.common.TSDShare;
 import com.tuyou.tsd.common.util.HelperUtil;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.common.util.TsdHelper;
+import com.tuyou.tsd.launcher.NewSleepingActivity;
 
 /**
  * CoreService是图小宝系统（以下简称系统）最主要的后台进程，在系统整个生命周期内一直存在。
@@ -116,6 +117,9 @@ public class CoreService extends Service {
 	static final int UPDATE_SERVICE = 0x32;
 	int mServiceState;
 
+	//sleep
+	public static volatile boolean SLEEP_ACTIVITY = false;
+	
 	// Apps running state
 	static final int VOICE_APP = 0x01;
 	static final int CARDVR_APP = 0x02;
@@ -284,6 +288,17 @@ public class CoreService extends Service {
     		if(action.equals(CommonApps.SLEEP_BEEN_PLAY_MUSIC)){
     			SLEEP_MUSIC_IS_PLAYING = intent.getBooleanExtra(CommonApps.SLEEP_PLAY_MUSIC_NEED_PLAY, true);
     			System.out.println("sssssss-------"+SLEEP_MUSIC_IS_PLAYING);
+    		}
+    		
+    		if(action.equals(CommonApps.BROADCAST_SHOW_SLEEP)){
+    			if(!SLEEP_ACTIVITY){
+    				SLEEP_ACTIVITY = true;
+        			Intent sleepIntent = new Intent(CoreService.this,NewSleepingActivity.class);
+        			sleepIntent.putExtra(CommonApps.BROADCAST_SHOW_SLEEP_ACTIVITY_NAME,
+        					intent.getStringExtra(CommonApps.BROADCAST_SHOW_SLEEP_ACTIVITY_NAME));
+        			sleepIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
+        			startActivity(sleepIntent);
+    			}
     		}
 			
     		// 各个服务的启动和销毁的通知
@@ -583,6 +598,7 @@ public class CoreService extends Service {
 		//sleep activity
 		filter.addAction(CommonApps.SLEEP_SHOW_CONTENT);
 		filter.addAction(CommonApps.SLEEP_BEEN_PLAY_MUSIC);
+		filter.addAction(CommonApps.BROADCAST_SHOW_SLEEP);
 		
 		registerReceiver(mServicesEventReceiver, filter);
 	}

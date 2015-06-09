@@ -20,6 +20,7 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 
 import com.tuyou.tsd.common.CommonApps;
 import com.tuyou.tsd.common.CommonMessage;
@@ -68,7 +69,8 @@ public class InteractingActivity extends Activity {
 		mVoiceState = state;
 	}
 	
-	@Override
+	VoiceSleep mVoiceSleep = null;
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		LogUtil.d(TAG,"onCreate...");
 		LogUtil.d("fq","InteractingActivity onCreate...");
@@ -130,6 +132,15 @@ public class InteractingActivity extends Activity {
 		super.onPause();
 		finish();
 	}
+	
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		// TODO Auto-generated method stub
+		if(mVoiceSleep != null){
+			mVoiceSleep.update();
+		}
+		return super.dispatchTouchEvent(ev);
+	}
 
 	@Override
 	public void finish() {
@@ -141,6 +152,10 @@ public class InteractingActivity extends Activity {
 	protected void onDestroy() {
 		LogUtil.d(TAG, "onDestroy...");
 		LogUtil.d("fq","InteractingActivity onDestroy...");
+		if(mVoiceSleep != null){
+			mVoiceSleep.stop();
+		}
+		
 		mbFinishActivity = true;
 		unbindService(mVoiceServiceConnection);
 		unregisterReceiver(mReceiver);
@@ -201,6 +216,9 @@ public class InteractingActivity extends Activity {
 			Intent searchIntent = new Intent(TSDEvent.Interaction.CANCEL_INTERACTION_BY_TP);
 			searchIntent.putExtra(VoiceAssistant.INTO_SEARCH_VIEW, true);
 			sendBroadcast(searchIntent);
+			
+			mVoiceSleep = new VoiceSleep(this);
+			mVoiceSleep.start();
 			break;
 		case ERROR:
 			fragment = mErrorFragment;

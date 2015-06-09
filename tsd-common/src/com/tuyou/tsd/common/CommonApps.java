@@ -18,4 +18,13 @@ public interface CommonApps {
 	
 	static final String SLEEP_PLAY_PRE = "com_tuyou_tsd_common_play_pre";
 	static final String SLEEP_PLAY_NEXT = "com_tuyou_tsd_common_play_next";
+	
+	
+	
+	//sleep 
+	static final String BROADCAST_SLEEP_TIME_UPDATE = "com_tuyou_tsd_common_broadcast_sleep_time_update";
+	static final String SLEEP_TIME_UPDATE = "com_tuyou_tsd_common_sleep_time_update";
+	
+	static final String BROADCAST_SHOW_SLEEP = "com_tuyou_tsd_common_broadcast_show_sleep";
+	static final String BROADCAST_SHOW_SLEEP_ACTIVITY_NAME = "com_tuyou_tsd_common_broadcast_show_sleep_name";
 }

@@ -12,18 +12,14 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-import com.jinglingtec.ijiazublctor.bluetooth.AppConstants;
 import com.jinglingtec.ijiazublctor.bluetooth.BlueToothService;
-import com.jinglingtec.ijiazublctor.bluetooth.IjiazuController;
-import com.jinglingtec.ijiazublctor.sdk.aidl.IDeviceCallback;
-import com.jinglingtec.ijiazublctor.sdk.aidl.IjiazuCallback;
-import com.jinglingtec.ijiazublctor.sdk.aidl.IjiazuKeyEvent;
 import com.tuyou.tsd.R;
 import com.tuyou.tsd.common.CommonMessage;
 import com.tuyou.tsd.common.TSDEvent;
@@ -99,6 +95,7 @@ public class HomeActivity extends BaseActivity {
 		
 	};
 
+	LauncherSleep mLauncherSleep = null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.v(TAG, "onCreate");
@@ -114,9 +111,10 @@ public class HomeActivity extends BaseActivity {
 		initView();
 		initService();
 		showLoadingDialog();
-
+		
 		//blue tooth
 		startService(new Intent(this,BlueToothService.class));
+		
 		LogUtil.v("fq", "Start blue tooth service.");
 	}
 
@@ -135,6 +133,9 @@ public class HomeActivity extends BaseActivity {
 		
 		registerReceiver(mReceiver, mIntentFilter);
 		bindService(new Intent(this, CoreService.class), mServiceConnection, Service.BIND_AUTO_CREATE);
+		
+		mLauncherSleep = new LauncherSleep(this);
+		mLauncherSleep.start();
 	}
 
 	@Override
@@ -144,12 +145,37 @@ public class HomeActivity extends BaseActivity {
 
 		unregisterReceiver(mReceiver);
 		unbindService(mServiceConnection);
+		
+		if(mLauncherSleep != null){
+			mLauncherSleep.stop();
+		}
 	}
 
 	@Override
 	protected void onDestroy() {
 		Log.v(TAG, "onDestroy");
+		if(mLauncherSleep != null){
+			mLauncherSleep.stop();
+		}
 		super.onDestroy();
+	}
+	
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		// TODO Auto-generated method stub
+		if(mLauncherSleep != null){
+			mLauncherSleep.update();
+		}
+		return super.dispatchTouchEvent(ev);
+	}
+	
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		// TODO Auto-generated method stub
+		if(mLauncherSleep != null){
+			mLauncherSleep.update();
+		}
+		return super.dispatchKeyEvent(event);
 	}
 
 //	@Override
