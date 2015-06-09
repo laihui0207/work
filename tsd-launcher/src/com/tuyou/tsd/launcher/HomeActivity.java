@@ -99,39 +99,6 @@ public class HomeActivity extends BaseActivity {
 		
 	};
 
-	
-    private IDeviceListener mDeviceListener = new IDeviceListener();
-    private IjiazuListener mIjiazuListener = new IjiazuListener();
-    private class IjiazuListener extends IjiazuCallback.Stub {
-
-        @Override
-        public void onInit(boolean result) throws RemoteException {
-            Log.d("fq", "onInit result " + result);
-            if (result) {
-                // set with appID
-                IjiazuController.getInstance().setForeground(AppConstants.APP_ID);
-            }
-        }
-
-        @Override
-        public void onStatusChange(boolean active) throws RemoteException {
-            Log.d("fq", "onStatusChange active" + active);
-        }
-
-        @Override
-        public void onRequestUpdateAppStatus() throws RemoteException {
-            Log.d("fq", "onRequestUpdateAppStatus");
-            // TODO notify app status to ijiazu sdk
-        }
-    }
-
-    private class IDeviceListener extends IDeviceCallback.Stub {
-
-        @Override
-        public void onIjiazuKeyEvent(final IjiazuKeyEvent event) throws RemoteException {
-            Log.d("fq", "onIjiazuKeyEvent event is " + event.toString());
-        }
-    }
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.v(TAG, "onCreate");
@@ -147,7 +114,7 @@ public class HomeActivity extends BaseActivity {
 		initView();
 		initService();
 		showLoadingDialog();
-		
+
 		//blue tooth
 		startService(new Intent(this,BlueToothService.class));
 		LogUtil.v("fq", "Start blue tooth service.");
@@ -302,5 +269,4 @@ public class HomeActivity extends BaseActivity {
 			}
 		}
 	}
-
 }

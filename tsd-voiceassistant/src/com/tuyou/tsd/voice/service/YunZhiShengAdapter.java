@@ -165,6 +165,12 @@ final class YunZhiShengAdapter {
 			command.add(VoiceAssistant.WAKE_UP_COMMAND_1);
 			command.add(VoiceAssistant.WAKE_UP_COMMAND_2);
 			command.add(VoiceAssistant.WAKE_UP_COMMAND_3);
+			command.add(VoiceAssistant.WAKE_UP_COMMAND_OPEN_WIFI_AP_0);
+			command.add(VoiceAssistant.WAKE_UP_COMMAND_OPEN_WIFI_AP_1);
+			command.add(VoiceAssistant.WAKE_UP_COMMAND_OPEN_WIFI_AP_2);
+			command.add(VoiceAssistant.WAKE_UP_COMMAND_OPEN_WIFI_AP_3);
+			command.add(VoiceAssistant.WAKE_UP_COMMAND_OPEN_WIFI_AP_4);
+			command.add(VoiceAssistant.WAKE_UP_COMMAND_OPEN_WIFI_AP_5);
 			mWakeupOperate.setCommandData(command);
 
 			StartTalkPerf[0] = System.currentTimeMillis();

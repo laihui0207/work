@@ -35,19 +35,19 @@ public class BlueToothService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		Log.d(TAG,"onCreate ");
+		Log.d(TAG,"onCreate >>>>>>>>>>>");
         // register with appID + activityName
         IjiazuController.getInstance().registerIjiazuCallback(
             AppConstants.APP_ID + BlueToothService.class.getSimpleName(), mIjiazuListener);
         IjiazuController.getInstance().registerDeviceCallback(
             AppConstants.APP_ID + BlueToothService.class.getSimpleName(), mDeviceListener);
-		Log.d(TAG,"onCreate ");
+		Log.d(TAG,"onCreate <<<<<<<<<<<");
 	}
-	
-	
+
 	private void sendBroadCast(){
 		
 	}
+
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
@@ -77,16 +77,17 @@ public class BlueToothService extends Service {
 
         @Override
         public void onInit(boolean result) throws RemoteException {
-            Log.d(TAG, "onInit result " + result);
+            Log.d(TAG, "onInit result: " + result);
             if (result) {
                 // set with appID
                 IjiazuController.getInstance().setForeground(AppConstants.APP_ID);
+                Log.d(TAG, "setForeground >>>>>>>>>>");
             }
         }
 
         @Override
         public void onStatusChange(boolean active) throws RemoteException {
-            Log.d(TAG, "onStatusChange active" + active);
+            Log.d(TAG, "onStatusChange active: " + active);
         }
 
         @Override
@@ -138,10 +139,7 @@ public class BlueToothService extends Service {
 			case KeyEventConstants.KEYCODE_OK:
 				Log.d(TAG, "onIjiazuKeyEvent KEYCODE_OK");
 				break;
-        		
         	}
-            
         }
     }
-
 }

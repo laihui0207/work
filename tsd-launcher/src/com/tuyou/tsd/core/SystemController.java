@@ -1402,7 +1402,7 @@ public class SystemController {
     	}
 
     	void setIdleTime(int seconds) {
-    		IDLE_TIME = 2 * 1000;
+    		IDLE_TIME = seconds * 1000;
     	}
 
     	@Override

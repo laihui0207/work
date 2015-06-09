@@ -98,10 +98,14 @@ public class SleepingActivity extends BaseActivity {
     			}else{
     				setMusicLayout(true);
     				mMusicName.setText(musictitle);
+    				mMusicPlay.setBackgroundResource(CoreService.SLEEP_MUSIC_IS_PLAYING ? R.drawable.music_ctl_pause : R.drawable.music_ctl_play);
     			}
     		}else if(action.equals(CommonApps.SLEEP_BEEN_PLAY_MUSIC)){
     			boolean isPlay = intent.getBooleanExtra(CommonApps.SLEEP_PLAY_MUSIC_NEED_PLAY, true);
-    			mMusicPlay.setBackgroundResource(isPlay ? R.drawable.music_ctl_play : R.drawable.music_ctl_pause);
+    			mMusicPlay.setBackgroundResource(isPlay ? R.drawable.music_ctl_pause : R.drawable.music_ctl_play);
+    		}else if(action.equals(CommonApps.SLEEP_BEEN_PLAY_MUSIC)){
+    			boolean isPlay = intent.getBooleanExtra(CommonApps.SLEEP_PLAY_MUSIC_NEED_PLAY, true);
+    			mMusicPlay.setBackgroundResource(isPlay ? R.drawable.music_ctl_pause : R.drawable.music_ctl_play);
     		}
 
 			if (action.equals(CommonMessage.VOICE_COMM_WAKEUP)) {
@@ -153,6 +157,7 @@ public class SleepingActivity extends BaseActivity {
 		
 		if(CoreService.SLEEP_MUSIC_NAME.length()>0){
 			mMusicName.setText(CoreService.SLEEP_MUSIC_NAME);
+			mMusicPlay.setBackgroundResource(CoreService.SLEEP_MUSIC_IS_PLAYING ? R.drawable.music_ctl_pause : R.drawable.music_ctl_play);
 			setMusicLayout(CoreService.SLEEP_MUSIC_IS_PLAYING);
 		}
 	}
@@ -213,6 +218,8 @@ public class SleepingActivity extends BaseActivity {
 		mIntentFilter.addAction(TSDEvent.System.WEATHER_UPDATED);
 		mIntentFilter.addAction(CommonApps.SLEEP_SHOW_CONTENT);
 		mIntentFilter.addAction(CommonApps.SLEEP_BEEN_PLAY_MUSIC);
+		
+		mIntentFilter.addAction(CommonApps.SLEEP_BEEN_PLAY_MUSIC);
 	}
 
 	private void onWakeUp() {
@@ -252,12 +259,11 @@ public class SleepingActivity extends BaseActivity {
 		mbIsMusicPlay = !mbIsMusicPlay;
 		Intent intent = new Intent(CommonApps.SLEEP_PLAY_MUSIC);
 		if(mbIsMusicPlay){
-//			mMusicPlay.setBackgroundResource(R.drawable.music_ctl_play);
 			intent.putExtra(CommonApps.SLEEP_PLAY_MUSIC_NEED_PLAY, true);
 		}else{
-//			mMusicPlay.setBackgroundResource(R.drawable.music_ctl_pause);
 			intent.putExtra(CommonApps.SLEEP_PLAY_MUSIC_NEED_PLAY, false);
 		}
+		mMusicPlay.setBackgroundResource(mbIsMusicPlay ? R.drawable.music_ctl_pause : R.drawable.music_ctl_play);
 		sendBroadcast(intent);
 	}
 	

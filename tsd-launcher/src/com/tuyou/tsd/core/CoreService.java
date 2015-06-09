@@ -90,7 +90,7 @@ public class CoreService extends Service {
 	
 	//music
 	public static String SLEEP_MUSIC_NAME = "";
-	public static boolean SLEEP_MUSIC_IS_PLAYING = false;
+	public static boolean SLEEP_MUSIC_IS_PLAYING = true;
 
 	// 业务逻辑控制器，将来要把跟业务逻辑相关的内容放到这个类中去
 	// CoreService只做为一个纯粹的状态机
@@ -280,6 +280,10 @@ public class CoreService extends Service {
     			}else{
     				SLEEP_MUSIC_NAME = musictitle;
     			}
+    		}
+    		if(action.equals(CommonApps.SLEEP_BEEN_PLAY_MUSIC)){
+    			SLEEP_MUSIC_IS_PLAYING = intent.getBooleanExtra(CommonApps.SLEEP_PLAY_MUSIC_NEED_PLAY, true);
+    			System.out.println("sssssss-------"+SLEEP_MUSIC_IS_PLAYING);
     		}
 			
     		// 各个服务的启动和销毁的通知
@@ -578,6 +582,7 @@ public class CoreService extends Service {
 		
 		//sleep activity
 		filter.addAction(CommonApps.SLEEP_SHOW_CONTENT);
+		filter.addAction(CommonApps.SLEEP_BEEN_PLAY_MUSIC);
 		
 		registerReceiver(mServicesEventReceiver, filter);
 	}

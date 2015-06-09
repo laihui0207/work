@@ -58,7 +58,12 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 	static final String WAKE_UP_COMMAND_1 = "小宝小宝";
 	static final String WAKE_UP_COMMAND_2 = "小宝拍照";
 	static final String WAKE_UP_COMMAND_3 = "小宝闭嘴";
-	static final String WAKE_UP_COMMAND_OPEN_WIFI_AP = "打开热点";
+	static final String WAKE_UP_COMMAND_OPEN_WIFI_AP_0 = "打开热点";
+	static final String WAKE_UP_COMMAND_OPEN_WIFI_AP_1 = "打开小宝热点";
+	static final String WAKE_UP_COMMAND_OPEN_WIFI_AP_2 = "开热点";
+	static final String WAKE_UP_COMMAND_OPEN_WIFI_AP_3 = "小宝开热点";
+	static final String WAKE_UP_COMMAND_OPEN_WIFI_AP_4 = "开WIFI";
+	static final String WAKE_UP_COMMAND_OPEN_WIFI_AP_5 = "打开WIFI";
 
 	private static final String LOG_TAG = "VoiceAssistant";
 
@@ -402,7 +407,12 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 		} else if (word.equals(WAKE_UP_COMMAND_3)) {
 			Intent resultIntent = new Intent(CommonMessage.VOICE_COMM_SHUT_UP);
 			sendBroadcast(resultIntent);
-		} else if (word.equals(WAKE_UP_COMMAND_OPEN_WIFI_AP)) {
+		} else if (word.equals(WAKE_UP_COMMAND_OPEN_WIFI_AP_0)
+				|| word.equals(WAKE_UP_COMMAND_OPEN_WIFI_AP_1)
+				|| word.equals(WAKE_UP_COMMAND_OPEN_WIFI_AP_2)
+				|| word.equals(WAKE_UP_COMMAND_OPEN_WIFI_AP_3)
+				|| word.equals(WAKE_UP_COMMAND_OPEN_WIFI_AP_4)
+				|| word.equals(WAKE_UP_COMMAND_OPEN_WIFI_AP_5)) {
 			Intent resultIntent = new Intent(CommonMessage.VOICE_COMM_OPEN_WIFI_AP);
 			sendBroadcast(resultIntent);
 		}
