@@ -27,8 +27,8 @@ public interface TSDEvent {
 		static final String HARDKEY3_PRESSED = "tsd.event.system.hardkey3_pressed";
 		static final String HARDKEY4_PRESSED = "tsd.event.system.hardkey4_pressed";
 		
-		static final String HARDKEY_PLAY_PRESSED = "tsd.event.system.blue.play_pressed";
-		static final String HARDKEY_NEXT_PRESSED = "tsd.event.system.blue.next_pressed";
+		//static final String HARDKEY_PLAY_PRESSED = "tsd.event.system.blue.play_pressed";
+		//static final String HARDKEY_NEXT_PRESSED = "tsd.event.system.blue.next_pressed";
 
 		/**
 		 * 查询天气

@@ -25,6 +25,7 @@ import android.view.MotionEvent;
 import com.tuyou.tsd.common.CommonApps;
 import com.tuyou.tsd.common.CommonMessage;
 import com.tuyou.tsd.common.TSDEvent;
+import com.tuyou.tsd.common.base.CommonSleep;
 import com.tuyou.tsd.common.util.HelperUtil;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.voice.service.VoiceAssistant;
@@ -69,7 +70,7 @@ public class InteractingActivity extends Activity {
 		mVoiceState = state;
 	}
 	
-	VoiceSleep mVoiceSleep = null;
+	CommonSleep mVoiceSleep = null;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		LogUtil.d(TAG,"onCreate...");
@@ -141,7 +142,16 @@ public class InteractingActivity extends Activity {
 		}
 		return super.dispatchTouchEvent(ev);
 	}
-
+	
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		// TODO 自动生成的方法存根
+		if (mVoiceSleep != null) {
+			mVoiceSleep.update();
+		}
+		return super.dispatchKeyEvent(event);
+	}
+	
 	@Override
 	public void finish() {
 		mbFinishActivity = true;
@@ -217,7 +227,7 @@ public class InteractingActivity extends Activity {
 			searchIntent.putExtra(VoiceAssistant.INTO_SEARCH_VIEW, true);
 			sendBroadcast(searchIntent);
 			
-			mVoiceSleep = new VoiceSleep(this);
+			mVoiceSleep = new CommonSleep(this);
 			mVoiceSleep.start();
 			break;
 		case ERROR:

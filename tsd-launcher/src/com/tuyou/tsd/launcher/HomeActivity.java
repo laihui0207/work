@@ -24,6 +24,7 @@ import com.tuyou.tsd.R;
 import com.tuyou.tsd.common.CommonMessage;
 import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.common.base.BaseActivity;
+import com.tuyou.tsd.common.base.CommonSleep;
 import com.tuyou.tsd.common.util.HelperUtil;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.core.CoreService;
@@ -95,7 +96,7 @@ public class HomeActivity extends BaseActivity {
 		
 	};
 
-	LauncherSleep mLauncherSleep = null;
+	CommonSleep mLauncherSleep = null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.v(TAG, "onCreate");
@@ -134,7 +135,7 @@ public class HomeActivity extends BaseActivity {
 		registerReceiver(mReceiver, mIntentFilter);
 		bindService(new Intent(this, CoreService.class), mServiceConnection, Service.BIND_AUTO_CREATE);
 		
-		mLauncherSleep = new LauncherSleep(this);
+		mLauncherSleep = new CommonSleep(this);
 		mLauncherSleep.start();
 	}
 

@@ -79,6 +79,7 @@ public class SearchFragment extends Fragment {
 				mNoResult.setVisibility(View.VISIBLE);
 			}
 		}
+		
 		return view;
 	}
 
