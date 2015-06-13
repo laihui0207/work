@@ -28,14 +28,10 @@ import org.json.JSONTokener;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
-import com.google.gson.JsonObject;
 import com.tuyou.tsd.common.TSDConst;
 import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.common.util.LogUtil;
-import com.tuyou.tsd.common.videoMeta.PictureInf;
-import com.tuyou.tsd.core.httpd.NanoHTTPD.Response;
 
 public class HttpServer extends NanoHTTPD {
 	private static final String LOG_TAG = "HttpdService";

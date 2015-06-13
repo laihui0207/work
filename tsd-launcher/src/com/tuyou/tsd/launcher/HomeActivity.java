@@ -1,5 +1,7 @@
 package com.tuyou.tsd.launcher;
 
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
@@ -137,6 +139,14 @@ public class HomeActivity extends BaseActivity {
 		
 		mLauncherSleep = new CommonSleep(this);
 		mLauncherSleep.start();
+		
+		//test
+		if(CoreService.TestYZSstr!=null){
+			AlertDialog.Builder builder = new Builder(this);
+			builder.setMessage(CoreService.TestYZSstr);
+			builder.create().show();
+			CoreService.TestYZSstr = null;
+		}
 	}
 
 	@Override

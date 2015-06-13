@@ -38,9 +38,10 @@ public class CommonSleep {
 				TSDShare.SYSTEM_SETTING_PREFERENCES);
 		if (pref != null) {
 			editor = pref.edit();
-		}
-		mUpdateTime = (Integer.parseInt(pref.getString("screen_off_value",
+			mUpdateTime = (Integer.parseInt(pref.getString("screen_off_value",
 				3 * 60 + ""))) * 1000;
+		}
+
 		LogUtil.d(TAG, "初始化：mUpdateTime = " + mUpdateTime);
 		mContext = contex;
 		Log.v("fq", "new Sleep class = " + mContext.getClass().getName());
@@ -52,7 +53,7 @@ public class CommonSleep {
 	public void setSleepCallback(SleepCallback cb){
 		mSleepCallback = cb;
 	}
-	
+
 	public void start() {
 		Log.v("fq", "start class = " + mContext.getClass().getName());
 		Thread thread = new Thread() {

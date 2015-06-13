@@ -210,6 +210,7 @@ public class InteractingActivity extends Activity {
 		player.start();
 	}
 
+	private String TestYZSstr;
 	private FRAGMENT_TYPE mFragmentType = FRAGMENT_TYPE.RECORD;
 	private void transFragment(FRAGMENT_TYPE type) {
 		LogUtil.d(TAG,"transFragment FRAGMENT_TYPE "+type+"  mbFinishActivity="+mbFinishActivity);
@@ -239,6 +240,15 @@ public class InteractingActivity extends Activity {
 			
 			mVoiceSleep = new CommonSleep(this);
 			mVoiceSleep.start();
+			
+			//test
+			if(TestYZSstr!=null){
+				AlertDialog.Builder builder = new Builder(InteractingActivity.this);
+				builder.setMessage(TestYZSstr);
+				builder.create().show();
+				TestYZSstr = null;
+			}
+
 			break;
 		case ERROR:
 			fragment = mErrorFragment;
@@ -471,7 +481,7 @@ public class InteractingActivity extends Activity {
 			
 			if(action.equals(CommonApps.BROADCAST_TEST_VOICE_RESULT)){
 				String str = intent.getStringExtra(CommonApps.BROADCAST_TEST_VOICE_STRING);
-				Toast.makeText(InteractingActivity.this,str,10*1000).show();
+				TestYZSstr = str;
 			}
 		}
 	};

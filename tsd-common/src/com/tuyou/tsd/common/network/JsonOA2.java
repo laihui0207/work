@@ -656,7 +656,7 @@ public class JsonOA2 {
 	 * 获取订阅列表详细信息
 	 **/
 	public GetAudioCategoryDetailRes getAudioSubscriptionDetail(String subscription) {
-		String URL1 = URL + "audio/album/items?albums="+subscription;
+		String URL1 = URL + "audio/album/map/items?albums="+subscription;
 		return getForObject(URL1, GetAudioCategoryDetailRes.class);
 	}
 	

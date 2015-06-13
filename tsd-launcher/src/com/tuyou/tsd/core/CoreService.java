@@ -130,6 +130,9 @@ public class CoreService extends Service {
 	static final int EXTERNAL_STORAGE_READY = 1;
 	static final int LOADING_COMPLETED = 100;
 	static final int SHAKE_HAPPENED = 200;
+	
+	//test
+	public static String TestYZSstr = null;
 
 	private final Handler mHandler = new Handler(Looper.getMainLooper()) {
 		@Override
@@ -304,7 +307,11 @@ public class CoreService extends Service {
     		if(action.equals(CommonApps.BROADCAST_RESTART_VOICE)){
     			Log.v("fq","BROADCAST_RESTART_VOICE");
     			startService(new Intent(TSDComponent.VOICE_ASSISTANT_SERVICE));
-    		}
+    		}else if(action.equals(CommonApps.BROADCAST_TEST_VOICE_RESULT)){
+				Log.v("fq","BROADCAST_TEST_VOICE_RESULT core service");
+				String str = intent.getStringExtra(CommonApps.BROADCAST_TEST_VOICE_STRING);
+				TestYZSstr = str;
+			}
 			
     		// 各个服务的启动和销毁的通知
     		if (action.equals(TSDEvent.Interaction.SERVICE_STARTED)) {
@@ -605,6 +612,9 @@ public class CoreService extends Service {
 		filter.addAction(CommonApps.SLEEP_BEEN_PLAY_MUSIC);
 		filter.addAction(CommonApps.BROADCAST_SHOW_SLEEP);
 		filter.addAction(CommonApps.BROADCAST_RESTART_VOICE);
+		
+		//test
+		filter.addAction(CommonApps.BROADCAST_TEST_VOICE_RESULT);
 		
 		registerReceiver(mServicesEventReceiver, filter);
 	}

@@ -100,6 +100,11 @@ public interface CommonMessage {
 	 * 指令: 音乐
 	 */
 	static final String VOICE_COMM_MUSIC = "tsd.command.MUSIC";
+
+	public final static String KILL_ALL_APP1 = "com.tsd.news" ;
+	public final static String KILL_ALL_APP2 = "com.tsd.podcast" ;
+	public final static String KILL_ALL_APP3 = "com.tsd.audio" ;
+
 	/**
 	 * 指令: 好
 	 */

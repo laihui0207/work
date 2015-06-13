@@ -126,9 +126,16 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 	}
 	
 	public void testYZS(String str){
-/*		Intent intent = new Intent(CommonApps.BROADCAST_TEST_VOICE_RESULT);
-		intent.putExtra(CommonApps.BROADCAST_TEST_VOICE_STRING,str);
-		mContext.sendBroadcast(intent);*/
+		String netStr = "无网络\n";
+		ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(mContext.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNet = cm.getActiveNetworkInfo();
+		if (activeNet != null) {
+			netStr = "网络:"+activeNet.getTypeName() + ", " + activeNet.getState()+"\n";
+		}
+		netStr += "-----******-----\n";
+		Intent intent = new Intent(CommonApps.BROADCAST_TEST_VOICE_RESULT);
+		intent.putExtra(CommonApps.BROADCAST_TEST_VOICE_STRING,netStr+str);
+		mContext.sendBroadcast(intent);
 	}
 
 	public static VoiceEngine getInstance(Context context) {

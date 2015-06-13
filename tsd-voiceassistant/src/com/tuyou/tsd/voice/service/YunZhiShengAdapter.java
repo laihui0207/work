@@ -346,7 +346,7 @@ final class YunZhiShengAdapter {
 		public void onTalkResult(String result) {
 			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkResult");
 			LogUtil.v(LOG_TAG, "IRecognizerTalkListener.onTalkResult: " + result);
-			TestString = "onTalkResult = "+result+"/n";
+			TestString = "onTalkResult = "+result+"\n"+"-----******-----\n";
 			// 此问题为云知声最新sdk在识别结果的句子末尾增加了一个句号，导致后续进行指令匹配时出现问题。
 			// 现将末尾句号过滤以临时解决此问题。2015-4-9
 			if (result.endsWith("。"))
@@ -386,15 +386,18 @@ final class YunZhiShengAdapter {
 			LogUtil.v(LOG_TAG, "IRecognizerTalkListener.onTalkProtocal: " + protocol);
 			mRecognitionState = false;
 			
-			//test
-			TestString += "onTalkProtocal=/n"+protocol;
-			mCallback.testYZS(TestString);
-			
+			String errorStr = null ;
 			if (protocol.matches(".+semantic.+")) {
 				mCallback.onFinishRecognition(protocol, true);
+				errorStr = "semantic OK";
 			}else{
 				mCallback.onFinishRecognition1("");
+				errorStr="Error";
 			}
+			
+			//test
+			TestString += "onTalkProtocal="+errorStr+"\n"+protocol+"******\n";
+			mCallback.testYZS(TestString);
 
 			// 若有唤醒请求，则开始唤醒服务
 			reuqestToWake();
