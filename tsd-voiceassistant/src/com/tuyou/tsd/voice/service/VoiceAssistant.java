@@ -32,6 +32,7 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.tuyou.tsd.common.CommonApps;
 import com.tuyou.tsd.common.CommonMessage;
 import com.tuyou.tsd.common.TSDComponent;
 import com.tuyou.tsd.common.TSDConst;
@@ -303,6 +304,10 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 					// Stop the wake up service after ACC is off.
 					mEngine.stopWakeUpListening();
 				}
+			}else if(action.equals(CommonApps.BROADCAST_KILL_VOICE)){
+				Log.v("fq","BROADCAST_KILL_VOICE");
+				sendBroadcast(new Intent(CommonApps.BROADCAST_RESTART_VOICE));
+				android.os.Process.killProcess(android.os.Process.myPid());
 			}
 		}
 	}
@@ -466,6 +471,8 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 
 		filter.addAction(TSDEvent.Navigation.POI_SEARCH_RESULT);
 		
+		filter.addAction(CommonApps.BROADCAST_KILL_VOICE);
+		
 		mReceiver = new MyBroadcastReceiver();
 		registerReceiver(mReceiver, filter);
 		LogUtil.d(LOG_TAG, "service initialized, total used " + (System.currentTimeMillis() - start) + " ms.");
@@ -581,17 +588,11 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 	 * 执行交互
 	 * @param eventMsg
 	 */
-	public volatile static boolean mbRunningInteraction = false;
 	private void executeInteraction(String eventMsg, boolean isLocal) {
 		if(mEngine==null || !mEngine.INITDONE){
 			LogUtil.w(LOG_TAG, "executeInteraction from engine not ready");
 			return;
 		}
-		LogUtil.w(LOG_TAG, "executeInteraction from mbRunningInteraction="+mbRunningInteraction);
-		if(mbRunningInteraction){
-			return ;
-		}
-		mbRunningInteraction = true;
 		
 		Scene scene = null;
 		LogUtil.w(LOG_TAG, "executeInteraction isLocal="+isLocal);
@@ -629,7 +630,7 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 			json = new JSONObject(message);
 			module = json.getString("module");
 
-	    	if (module.equals(CommonMessage.PUSH_MESSAGE_TYPE_INTERACTION) && !mbRunningInteraction) {
+	    	if (module.equals(CommonMessage.PUSH_MESSAGE_TYPE_INTERACTION)) {
 				content = json.getJSONObject("content").toString();
 
 				HelperUtil.startActivity(this, TSDComponent.VOICE_ASSISTANT_PACKAGE, TSDComponent.INTERACTION_ACTIVITY);
@@ -695,7 +696,6 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 							((VoiceAssistant)context).changeState(VoiceAssistant.State.STATE_LISTENING);
 							
 							LogUtil.w(LOG_TAG, "executeInteraction from to end !");
-							mbRunningInteraction = false;
 							mLock.wait();
 							LogUtil.v(LOG_TAG,"mLock up ###########################################");
 						} catch (InterruptedException e) {

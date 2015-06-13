@@ -1,8 +1,9 @@
 package com.tuyou.tsd.voice;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -21,6 +22,7 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import com.tuyou.tsd.common.CommonApps;
 import com.tuyou.tsd.common.CommonMessage;
@@ -46,7 +48,10 @@ public class InteractingActivity extends Activity {
 	//
 	private static Messenger mVoiceService = null;
 	private final Messenger mMessenger = new Messenger(new VoiceEngineMsgHandler());
-
+	private final int MSG_KILL_VOICE_SERVER = 0x1001;
+	private final long TIME_KILL_VOICE_SERVER = 30*1000;
+	
+	
 	enum FRAGMENT_TYPE {
 		RECORD,
 		RECOG,
@@ -89,6 +94,7 @@ public class InteractingActivity extends Activity {
 		filter.addAction(TSDEvent.Interaction.FINISH_ACTIVITY);
 		filter.addAction(CommonMessage.VOICE_COMM_WAKEUP);
 		filter.addAction(TSDEvent.System.HARDKEY4_PRESSED);
+		filter.addAction(CommonApps.BROADCAST_TEST_VOICE_RESULT);
 		registerReceiver(mReceiver, filter);
 		
 		Intent intent = new Intent(CommonApps.APP_VOICE_INTERACTINGACTIVITY);
@@ -183,10 +189,12 @@ public class InteractingActivity extends Activity {
 		mSearchFragment = new SearchFragment();
 		mErrorFragment = new ErrorFragment();
 
-		FragmentManager fm = getFragmentManager();
+		/*FragmentManager fm = getFragmentManager();
 		FragmentTransaction trans = fm.beginTransaction();
 		trans.add(R.id.fragment_container, mRecordFragment);
-		trans.commit();
+		trans.commit();*/
+		
+		transFragment(FRAGMENT_TYPE.RECORD);
 	}
 
 	private void playBing() {
@@ -205,6 +213,7 @@ public class InteractingActivity extends Activity {
 	private FRAGMENT_TYPE mFragmentType = FRAGMENT_TYPE.RECORD;
 	private void transFragment(FRAGMENT_TYPE type) {
 		LogUtil.d(TAG,"transFragment FRAGMENT_TYPE "+type+"  mbFinishActivity="+mbFinishActivity);
+		mHandler.removeMessages(MSG_KILL_VOICE_SERVER);
 		if(mbFinishActivity){
 			return;
 		}
@@ -216,6 +225,7 @@ public class InteractingActivity extends Activity {
 		case RECORD:
 			fragment = mRecordFragment;
 			mbCanceling = false;
+			mHandler.sendEmptyMessageDelayed(MSG_KILL_VOICE_SERVER, TIME_KILL_VOICE_SERVER);
 			break;
 		case RECOG:
 			fragment = mRecogFragment;
@@ -390,7 +400,6 @@ public class InteractingActivity extends Activity {
 				quit();
 			}
 		}
-
 		return super.onKeyDown(keyCode, event);
 	}
 	
@@ -459,6 +468,25 @@ public class InteractingActivity extends Activity {
 					quit();
 				}
 			}
+			
+			if(action.equals(CommonApps.BROADCAST_TEST_VOICE_RESULT)){
+				String str = intent.getStringExtra(CommonApps.BROADCAST_TEST_VOICE_STRING);
+				Toast.makeText(InteractingActivity.this,str,10*1000).show();
+			}
 		}
+	};
+	
+	Handler mHandler = new Handler(){
+
+		@Override
+		public void handleMessage(Message msg) {
+			switch(msg.what){
+			case MSG_KILL_VOICE_SERVER:
+				Log.v(TAG, "InteActivity BROADCAST_KILL_VOICE");
+				sendBroadcast(new Intent(CommonApps.BROADCAST_KILL_VOICE));
+				break;
+			}
+		}
+		
 	};
 }

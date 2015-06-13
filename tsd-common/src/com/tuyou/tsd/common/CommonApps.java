@@ -27,4 +27,13 @@ public interface CommonApps {
 	
 	static final String BROADCAST_SHOW_SLEEP = "com_tuyou_tsd_common_broadcast_show_sleep";
 	static final String BROADCAST_SHOW_SLEEP_ACTIVITY_NAME = "com_tuyou_tsd_common_broadcast_show_sleep_name";
+	
+	//kill self
+	static final String BROADCAST_KILL_VOICE = "com_tuyou_tsd_common_broadcast_kill_voice";
+	static final String BROADCAST_RESTART_VOICE = "com_tuyou_tsd_common_broadcast_restart_voice";
+	
+	
+	//test
+	static final String BROADCAST_TEST_VOICE_RESULT = "com_tuyou_tsd_common_broadcast_voice_result";
+	static final String BROADCAST_TEST_VOICE_STRING = "com_tuyou_tsd_common_broadcast_voice_string";
 }

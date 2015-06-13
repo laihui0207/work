@@ -10,6 +10,7 @@ import com.jinglingtec.ijiazublctor.sdk.aidl.IDeviceCallback;
 import com.jinglingtec.ijiazublctor.sdk.aidl.IjiazuCallback;
 import com.jinglingtec.ijiazublctor.sdk.aidl.IjiazuKeyEvent;
 import com.jinglingtec.ijiazublctor.sdk.aidl.KeyEventConstants;
+import com.tuyou.tsd.common.CommonApps;
 import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.common.util.LogUtil;
 
@@ -117,7 +118,7 @@ public class BlueToothService extends Service {
         	switch(keyCode){
 			case KeyEventConstants.KEYCODE_NAVIGATOR:
 				Log.d(TAG, "onIjiazuKeyEvent KEYCODE_NAVIGATOR");
-				intent.setAction(TSDEvent.System.HARDKEY_PLAY_PRESSED);
+				intent.setAction(TSDEvent.System.HARDKEY2_PRESSED);
 				sendBroadcast(intent);
 				break;
 			case KeyEventConstants.KEYCODE_FM:
@@ -128,7 +129,7 @@ public class BlueToothService extends Service {
 				break;
 			case KeyEventConstants.KEYCODE_TELPHONE:
 				Log.d(TAG, "onIjiazuKeyEvent KEYCODE_TELPHONE");
-				intent.setAction(TSDEvent.System.HARDKEY_NEXT_PRESSED);
+				intent.setAction(CommonApps.SLEEP_PLAY_NEXT);
 				sendBroadcast(intent);
 				break;
 			case KeyEventConstants.KEYCODE_MUSIC:

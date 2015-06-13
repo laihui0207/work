@@ -30,6 +30,7 @@ import android.util.Log;
 
 import com.iflytek.tts.TtsService.Tts;
 import com.iflytek.tts.TtsService.TtsSpeaker;
+import com.tuyou.tsd.common.CommonApps;
 import com.tuyou.tsd.common.CommonMessage;
 import com.tuyou.tsd.common.TSDConst;
 import com.tuyou.tsd.common.TSDEvent;
@@ -122,6 +123,12 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 	private VoiceEngine(Context context) {
 		mContext = context;
 		mVoiceAdapter = YunZhiShengAdapter.getInstance(context, this);
+	}
+	
+	public void testYZS(String str){
+/*		Intent intent = new Intent(CommonApps.BROADCAST_TEST_VOICE_RESULT);
+		intent.putExtra(CommonApps.BROADCAST_TEST_VOICE_STRING,str);
+		mContext.sendBroadcast(intent);*/
 	}
 
 	public static VoiceEngine getInstance(Context context) {

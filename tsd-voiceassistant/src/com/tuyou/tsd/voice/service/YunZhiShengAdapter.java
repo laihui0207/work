@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 import cn.yunzhisheng.common.util.ErrorUtil;
 import cn.yunzhisheng.vui.recognizer.IRecognizerTalkListener;
@@ -13,6 +15,8 @@ import cn.yunzhisheng.vui.recognizer.RecognizerTalk;
 import cn.yunzhisheng.vui.wakeup.IWakeupListener;
 import cn.yunzhisheng.vui.wakeup.IWakeupOperate;
 
+import com.tuyou.tsd.common.TSDConst;
+import com.tuyou.tsd.common.util.HelperUtil;
 import com.tuyou.tsd.common.util.LogUtil;
 
 final class YunZhiShengAdapter {
@@ -39,6 +43,8 @@ final class YunZhiShengAdapter {
     long[] StartTalkPerf = {0, 0};                      //语音引擎“待监听”中间态耗时
 
 	private static YunZhiShengAdapter mInstance;
+	
+	private String TestString = null;
 
 	private YunZhiShengAdapter(Context context, VoiceEngine callback) {
 		mContext = context;
@@ -340,6 +346,7 @@ final class YunZhiShengAdapter {
 		public void onTalkResult(String result) {
 			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkResult");
 			LogUtil.v(LOG_TAG, "IRecognizerTalkListener.onTalkResult: " + result);
+			TestString = "onTalkResult = "+result+"/n";
 			// 此问题为云知声最新sdk在识别结果的句子末尾增加了一个句号，导致后续进行指令匹配时出现问题。
 			// 现将末尾句号过滤以临时解决此问题。2015-4-9
 			if (result.endsWith("。"))
@@ -378,6 +385,11 @@ final class YunZhiShengAdapter {
 			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkProtocal");
 			LogUtil.v(LOG_TAG, "IRecognizerTalkListener.onTalkProtocal: " + protocol);
 			mRecognitionState = false;
+			
+			//test
+			TestString += "onTalkProtocal=/n"+protocol;
+			mCallback.testYZS(TestString);
+			
 			if (protocol.matches(".+semantic.+")) {
 				mCallback.onFinishRecognition(protocol, true);
 			}else{
@@ -395,5 +407,4 @@ final class YunZhiShengAdapter {
 		}
 
 	}
-
 }

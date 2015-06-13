@@ -300,6 +300,11 @@ public class CoreService extends Service {
         			startActivity(sleepIntent);
     			}
     		}
+    		
+    		if(action.equals(CommonApps.BROADCAST_RESTART_VOICE)){
+    			Log.v("fq","BROADCAST_RESTART_VOICE");
+    			startService(new Intent(TSDComponent.VOICE_ASSISTANT_SERVICE));
+    		}
 			
     		// 各个服务的启动和销毁的通知
     		if (action.equals(TSDEvent.Interaction.SERVICE_STARTED)) {
@@ -599,6 +604,7 @@ public class CoreService extends Service {
 		filter.addAction(CommonApps.SLEEP_SHOW_CONTENT);
 		filter.addAction(CommonApps.SLEEP_BEEN_PLAY_MUSIC);
 		filter.addAction(CommonApps.BROADCAST_SHOW_SLEEP);
+		filter.addAction(CommonApps.BROADCAST_RESTART_VOICE);
 		
 		registerReceiver(mServicesEventReceiver, filter);
 	}
