@@ -20,9 +20,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.jinglingtec.ijiazublctor.bluetooth.BlueToothService;
 import com.tuyou.tsd.R;
+import com.tuyou.tsd.common.CommonApps;
 import com.tuyou.tsd.common.CommonMessage;
 import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.common.base.BaseActivity;
@@ -44,6 +46,8 @@ public class HomeActivity extends BaseActivity {
 	private ImageButton mSettingBtn, mAllAppsBtn;
 
 	private CoreService mCoreService;
+	
+	private int mTestCount = 0;
 
 	// For cell phone debug only
 //	private boolean mAccState; // true -- on; false -- off.
@@ -210,6 +214,7 @@ public class HomeActivity extends BaseActivity {
 		mPodBtn.setOnClickListener(mClickListener);
 		mSettingBtn.setOnClickListener(mClickListener);
 		mAllAppsBtn.setOnClickListener(mClickListener);
+		mFaceView.setOnClickListener(mClickListener);
 	}
 	
 
@@ -265,6 +270,21 @@ public class HomeActivity extends BaseActivity {
 		@Override
 		public void onClick(View v) {
 			LogUtil.w(TAG, "MyOnClickListener mbIsClickedIcon="+mbIsClickedIcon);
+			if(v.getId() == R.id.home_xiaobao_face){
+				mTestCount++;
+				return;
+			}else if(v.getId() == R.id.home_music_btn){
+				if(mTestCount==5){
+					Intent intent = new Intent(CommonApps.BROADCAST_TEST_ON);
+					sendBroadcast(intent);
+					Toast.makeText(HomeActivity.this, "Test State Change !", 0).show();
+					mTestCount = 0;
+					return;
+				}
+			}else{
+				mTestCount = 0;
+			}
+			
 			if(!isIconClicked()){
 				setIconClick(true);
 			}else{

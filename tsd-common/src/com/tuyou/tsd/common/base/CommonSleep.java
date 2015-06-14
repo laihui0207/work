@@ -27,8 +27,12 @@ public class CommonSleep {
 
 	private final long SLEEP_INTERVAL = 2000;
 	
+	enum SLEEPCALL{
+		GOTOSLEEP,
+	}
+	
 	interface SleepCallback{
-		boolean goSleep();
+		boolean goSleep(SLEEPCALL state);
 	}
 
 	public CommonSleep(Context contex) {
@@ -73,7 +77,7 @@ public class CommonSleep {
 						String name = mContext.getClass().getName();
 						Log.v("fq", "time up class = "+ name);
 						
-						if(mSleepCallback == null || mSleepCallback.goSleep()){
+						if(mSleepCallback == null || mSleepCallback.goSleep(SLEEPCALL.GOTOSLEEP)){
 							goIntoSleep(name);
 						}
 					}

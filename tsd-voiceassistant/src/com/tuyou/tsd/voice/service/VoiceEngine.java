@@ -126,6 +126,9 @@ public class VoiceEngine implements TtsSpeaker.Callback {
 	}
 	
 	public void testYZS(String str){
+		if(!VoiceAssistant.TEST_ON){
+			return;
+		}
 		String netStr = "无网络\n";
 		ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(mContext.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNet = cm.getActiveNetworkInfo();

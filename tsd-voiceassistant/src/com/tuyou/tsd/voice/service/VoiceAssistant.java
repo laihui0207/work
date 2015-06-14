@@ -95,6 +95,8 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 	public static final int CMD_VOICE_LISTEN = 0x1001;
 	public static final String INTO_SEARCH_VIEW = "com.tuyou.tsd.voice.service.searchview";
 	public volatile static boolean mbStopInSearchView = false;
+	
+	public static boolean TEST_ON = false;
 
 	void changeState(State destState) {
 		LogUtil.i(LOG_TAG, "prepare to change state: " + mState + " ==> " + destState);
@@ -308,6 +310,8 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 				Log.v("fq","BROADCAST_KILL_VOICE");
 				sendBroadcast(new Intent(CommonApps.BROADCAST_RESTART_VOICE));
 				android.os.Process.killProcess(android.os.Process.myPid());
+			}else if(action.equals(CommonApps.BROADCAST_TEST_ON)){
+				TEST_ON = !TEST_ON;
 			}
 		}
 	}
@@ -472,6 +476,7 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 		filter.addAction(TSDEvent.Navigation.POI_SEARCH_RESULT);
 		
 		filter.addAction(CommonApps.BROADCAST_KILL_VOICE);
+		filter.addAction(CommonApps.BROADCAST_TEST_ON);
 		
 		mReceiver = new MyBroadcastReceiver();
 		registerReceiver(mReceiver, filter);

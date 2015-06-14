@@ -115,13 +115,15 @@ public class InteractingActivity extends Activity {
 				e.printStackTrace();
 			}
 		}
-
+		mHandler.sendEmptyMessageDelayed(MSG_KILL_VOICE_SERVER, TIME_KILL_VOICE_SERVER);
 		super.onResume();
 	}
 
 	@Override
 	protected void onPause() {
 		LogUtil.d(TAG, "onPause...");
+		mHandler.removeMessages(MSG_KILL_VOICE_SERVER);
+		
 		mbFinishActivity = true;
 		if (mVoiceService != null) {
 			try {
@@ -171,6 +173,7 @@ public class InteractingActivity extends Activity {
 		if(mVoiceSleep != null){
 			mVoiceSleep.stop();
 		}
+		mHandler.removeMessages(MSG_KILL_VOICE_SERVER);
 		
 		mbFinishActivity = true;
 		unbindService(mVoiceServiceConnection);
@@ -214,7 +217,7 @@ public class InteractingActivity extends Activity {
 	private FRAGMENT_TYPE mFragmentType = FRAGMENT_TYPE.RECORD;
 	private void transFragment(FRAGMENT_TYPE type) {
 		LogUtil.d(TAG,"transFragment FRAGMENT_TYPE "+type+"  mbFinishActivity="+mbFinishActivity);
-		mHandler.removeMessages(MSG_KILL_VOICE_SERVER);
+		
 		if(mbFinishActivity){
 			return;
 		}
@@ -226,12 +229,14 @@ public class InteractingActivity extends Activity {
 		case RECORD:
 			fragment = mRecordFragment;
 			mbCanceling = false;
-			mHandler.sendEmptyMessageDelayed(MSG_KILL_VOICE_SERVER, TIME_KILL_VOICE_SERVER);
 			break;
 		case RECOG:
 			fragment = mRecogFragment;
+			mHandler.removeMessages(MSG_KILL_VOICE_SERVER);
+			mHandler.sendEmptyMessageDelayed(MSG_KILL_VOICE_SERVER, TIME_KILL_VOICE_SERVER);
 			break;
 		case SEARCH:
+			mHandler.removeMessages(MSG_KILL_VOICE_SERVER);
 			fragment = mSearchFragment;
 			mbIsSearchView = true;
 			Intent searchIntent = new Intent(TSDEvent.Interaction.CANCEL_INTERACTION_BY_TP);
@@ -248,9 +253,10 @@ public class InteractingActivity extends Activity {
 				builder.create().show();
 				TestYZSstr = null;
 			}
-
 			break;
 		case ERROR:
+			mHandler.removeMessages(MSG_KILL_VOICE_SERVER);
+			mHandler.sendEmptyMessageDelayed(MSG_KILL_VOICE_SERVER, TIME_KILL_VOICE_SERVER);
 			fragment = mErrorFragment;
 			break;
 		}

@@ -36,4 +36,5 @@ public interface CommonApps {
 	//test
 	static final String BROADCAST_TEST_VOICE_RESULT = "com_tuyou_tsd_common_broadcast_voice_result";
 	static final String BROADCAST_TEST_VOICE_STRING = "com_tuyou_tsd_common_broadcast_voice_string";
+	static final String BROADCAST_TEST_ON = "com_tuyou_tsd_common_broadcast_test_on";
 }
