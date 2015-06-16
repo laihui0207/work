@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -15,6 +17,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tuyou.tsd.common.CommonMessage;
+import com.tuyou.tsd.common.TSDEvent;
+import com.tuyou.tsd.common.base.CommonSleep;
 import com.tuyou.tsd.common.network.AudioItem;
 import com.tuyou.tsd.news.adapter.MusicPlayadapter;
 import com.tuyou.tsd.news.base.MyBaseActivity;
@@ -29,6 +33,8 @@ public class MusicListActivity extends MyBaseActivity implements OnClickListener
 	private int playIndex = 0;
 	private ListView musicPlayList;
 	
+//	private CommonSleep commonSleep = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -42,7 +48,7 @@ public class MusicListActivity extends MyBaseActivity implements OnClickListener
 		cast = new PlayMusicCast();
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Contents.PLAY_MUSIC_NEWS_NEXT);
-		filter.addAction(CommonMessage.EVT_ACC_OFF);
+		filter.addAction(TSDEvent.System.ACC_OFF);
 		filter.addAction(Contents.ACTION_NEWS_BUTTON);
 		filter.addAction(Contents.KILL_ALL_APP1);
 		filter.addAction(Contents.KILL_ALL_APP2);
@@ -126,7 +132,7 @@ public class MusicListActivity extends MyBaseActivity implements OnClickListener
 						}
 					}
 					adapter.notifyDataSetChanged();
-				}else if(intent.getAction().equals(CommonMessage.EVT_ACC_OFF)){
+				}else if(intent.getAction().equals(TSDEvent.System.ACC_OFF)){
 					finish();
 				}else if(intent.getAction().equals(Contents.ACTION_NEWS_BUTTON)){
 					int buttonId = intent.getIntExtra(Contents.INTENT_NEWS_BUTTONID_TAG, 0);
@@ -152,6 +158,44 @@ public class MusicListActivity extends MyBaseActivity implements OnClickListener
 	protected void onDestroy() {
 		super.onDestroy();
 		unregisterReceiver(cast);
+		
+//		if (commonSleep != null) {
+//			commonSleep.stop();
+//		}
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+//		commonSleep = new CommonSleep(this);
+//		commonSleep.start();
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+//		if (commonSleep != null) {
+//			commonSleep.stop();
+//		}
+	}
+
+	
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
+//		if (commonSleep != null) {
+//			commonSleep.update();
+//		}
+		return super.dispatchKeyEvent(event);
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
+//		if (commonSleep != null) {
+//			commonSleep.update();
+//		}
+		return super.dispatchTouchEvent(ev);
 	}
 	
 }

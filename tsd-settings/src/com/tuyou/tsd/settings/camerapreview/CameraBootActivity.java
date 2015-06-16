@@ -20,17 +20,18 @@ import android.widget.TextView;
 import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.settings.R;
-import com.tuyou.tsd.settings.base.BaseActivity;
+import com.tuyou.tsd.settings.base.SleepBaseActivity;
 import com.tuyou.tsd.settings.base.SysApplication;
 import com.tuyou.tsd.settings.base.WaitDialog;
 
-public class CameraBootActivity extends BaseActivity {
+public class CameraBootActivity extends SleepBaseActivity {
 	private String TAG = "CameraBootActivity";
 	private Button lookButton;
 	private TextView back;
-	private WaitDialog dialog;
+	private WaitDialog waitDialog;
+	private WaitDialog errDialog;
+	// 是否可以超时判断
 	private boolean isCanTimeOut = true;
-	private boolean isFirst = true;
 	private Timer timerOutTimer;
 	private BroadcastReceiver myReceiver = new BroadcastReceiver() {
 
@@ -42,11 +43,19 @@ public class CameraBootActivity extends BaseActivity {
 				timerOutTimer.cancel();
 				if (isCanTimeOut) {
 					isCanTimeOut = false;
-					if (dialog != null) {
-						dialog.dismiss();
-					}
-					startActivity(new Intent(CameraBootActivity.this,
-							CameraPreviewActivity.class));
+					Timer timer = new Timer();
+					timer.schedule(new TimerTask() {
+
+						@Override
+						public void run() {
+							startActivity(new Intent(CameraBootActivity.this,
+									CameraPreviewActivity.class));
+							if (waitDialog != null) {
+								waitDialog.dismiss();
+								waitDialog = null;
+							}
+						}
+					}, 3000);
 				}
 			}
 		}
@@ -60,8 +69,8 @@ public class CameraBootActivity extends BaseActivity {
 				stopCameraBroadcast();
 				if (isCanTimeOut) {
 					isCanTimeOut = false;
-					if (dialog != null) {
-						dialog.dismiss();
+					if (waitDialog != null) {
+						waitDialog.dismiss();
 					}
 					tsDialog(getResources().getString(
 							R.string.txt_preview_failure));
@@ -76,8 +85,8 @@ public class CameraBootActivity extends BaseActivity {
 				}
 				break;
 			case 1:
-				if (dialog != null) {
-					dialog.dismiss();
+				if (errDialog != null) {
+					errDialog.dismiss();
 				}
 				break;
 			case 2:
@@ -114,7 +123,7 @@ public class CameraBootActivity extends BaseActivity {
 				if (isServiceRunning(CameraBootActivity.this,
 						"com.tuyou.tsd.cardvr.service.VideoRec")) {
 					isCanTimeOut = true;
-					startBroadcast();
+					handler.sendEmptyMessage(2);
 					waitDialog();
 					timerOutTimer = new Timer();
 					timerOutTimer.schedule(new TimerTask() {
@@ -140,24 +149,6 @@ public class CameraBootActivity extends BaseActivity {
 	}
 
 	/**
-	 * 发送广播通知cardvr要进行预览
-	 */
-	public void startBroadcast() {
-		if (isFirst) {
-			handler.sendEmptyMessage(2);
-			isFirst = false;
-		}else {
-			Timer timer = new Timer();
-			timer.schedule(new TimerTask() {
-
-				@Override
-				public void run() {
-					handler.sendEmptyMessage(2);
-				}
-			}, 3000);
-		}
-	}
-	/**
 	 * 摄像头调节完成通知cardvr
 	 */
 	public void stopCameraBroadcast() {
@@ -174,19 +165,14 @@ public class CameraBootActivity extends BaseActivity {
 	public void waitDialog() {
 		LayoutInflater inflater = CameraBootActivity.this.getLayoutInflater();
 		View layout = inflater.inflate(R.layout.dialog_wait, null);
-		layout.findViewById(R.id.img_dialog_off).setOnClickListener(
-				new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						if (dialog != null) {
-							dialog.dismiss();
-							dialog = null;
-						}
-					}
-				});
-
-		dialog = new WaitDialog(CameraBootActivity.this, layout);
-		dialog.show();
+		layout.findViewById(R.id.img_dialog_off).setVisibility(View.GONE);
+		layout.findViewById(R.id.img_dialog_fgx).setVisibility(View.GONE);
+		if (waitDialog != null) {
+			timerOutTimer.cancel();
+			waitDialog.dismiss();
+		}
+		waitDialog = new WaitDialog(CameraBootActivity.this, layout);
+		waitDialog.show();
 	}
 
 	/**
@@ -202,15 +188,18 @@ public class CameraBootActivity extends BaseActivity {
 				new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						if (dialog != null) {
-							dialog.dismiss();
-							dialog = null;
+						if (errDialog != null) {
+							errDialog.dismiss();
+							errDialog = null;
 						}
 					}
 				});
-
-		dialog = new WaitDialog(CameraBootActivity.this, layout);
-		dialog.show();
+		if (errDialog != null) {
+			errDialog.dismiss();
+			errDialog = null;
+		}
+		errDialog = new WaitDialog(CameraBootActivity.this, layout);
+		errDialog.show();
 	}
 
 	/**

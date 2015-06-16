@@ -18,10 +18,10 @@ import com.tuyou.tsd.common.CommonMessage;
 import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.settings.R;
-import com.tuyou.tsd.settings.base.BaseActivity;
+import com.tuyou.tsd.settings.base.SleepBaseActivity;
 import com.tuyou.tsd.settings.base.SysApplication;
 
-public class WifiActivity extends BaseActivity implements OnClickListener {
+public class WifiActivity extends SleepBaseActivity implements OnClickListener {
 	private WifiManager wifiManager;
 	private TextView back;
 	private ImageView open;

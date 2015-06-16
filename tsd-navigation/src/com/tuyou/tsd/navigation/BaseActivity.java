@@ -7,12 +7,15 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.Window;
 
 import com.tuyou.tsd.common.CommonMessage;
 import com.tuyou.tsd.common.TSDComponent;
 import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.common.TSDShare;
+import com.tuyou.tsd.common.base.CommonSleep;
 import com.tuyou.tsd.common.util.HelperUtil;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.navigation.mode.SysApplication;
@@ -24,6 +27,7 @@ public class BaseActivity extends com.tuyou.tsd.common.base.BaseActivity {
 	public Editor editor;
 	public SharedPreferences spf;
 	public Editor edt;
+
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 
 		@Override
@@ -53,46 +57,6 @@ public class BaseActivity extends com.tuyou.tsd.common.base.BaseActivity {
 		// initNav();
 	}
 
-	// public void initNav() {
-	// BaiduNaviManager.getInstance().initEngine(this, getSdcardDir(),
-	// mNaviEngineInitListener, new LBSAuthManagerListener() {
-	// @Override
-	// public void onAuthResult(int status, String msg) {
-	// String str = null;
-	// if (0 == status) {
-	// str = getResources().getString(
-	// R.string.route_key_success);
-	// } else {
-	// str = getResources().getString(
-	// R.string.route_key_fail)
-	// + msg;
-	// }
-	// LogUtil.e("ACCESS_KEY", str);
-	// }
-	// });
-	// }
-	//
-	// private NaviEngineInitListener mNaviEngineInitListener = new
-	// NaviEngineInitListener() {
-	// public void engineInitSuccess() {
-	// }
-	//
-	// public void engineInitStart() {
-	// }
-	//
-	// public void engineInitFail() {
-	//
-	// }
-	// };
-	//
-	// private String getSdcardDir() {
-	// if (Environment.getExternalStorageState().equalsIgnoreCase(
-	// Environment.MEDIA_MOUNTED)) {
-	// return Environment.getExternalStorageDirectory().toString();
-	// }
-	// return null;
-	// }
-
 	/**
 	 * 函数名称 : playBroadcast 功能描述 : 开始播报语音广播 参数及返回值说明：
 	 */
@@ -115,26 +79,6 @@ public class BaseActivity extends com.tuyou.tsd.common.base.BaseActivity {
 		intent.setAction(CommonMessage.TTS_CLEAR);
 		// 发送 一个无序广播
 		sendBroadcast(intent);
-	}
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
-
-	@Override
-	protected void onStop() {
-		super.onStop();
 	}
 
 	@Override

@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tuyou.tsd.navigation"
     android:sharedUserId="com.tuyou.tsd"
-    android:versionCode="23"
-    android:versionName="0.4.5" >
+    android:versionCode="25"
+    android:versionName="0.4.7" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -38,7 +38,7 @@
         android:label="@string/app_name" >
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="0TC6r2T1uTX9xgdUSyQuV5Lo" />
+            android:value="r1Em7hxaGvUmbu3Te5Mne508" />
 
         <!-- debug模式申请的key：r1Em7hxaGvUmbu3Te5Mne508 -->
         <!-- 小宝账号申请的key：Bd6c46GxIq74XT0xawU9vqUU -->
@@ -48,6 +48,7 @@
             android:name="com.tuyou.tsd.navigation.MainActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.AppStartLoadTranslucent" >
             <intent-filter>
@@ -60,8 +61,7 @@
             android:name="com.tuyou.tsd.navigation.BNavigatorActivity"
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
             android:launchMode="singleTask"
-            android:screenOrientation="landscape"
-            android:theme="@style/Theme.AppStartLoadTranslucent" />
+            android:screenOrientation="landscape" />
         <activity
             android:name="com.tuyou.tsd.navigation.RouteResultsActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -75,8 +75,7 @@
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:screenOrientation="landscape"
-            android:theme="@style/Theme.AppStartLoadTranslucent" >
+            android:screenOrientation="landscape" >
         </activity>
         <activity
             android:name="com.tuyou.tsd.navigation.RouteGuideActivity"

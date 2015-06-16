@@ -23,7 +23,6 @@ import android.widget.RelativeLayout;
 
 import com.tuyou.tsd.common.CommonMessage;
 import com.tuyou.tsd.common.TSDComponent;
-import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.common.TSDShare;
 import com.tuyou.tsd.common.util.HelperUtil;
 import com.tuyou.tsd.settings.R;

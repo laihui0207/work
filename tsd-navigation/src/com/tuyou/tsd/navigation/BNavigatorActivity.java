@@ -2,8 +2,12 @@ package com.tuyou.tsd.navigation;
 
 import java.sql.Date;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,6 +26,9 @@ import com.baidu.navisdk.comapi.mapcontrol.BNMapController;
 import com.baidu.navisdk.comapi.routeplan.BNRoutePlaner;
 import com.baidu.navisdk.comapi.setting.BNSettingManager;
 import com.baidu.navisdk.comapi.setting.SettingParams;
+import com.baidu.navisdk.comapi.tts.BNTTSPlayer;
+import com.baidu.navisdk.comapi.tts.BNavigatorTTSPlayer;
+import com.baidu.navisdk.comapi.tts.IBNTTSPlayerListener;
 import com.baidu.navisdk.model.datastruct.LocData;
 import com.baidu.navisdk.model.datastruct.SensorData;
 import com.baidu.navisdk.ui.routeguide.BNavigator;
@@ -35,6 +42,7 @@ import com.tuyou.tsd.navigation.mode.SysApplication;
 
 public class BNavigatorActivity extends BaseActivity implements
 		OnClickListener, OnCheckedChangeListener {
+	private String TAG = "BNavigatorActivity";
 	private final int TYPE_NULL = 0, TYPE_MENU = 1, TYPE_MODE = 2,
 			TYPE_CONTENT = 3, TYPE_DAYNIGHT = 4;
 	private Date cacheDate;
@@ -45,6 +53,48 @@ public class BNavigatorActivity extends BaseActivity implements
 	private LinearLayout menuLayout, dayNightLayout, modeLayout, contentLayout;
 	private View layout;
 	private CheckBox dzyBox, xstxBox, aqjsBox, qflkBox, zxBox;
+	/**
+	 * 是否进行语音播报
+	 */
+	public boolean isPlayTTS = true;
+	private String playString = "";
+	private boolean isTTS = true;
+	private int idleTime = 0;
+	private int onNavTime = 60;
+	private boolean isComeNav = false, isOnPause = false;
+	private AudioManager mAudioManager;
+	private idleThread idleThread;
+
+	private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// Toast.makeText(context, "语音播报结束", Toast.LENGTH_SHORT).show();
+			String action = intent.getAction();
+			LogUtil.d(TAG, "action = " + action);
+			if (action.equals("tsd.tts.PLAY_FINISHED")) {
+				isTTS = true;
+			} else if (action.equals(TSDEvent.Navigation.IDLE_NAV_UPDATE)) {
+				if (isOnPause) {
+					idleTime = 0;
+					if (idleThread == null) {
+						LogUtil.d(TAG, "启动空闲一分钟会导航线程");
+						isComeNav = true;
+						idleThread = new idleThread();
+						idleThread.start();
+					}
+				}
+			} else if (action.equals(TSDEvent.Navigation.IDLE_NAV_STOP)) {
+				isComeNav = false;
+			}
+			// else if (action.equals("tsd.tts.CALL_BACK_PLAY_BEGIN")) {
+			// isPlayTTS = false;
+			// } else if (action.equals("tsd.tts.CALL_BACK_PLAY_END")) {
+			// isPlayTTS = true;
+			// }
+
+		}
+	};
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -60,6 +110,14 @@ public class BNavigatorActivity extends BaseActivity implements
 		// 填充视图
 		setContentView(navigatorView);
 		SysApplication.getInstance().addActivity(this);
+		mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
+				RoutePlanActivity.musicM, 0);
+		sendBroadcast(new Intent(TSDEvent.Navigation.NAV_STARTED));
+		//因为特殊需求，导航中恢复音乐播放，所以此处发送交互介绍广播
+		sendBroadcast(new Intent(TSDEvent.Interaction.INTERACTION_FINISH_FROM_CORE_SERVICE));
+		LogUtil.d(TAG, "send:" + TSDEvent.Navigation.NAV_STARTED);
+		LogUtil.d(TAG, "send:" + TSDEvent.Interaction.INTERACTION_FINISH_FROM_CORE_SERVICE);
 		BNMapController.getInstance().setDrawNaviLogo(false);
 		LayoutInflater inflater = BNavigatorActivity.this.getLayoutInflater();
 		layout = inflater.inflate(R.layout.layout_nav_window, null);
@@ -77,7 +135,59 @@ public class BNavigatorActivity extends BaseActivity implements
 
 					}
 				}));
+		// 动态注册接收语音播报结束广播
+		IntentFilter filter = new IntentFilter();
+		filter.addAction("tsd.tts.PLAY_FINISHED");
+		filter.addAction(TSDEvent.Navigation.IDLE_NAV_UPDATE);
+		filter.addAction(TSDEvent.Navigation.IDLE_NAV_STOP);
+		// 接收广播停止发送播报
+		// filter.addAction("tsd.tts.CALL_BACK_PLAY_BEGIN");
+		// filter.addAction("tsd.tts.CALL_BACK_PLAY_END");
+		registerReceiver(broadcastReceiver, filter);
+		// 初始化TTS. 或者也可以使用独立TTS模块，不用使用导航SDK提供的TTS
+		// BNTTSPlayer.initPlayer();
+		// 设置TTS播放回调
+		BNavigatorTTSPlayer.setTTSPlayerListener(new IBNTTSPlayerListener() {
 
+			@Override
+			public int playTTSText(String arg0, int arg1) {
+				LogUtil.d(TAG, "isPlayTTS = " + isPlayTTS);
+				if (isPlayTTS) {
+					if (arg0.contains("米行驶")) {
+						arg0 = arg0.replace("米行驶", "米 行驶");
+					}
+					if (!arg0.startsWith("路径规划成功") && !playString.equals(arg0)) {
+						playString = arg0;
+						playBroadcast(arg0, 0);
+					}
+					if (arg0.contains("导航结束")) {
+						isPlayTTS = false;
+					}
+					isTTS = false;
+				}
+				return 0;
+			}
+
+			@Override
+			public void phoneHangUp() {
+				// 手机挂断
+			}
+
+			@Override
+			public void phoneCalling() {
+				// 通话中
+			}
+
+			@Override
+			public int getTTSState() {
+				if (isTTS) {
+					return 1;
+				} else {
+					return 0;
+				}
+
+			}
+		});
 	}
 
 	private IBNavigatorListener mBNavigatorListener = new IBNavigatorListener() {
@@ -145,7 +255,9 @@ public class BNavigatorActivity extends BaseActivity implements
 
 	@Override
 	public void onResume() {
+		isOnPause = false;
 		sendBroadcast(new Intent(TSDEvent.System.DISABLE_IDLE_CHECK));
+		LogUtil.d(TAG, "send:" + TSDEvent.System.DISABLE_IDLE_CHECK);
 		BNavigator.getInstance().resume();
 		super.onResume();
 		BNMapController.getInstance().onResume();
@@ -153,9 +265,11 @@ public class BNavigatorActivity extends BaseActivity implements
 
 	@Override
 	public void onPause() {
+		isOnPause = true;
+		sendBroadcast(new Intent(TSDEvent.System.ENABLE_IDLE_CHECK));
+		LogUtil.d(TAG, "send:" + TSDEvent.System.ENABLE_IDLE_CHECK);
 		BNavigator.getInstance().pause();
 		super.onPause();
-		sendBroadcast(new Intent(TSDEvent.System.ENABLE_IDLE_CHECK));
 		BNMapController.getInstance().onPause();
 	}
 
@@ -165,11 +279,18 @@ public class BNavigatorActivity extends BaseActivity implements
 
 	@Override
 	public void onDestroy() {
+		sendBroadcast(new Intent(TSDEvent.Navigation.NAV_STOPPED));
+		LogUtil.d(TAG, "send:" + TSDEvent.Navigation.NAV_STOPPED);
+		BNTTSPlayer.releaseTTSPlayer();
 		stopBroadcast();
+		SearchService.navIntent = null;
 		BNavigator.destory();
 		BNRoutePlaner.getInstance().setObserver(null);
 		sendBroadcast(new Intent(TSDEvent.Navigation.APP_STOPPED));
 		sendBroadcast(new Intent(TSDEvent.System.ENABLE_IDLE_CHECK));
+		if (broadcastReceiver != null) {
+			unregisterReceiver(broadcastReceiver);
+		}
 		super.onDestroy();
 	}
 
@@ -340,7 +461,7 @@ public class BNavigatorActivity extends BaseActivity implements
 			initNavView();
 			break;
 		case R.id.check_connect_aqjs:
-			RoutePlanActivity.isPlayTTS = !isChecked;
+			isPlayTTS = !isChecked;
 			break;
 		case R.id.check_connect_qflk:
 			BNSettingManager.getInstance(this)
@@ -355,6 +476,35 @@ public class BNavigatorActivity extends BaseActivity implements
 
 		default:
 			break;
+		}
+	}
+
+	/**
+	 * 判断是否需要会导航线程
+	 * 
+	 * @author Administrator
+	 * 
+	 */
+	class idleThread extends Thread {
+		@Override
+		public void run() {
+			super.run();
+			try {
+				while (isComeNav) {
+					LogUtil.d(TAG, "idleTime = " + idleTime);
+					if (idleTime < onNavTime) {
+						idleTime++;
+					} else {
+						isComeNav = false;
+						sendBroadcast(new Intent(SearchService.navingAction));
+						idleThread = null;
+					}
+					sleep(1000);
+				}
+			} catch (InterruptedException e) {
+				// TODO 自动生成的 catch 块
+				e.printStackTrace();
+			}
 		}
 	}
 

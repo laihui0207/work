@@ -18,9 +18,10 @@ import android.widget.TextView;
 
 import com.tuyou.tsd.settings.R;
 import com.tuyou.tsd.settings.base.BaseActivity;
+import com.tuyou.tsd.settings.base.SleepBaseActivity;
 import com.tuyou.tsd.settings.base.SysApplication;
 
-public class FMMainActivity extends BaseActivity implements OnClickListener {
+public class FMMainActivity extends SleepBaseActivity implements OnClickListener {
 	private ImageView fMopen;
 	private Button btnTS;
 	private LinearLayout openLayout, offLayout;

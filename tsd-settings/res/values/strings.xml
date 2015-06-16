@@ -40,7 +40,7 @@
     <string name="txt_off_screen_time_5">5</string>
     <!-- FM发射设置 -->
     <string name="txt_fm_title">FM发射管理</string>
-    <string name="txt_fm_kg">FM发射开关</string>
+    <string name="txt_fm_kg">FM发射</string>
     <string name="txt_fm_ts">调试频率</string>
     <string name="txt_fm_toast_1">如果当前频率不佳，请更改频率</string>
     <string name="txt_fm_frequency">88.8</string>
@@ -48,7 +48,7 @@
     <string name="txt_fm_stop_music">中止播放</string>
     <string name="txt_fm_unit">MHz</string>
     <string name="txt_fm_fre_new">当前频率:</string>
-    <string name="fm_no_open_jy">唤醒小宝,说“打开FM”也可以哦~</string>
+    <string name="fm_no_open_jy">记得把车载FM调到小宝的频道哦</string>
     <string name="fm_open_tts">老大，小宝在车载FM等你哦</string>
     <!-- 个人信息 -->
     <string name="information_name">昵称:</string>
@@ -58,23 +58,22 @@
     <string name="information_app">扫一下把APP带回家</string>
     <string name="information_tips">说明:</string>
     <string name="information_tips_1">如要解除绑定或修改设置，</string>
-    <string name="information_tips_2">请在手机APP中操作。</string>
-    <string name="information_no_tips_1">您尚未将手机app与小宝绑定\n&#160;&#160;&#160;&#160;绑定后才能接收事故提醒</string>
-    <string name="information_no_tips_2">您可以扫描二维码下载手机APP\n下载后进行绑定</string>
+    <string name="information_tips_2">请通过手机app完成。</string>
+    <string name="information_no_tips_1">小宝还没有与手机app绑定\n&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;赶紧绑定吧~</string>
+    <string name="information_no_tips_2">扫二维码，与手机app绑定</string>
     <!-- 摄像头校正 -->
-    <string name="txt_camera_boot">您可以上下左右转动摄像头调整摄像头的角度。</string>
+    <string name="txt_camera_boot">如左图，你可以上下左右转动摄像头到最佳视角。</string>
     <string name="txt_camera_boot_look">去看看效果</string>
     <string name="back">返回</string>
     <!-- 摄像头预览 -->
-    <string name="txt_preview_t1">请调节摄像头</string>
-    <string name="txt_preview_t2">以看到正前方的道路为最佳</string>
+    <string name="txt_preview_t1">以看清正前方的道路为</string>
+    <string name="txt_preview_t2">最佳</string>
     <string name="txt_preview_finish">完成</string>
     <string name="txt_dialog_wait">请稍后...</string>
-    <string name="txt_preview_title">调节摄像头</string>
+    <string name="txt_preview_title">当前视角</string>
     <string name="tts_no_photograph">暂时无法拍照，请稍后</string>
     <string name="txt_preview_start">正在请求停止行车记录仪</string>
     <string name="txt_preview_failure">请求失败，请重试</string>
-  
 
     <!-- 初始化设置 -->
     <string name="txt_init_start">立即开始</string>
@@ -109,6 +108,7 @@
     <string name="txt_about_order_44">音乐、打开音乐、节目、打开节目、新闻、打开新闻......</string>
     <string name="txt_about_order_55">我要去...导航到...我想去...</string>
     <string name="txt_about_order_66">打开小宝热点、小宝开热点、打开小宝wifi...</string>
+  	<string name="txt_no_update">哈哈，第一次来到小宝的地盘吧，先听小宝嘚瑟几句噻~\n小宝是一个基于语音交互的智能伴驾机器人，你可以用我导航、拍照，也可以用我听音乐、新闻和节目。你只需先“小宝小宝”或者按“小宝键”唤醒我，然后跟我说 “我要去虹桥火车站”“我要听王菲的红豆”“我要听罗辑思维”等等，小宝就能帮你找到你要搜的东东。\n小宝比你更懂你自己！我会帮你监控前方的路况，及时帮你避堵，还能在你堵车时，推送一些好听的内容，让你不那么焦虑；当在你疲劳时，我还会放一些醒神的音乐，让你好好开车……\n哈哈，当然，小宝的内容一直都在更新啦~只要有小宝陪伴，你就能一路“in”下去呦！如果你听到好听的内容就收藏的话，小宝会越来越聪明滴，推荐的内容也会越来越对你的口味哦~\n同时，小宝还是一个高清行车记录仪，一旦有事故或发生，我会把这一段视频锁定，然后通知到你绑定的手机 APP；如果有人恶意碰瓷，你也可以用手机查看行车视频，从此妈妈再也不用担心我们开车上路啦~\n还在等神马？赶紧带小宝上路咯~</string>
     <!-- FM notification -->
     <string name="txt_notification_1">FM</string>
 

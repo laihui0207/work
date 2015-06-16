@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
@@ -23,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baidu.lbsapi.auth.LBSAuthManagerListener;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatus;
@@ -47,20 +45,18 @@ import com.baidu.mapapi.search.route.PlanNode;
 import com.baidu.mapapi.search.route.RoutePlanSearch;
 import com.baidu.mapapi.search.route.TransitRouteResult;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
-import com.baidu.navisdk.BNaviEngineManager.NaviEngineInitListener;
 import com.baidu.navisdk.BNaviPoint;
 import com.baidu.navisdk.BaiduNaviManager;
 import com.baidu.navisdk.BaiduNaviManager.OnStartNavigationListener;
 import com.baidu.navisdk.comapi.routeplan.RoutePlanParams.NE_RoutePlan_Mode;
 import com.tuyou.tsd.common.TSDLocation;
-import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.navigation.mode.SysApplication;
 import com.tuyou.tsd.navigation.mode.WaitDialog;
 
 /**
  * GPS导航
  */
-public class RouteGuideActivity extends BaseActivity implements
+public class RouteGuideActivity extends SleepBaseActivity implements
 		BaiduMap.OnMapLoadedCallback, OnGetGeoCoderResultListener,
 		BaiduMap.OnMapClickListener, BaiduMap.OnMapLongClickListener {
 	private double sX = 0, sY = 0, eX = 0, eY = 0;

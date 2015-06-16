@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,9 +31,9 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tuyou.tsd.common.CommonMessage;
 import com.tuyou.tsd.common.TSDConst;
 import com.tuyou.tsd.common.TSDEvent;
+import com.tuyou.tsd.common.base.CommonSleep;
 import com.tuyou.tsd.common.network.AudioCategory;
 import com.tuyou.tsd.common.network.AudioItem;
 import com.tuyou.tsd.common.network.AudioSubscription;
@@ -68,6 +69,8 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 	private ImageView musicLoading;
 	private List<AudioSubscription> listAudio;
 //	private ImageView musicNull;
+	
+//	private CommonSleep commonSleep = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -187,7 +190,7 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 		filter.addAction(AudioPlayerService.NEXT_AUDIO);
 		filter.addAction(AudioPlayerService.HEARD_LIST);
 		filter.addAction(Contents.PLAY_NEWS_PODCAST);
-		filter.addAction(CommonMessage.EVT_ACC_OFF);
+		filter.addAction(TSDEvent.System.ACC_OFF);
 		filter.addAction(Contents.ACTION_NEWS_BUTTON);
 		filter.addAction(Contents.MUSICPLAY_STATE_NEWS_PLAY);
 		filter.addAction(Contents.MUSICPLAY_STATE_NEWS_PAUSE);
@@ -199,6 +202,8 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 		filter.addAction(Contents.KILL_ALL_APP2);
 		filter.addAction(Contents.DATA_REFRESH_PUSH);
 		filter.addAction(TSDEvent.System.HARDKEY3_PRESSED);
+		
+		filter.addAction(Contents.TSD_AUDIO_PLAY_MUSIC_RESULT);
 		registerReceiver(cast, filter);
 	}
 
@@ -681,7 +686,7 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 				countService.StartPlayer(intent.getExtras().getString("music_category"), listChild.get(intent.getExtras().getInt("music_index")).item);
 			}
 			else
-			if(intent.getAction().equals(CommonMessage.EVT_ACC_OFF)){
+			if(intent.getAction().equals(TSDEvent.System.ACC_OFF)){
 				stopService(new Intent(MusicActivity.this,AudioPlayerService.class));
 				finish();
 			}else
@@ -724,6 +729,18 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 				Message msglove = new Message();
 				msglove.what =8;
 				textViewHandler.sendMessageDelayed(msglove, 400);
+			}else if(intent.getAction().equals(Contents.TSD_AUDIO_PLAY_MUSIC_RESULT)){
+				list = countService.getCategoryList();
+				for(int i=1;i<list.size();i++){
+					if(intent.getExtras().get("album").equals(list.get(i).category)){
+						index = i;
+						countService.StartPlayer(list.get(i).category, intent.getExtras().getString("item"));
+						title.setText(list.get(index).name);
+						setTitleEnable(index);
+						flow.setSelection(index);
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -810,6 +827,11 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		
+//		if (commonSleep != null) {
+//			commonSleep.stop();
+//		}
+		
 		unbindService(serviceConnection);
 		unregisterReceiver(cast);
 		Intent it = new Intent();
@@ -1005,4 +1027,40 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 	     musicListPoint.setEnabled(able);
 	     musicListLayout.setEnabled(able);
 	}
+	
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+//		commonSleep = new CommonSleep(this);
+//		commonSleep.start();
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+//		if (commonSleep != null) {
+//			commonSleep.stop();
+//		}
+	}
+
+	
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
+//		if (commonSleep != null) {
+//			commonSleep.update();
+//		}
+		return super.dispatchKeyEvent(event);
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
+//		if (commonSleep != null) {
+//			commonSleep.update();
+//		}
+		return super.dispatchTouchEvent(ev);
+	}
+	
 }

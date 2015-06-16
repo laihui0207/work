@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import com.tuyou.tsd.settings.about.AboutActivity;
 import com.tuyou.tsd.settings.base.BaseActivity;
 import com.tuyou.tsd.settings.base.SettingsService;
+import com.tuyou.tsd.settings.base.SleepBaseActivity;
 import com.tuyou.tsd.settings.base.SysApplication;
 import com.tuyou.tsd.settings.camerapreview.CameraBootActivity;
 import com.tuyou.tsd.settings.fm.FMMainActivity;
@@ -19,7 +20,7 @@ import com.tuyou.tsd.settings.power.PowerActivity;
 import com.tuyou.tsd.settings.trafficstats.FlowActivity;
 import com.tuyou.tsd.settings.trafficstats.WifiActivity;
 
-public class SettingsActivity extends BaseActivity implements OnClickListener {
+public class SettingsActivity extends SleepBaseActivity implements OnClickListener {
 	private ImageButton wifiButton, powerButton, infoButton, flowButton,
 			fmButton, cameraButton;
 	private LinearLayout aboutLayout;

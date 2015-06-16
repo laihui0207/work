@@ -76,7 +76,7 @@ import com.tuyou.tsd.navigation.mode.SysApplication;
 import com.tuyou.tsd.navigation.mode.WaitDialog;
 import com.tuyou.tsd.navigation.mode.hisPoiInfo;
 
-public class MainActivity extends BaseActivity implements
+public class MainActivity extends SleepBaseActivity implements
 		BaiduMap.OnMapClickListener, BaiduMap.OnMapLongClickListener,
 		OnGetGeoCoderResultListener, OnClickListener,
 		BaiduMap.OnMapLoadedCallback, BaiduMap.OnMapTouchListener {
@@ -117,6 +117,7 @@ public class MainActivity extends BaseActivity implements
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
 			case 0:
+				System.out.println("isCtrl = " + isCtrl);
 				if (!isCtrl) {
 					isCtrl = true;
 					LogUtil.d(TAG, "send:"
@@ -145,14 +146,16 @@ public class MainActivity extends BaseActivity implements
 		mCurrentMode = LocationMode.NORMAL;
 		init();
 		listenter();
-		Timer timer = new Timer();
-		timer.schedule(new TimerTask() {
+		if (!isCtrl) {
+			Timer timer = new Timer();
+			timer.schedule(new TimerTask() {
 
-			@Override
-			public void run() {
-				handler.sendEmptyMessage(0);
-			}
-		}, 2000);
+				@Override
+				public void run() {
+					handler.sendEmptyMessage(0);
+				}
+			}, 2000);
+		}
 	}
 
 	public void search(String content) {
@@ -734,7 +737,8 @@ public class MainActivity extends BaseActivity implements
 		}
 		if (list.size() == 0) {
 			hisBtn.setBackgroundResource(R.drawable.bg_mian_his_1);
-			playBroadcast("还未搜索过哦，现在开始设目的地导航吧", 0);
+			stopBroadcast();
+			playBroadcast(getResources().getString(R.string.main_no_his), 0);
 		} else {
 			ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 					MainActivity.this, R.layout.item_his,

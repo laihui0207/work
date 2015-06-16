@@ -24,6 +24,7 @@
     <string name="main_location_fail">定位失败</string>
     <string name="main_enter_destination">请输入目的地</string>
     <string name="main_my_location">我的位置</string>
+    <string name="main_no_his">老大，你还没有搜过目的地</string>
     <!-- 路线规划页面 -->
     <string name="route_key_fail">key校验失败, </string>
     <string name="route_key_success">key校验成功!</string>

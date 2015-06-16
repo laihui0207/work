@@ -33,7 +33,7 @@ public class MusicListActivity extends MyBaseActivity implements OnClickListener
 	private int playIndex = 0;
 	private ListView musicPlayList;
 	
-	private CommonSleep commonSleep = null;
+//	private CommonSleep commonSleep = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,33 +46,33 @@ public class MusicListActivity extends MyBaseActivity implements OnClickListener
 	@Override
 	protected void onResume() {
 		super.onResume();
-		commonSleep = new CommonSleep(this);
-		commonSleep.start();
+//		commonSleep = new CommonSleep(this);
+//		commonSleep.start();
 	}
 	
 	@Override
 	protected void onPause() {
 		super.onPause();
-		if (commonSleep != null) {
-			commonSleep.stop();
-		}
+//		if (commonSleep != null) {
+//			commonSleep.stop();
+//		}
 	}
 	
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
-		if (commonSleep != null) {
-			commonSleep.update();
-		}
+//		if (commonSleep != null) {
+//			commonSleep.update();
+//		}
 		return super.dispatchKeyEvent(event);
 	}
 
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
 		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
-		if (commonSleep != null) {
-			commonSleep.update();
-		}
+//		if (commonSleep != null) {
+//			commonSleep.update();
+//		}
 		return super.dispatchTouchEvent(ev);
 	}
 

@@ -1,5 +1,6 @@
 package com.tuyou.tsd.settings.init;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -7,15 +8,15 @@ import android.content.IntentFilter;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import com.tuyou.tsd.common.CommonMessage;
 import com.tuyou.tsd.settings.R;
-import com.tuyou.tsd.settings.base.BaseActivity;
 
-public class WeclomeActivity extends BaseActivity {
+public class WeclomeActivity extends Activity {
 	private Button start;
 	private ImageView talk;
 	private AnimationDrawable animationDrawable;
@@ -30,6 +31,7 @@ public class WeclomeActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);// 隐藏标题
 		setContentView(R.layout.activity_init_weclome);
 		// 动态注册接收语音播报结束广播
 		IntentFilter filter = new IntentFilter();

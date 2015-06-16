@@ -10,13 +10,13 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.tuyou.tsd.common.TSDEvent;
+import com.tuyou.tsd.common.CommonApps;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.settings.R;
-import com.tuyou.tsd.settings.base.BaseActivity;
+import com.tuyou.tsd.settings.base.SleepBaseActivity;
 import com.tuyou.tsd.settings.base.SysApplication;
 
-public class PowerActivity extends BaseActivity implements OnClickListener {
+public class PowerActivity extends SleepBaseActivity implements OnClickListener {
 	private Button dormancy1Button, dormancy2Button, dormancy3Button,
 			dormancy4Button, dormancy5Button;
 	private TextView back;
@@ -65,7 +65,7 @@ public class PowerActivity extends BaseActivity implements OnClickListener {
 			String timeType = pref.getString("screen_off_mode", "time");
 			if (timeType.equals("time")) {
 				idleTime = (Integer.parseInt(pref.getString("screen_off_value",
-						5 * 60 + ""))) / 60;
+						idleTime * 60 + ""))) / 60;
 				switch (idleTime) {
 				case 1:
 					idleBG = R.id.btn_power_off_1;
@@ -142,7 +142,12 @@ public class PowerActivity extends BaseActivity implements OnClickListener {
 	}
 
 	public void dormancy() {
-		Intent intent = new Intent(TSDEvent.System.IDLE_INTERVAL_TIME_UPDATED);
+//		Intent intent = new Intent(TSDEvent.System.IDLE_INTERVAL_TIME_UPDATED);
+//		sendBroadcast(intent);
+		Intent intent = new Intent(CommonApps.BROADCAST_SLEEP_TIME_UPDATE);
+		long updateTime = idleTime*60*1000;
+		intent.putExtra(CommonApps.SLEEP_TIME_UPDATE, updateTime);
+		System.out.println("设置休眠时间"+updateTime);
 		sendBroadcast(intent);
 		LogUtil.d("发广播", intent.toString());
 	}

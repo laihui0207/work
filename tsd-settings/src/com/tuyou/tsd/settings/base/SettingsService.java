@@ -25,6 +25,7 @@ import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.tuyou.tsd.common.CommonApps;
 import com.tuyou.tsd.common.CommonMessage;
 import com.tuyou.tsd.common.TSDComponent;
 import com.tuyou.tsd.common.TSDEvent;
@@ -119,13 +120,13 @@ public class SettingsService extends Service {
 			} else if (action.equals(TSDEvent.System.ACC_OFF)) {
 				if (fmSwitch) {
 					TsdHelper.setFMOff();
-					nm.cancel(nid);
 				}
+				nm.cancel(nid);
 			} else if (action.equals(TSDEvent.System.ACC_ON)) {
 				if (fmSwitch) {
 					openFM();
-					notification();
 				}
+				notification();
 			} else if (action.equals(SAVEFMACTION)) {
 				if (pref != null) {
 					editor.putString("FMOpen", fmSwitch + "");
@@ -159,7 +160,27 @@ public class SettingsService extends Service {
 		startService(service);
 		Intent intent = new Intent(TSDEvent.System.FETCH_CONFIG_INFO);
 		sendBroadcast(intent);
+		initIdleTime();
 		super.onCreate();
+	}
+	
+	/**
+	 * 初始化休眠时间
+	 */
+	public void initIdleTime(){
+		if (pref != null) {
+			int idleTime = (Integer.parseInt(pref.getString("screen_off_value",
+					3 * 60 + ""))) / 60;
+			editor.putString("screen_off_value", idleTime * 60 + "");
+			editor.commit();
+//			sendBroadcast(new Intent(TSDEvent.System.IDLE_INTERVAL_TIME_UPDATED));
+//			LogUtil.d("发广播", "send:"+TSDEvent.System.IDLE_INTERVAL_TIME_UPDATED);
+			Intent intent = new Intent(CommonApps.BROADCAST_SLEEP_TIME_UPDATE);
+			long updateTime = idleTime*60*1000;
+			intent.putExtra(CommonApps.SLEEP_TIME_UPDATE, updateTime);
+			sendBroadcast(intent);
+		}
+		
 	}
 
 	@SuppressLint("CommitPrefEdits")

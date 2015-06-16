@@ -137,6 +137,7 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 		
 		super.onCreate();
 //		getCategoryList();
+		System.out.println("=========================================音乐开始了");
 		mPref = getSharedPreferences("audioservice", Context.MODE_PRIVATE);
 		mIsAccOn=true;
 		m_myReceiver = new MyReceiver();
@@ -1306,10 +1307,15 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 					}
 
 				} else {
-					if(playIndex<=0){
-						playIndex = currentPlayingCategory.item.size()-1;
+					try {
+						if(playIndex<=0){
+							playIndex = currentPlayingCategory.item.size()-1;
+						}
+						item = itemlist.get(playIndex);
+					} catch (Exception e) {
+						playIndex = 0;
+						item = itemlist.get(playIndex);
 					}
-					item = itemlist.get(playIndex);
 				}
 			} else {
 				item = itemlist.get(0);

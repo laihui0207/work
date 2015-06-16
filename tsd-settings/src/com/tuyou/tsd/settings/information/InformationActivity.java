@@ -19,11 +19,11 @@ import com.tuyou.tsd.common.network.JsonOA2;
 import com.tuyou.tsd.common.util.HelperUtil;
 import com.tuyou.tsd.common.util.MyAsyncTask;
 import com.tuyou.tsd.settings.R;
-import com.tuyou.tsd.settings.base.BaseActivity;
+import com.tuyou.tsd.settings.base.SleepBaseActivity;
 import com.tuyou.tsd.settings.base.SysApplication;
 import com.tuyou.tsd.settings.base.WaitDialog;
 
-public class InformationActivity extends BaseActivity implements
+public class InformationActivity extends SleepBaseActivity implements
 		OnClickListener {
 	// 返回和二维码图片
 	private TextView back;

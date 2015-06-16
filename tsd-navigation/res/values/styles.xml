@@ -1,4 +1,5 @@
 <resources>
+
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
@@ -20,7 +21,7 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowNoTitle">true</item>
     </style>
-    
+
     <style name="Dialog_Fullscreen">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowFrame">@null</item>

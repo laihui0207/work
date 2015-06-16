@@ -52,6 +52,7 @@ public class SearchService extends Service {
 	private String city, strAddr, myAddr, poiHot;
 	private double mylatitude, mylongitude;
 	private boolean isEarchfinish = false;
+	public static String navingAction = "tsd.event.navigation.naving";
 	private PoiSearch mPoiSearch;
 	private DecimalFormat df = new DecimalFormat("0.0");
 	public static TSDLocation location = null;
@@ -67,6 +68,8 @@ public class SearchService extends Service {
 	private int sum = 50;// 每次搜索获取的最多条数
 	private List<String> hisList = new ArrayList<String>();
 	private List<hisPoiInfo> list = new ArrayList<hisPoiInfo>();
+	public static Intent navIntent = null;
+	
 	private BroadcastReceiver myReceiver = new BroadcastReceiver() {
 
 		@Override
@@ -123,6 +126,17 @@ public class SearchService extends Service {
 				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				i.putExtra("destination", intent.getStringExtra("destination"));
 				startActivity(i);
+			} else if (action.equals(navingAction)) {
+				Intent i = new Intent();
+				i.setClassName("com.tuyou.tsd.navigation",
+						"com.tuyou.tsd.navigation.BNavigatorActivity");
+				// 说明系统中存在这个activity
+				if (i.resolveActivity(getPackageManager()) != null) {
+					LogUtil.d(TAG, "跳转到：BNavigatorActivity");
+					// 跳转到导航中页面
+					navIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					startActivity(navIntent);
+				}
 			}
 		}
 	};
@@ -157,13 +171,13 @@ public class SearchService extends Service {
 		// 在使用SDK各组件之前初始化context信息，传入ApplicationContext
 		// 注意该方法要再setContentView方法之前实现
 		SDKInitializer.initialize(getApplicationContext());
-		// System.out.println("onCreate");
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(TSDEvent.Push.NAV_ADDR);
 		filter.addAction(TSDEvent.System.LOCATION_UPDATED);
 		filter.addAction(TSDEvent.Navigation.POI_SEACH);
 		filter.addAction("tsd.event.navigation.search_nearby");
 		filter.addAction(TSDEvent.Navigation.START_NAVIGATION);
+		filter.addAction(navingAction);
 		filter.addAction("nav_page");
 		registerReceiver(myReceiver, filter);
 		// 启动定位服务
@@ -297,6 +311,7 @@ public class SearchService extends Service {
 	private OnGetPoiSearchResultListener poiListener = new OnGetPoiSearchResultListener() {
 		@SuppressWarnings("unchecked")
 		public void onGetPoiResult(PoiResult result) {
+			LogUtil.d(TAG, "result.error = " + result.error);
 			// 获取POI检索结果
 			if (result == null
 					|| result.error == SearchResult.ERRORNO.RESULT_NOT_FOUND) {
@@ -412,6 +427,10 @@ public class SearchService extends Service {
 	 * 发送查询结果
 	 */
 	private void pushResult() {
+		if (lines == null || lines.size() == 0) {
+			// SearchService.this.sendBroadcast(new
+			// Intent(TSDEvent.Audio.RESUME));
+		}
 		Intent intent = new Intent(TSDEvent.Navigation.POI_SEARCH_RESULT);
 		intent.putExtra("result", poiJson.toString());
 		SearchService.this.sendBroadcast(intent);
@@ -483,11 +502,27 @@ public class SearchService extends Service {
 	 */
 	public void packPoi() {
 		try {
+			List<HashMap<String, String>> poiList = new ArrayList<HashMap<String, String>>();
+			if (poiHot.length() > 0) {
+				for (int i = 0; i < lines.size(); i++) {
+					HashMap<String, String> poiInfo = lines.get(i);
+					LatLng poiLatLng = new LatLng(Double.parseDouble(poiInfo
+							.get("latitude")), Double.parseDouble(poiInfo
+							.get("longitude")));
+					double dis = DistanceUtil.getDistance(latLng, poiLatLng);
+					if (dis < 6000) {
+						LogUtil.d(TAG, "距离:" + dis);
+						poiList.add(poiInfo);
+					}
+				}
+			} else {
+				poiList = lines;
+			}
 			poiJson = new JSONObject();
 			poiArray = new JSONArray();
 			poiJson.put("result", "ok");
 			poiJson.put("type", "poi");
-			for (HashMap<String, String> poiInfo : lines) {
+			for (HashMap<String, String> poiInfo : poiList) {
 				JSONObject jsonObject = new JSONObject();
 				jsonObject.put("name", poiInfo.get("name"));
 				jsonObject.put("addr", poiInfo.get("addr"));

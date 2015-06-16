@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tuyou.tsd.settings"
-    android:versionCode="17"
     android:sharedUserId="com.tuyou.tsd"
-    android:versionName="0.4.2" >
+    android:versionCode="19"
+    android:versionName="0.4.4" >
 
     <uses-sdk
         android:minSdkVersion="14"

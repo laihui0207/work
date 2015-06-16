@@ -140,7 +140,8 @@
                 android:layout_marginTop="@dimen/dimen_50"
                 android:text="@string/wifi_no_open_ts"
                 android:textColor="@drawable/gray"
-                android:textSize="@dimen/text_size_20" />
+                android:textSize="@dimen/text_size_20" 
+                android:visibility="gone"/>
 
             <TextView
                 android:layout_width="wrap_content"

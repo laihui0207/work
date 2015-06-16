@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -29,7 +30,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tuyou.tsd.common.CommonApps;
@@ -38,12 +38,12 @@ import com.tuyou.tsd.common.TSDConst;
 import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.common.network.AudioCategory;
 import com.tuyou.tsd.common.network.AudioItem;
-import com.tuyou.tsd.common.network.AudioState;
 import com.tuyou.tsd.common.network.AudioSubscription;
 import com.tuyou.tsd.common.network.GetAudioCategoryDetailRes;
 import com.tuyou.tsd.common.network.GetAudioCategoryListRes;
 import com.tuyou.tsd.common.network.GetAudioSubscriptionListRes;
 import com.tuyou.tsd.common.network.JsonOA2;
+import com.tuyou.tsd.common.network.AudioState;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.common.util.MyAsyncTask;
 import com.tuyou.tsd.podcast.MusicActivity;
@@ -135,6 +135,7 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 	private boolean isPush = false;
 	
 	private boolean isPlayNow = false;
+	private boolean isTTSPause = false;
 
 	private List<AudioSubscription> listAudio;
 	private ArrayList<AudioSubscription> lcs;
@@ -496,6 +497,10 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 							if(myCategories.get(i).category.equals(aduio.category)){
 								StartPlayer(lcs.get(0).album, items.get(0).item);
 								isPush = false;
+								Intent it = new  Intent(Contents.TSD_AUDIO_PLAY_MUSIC_RESULT);
+								it.putExtra("album", lcs.get(0).album);
+								it.putExtra("item", items.get(0).item);
+								sendBroadcast(it);
 								return;
 							}
 						}
@@ -517,8 +522,12 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 						}else{
 							sendBroadcast(new Intent(Contents.DATA_REFRESH_PUSH));
 						}
-						StartPlayer(lcs.get(0).album, items.get(0).item);
+//						StartPlayer(lcs.get(0).album, items.get(0).item);
 						isPush = false;
+						Intent it = new  Intent(Contents.TSD_AUDIO_PLAY_MUSIC_RESULT);
+						it.putExtra("album", lcs.get(0).album);
+						it.putExtra("item", items.get(0).item);
+						sendBroadcast(it);
 					}
 				}else{
 					if (subscriptionDetailRes.items != null) {
@@ -597,7 +606,6 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 				if (isPlaying()) {
 					pause();
 					isPlayNow = true;
-					tellLauncherState(false);
 					try {
 						int size = 0;
 						if(listAudio!=null){
@@ -621,7 +629,6 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 				} else {
 					rusume();
 					isPlayNow = false;
-					tellLauncherState(true);
 					try {
 						int size = 0;
 						if(listAudio!=null){
@@ -853,14 +860,12 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 				if (AudioPlayerService.this.isPlaying()) {
 					isPlayNow = true;
 					AudioPlayerService.this.pause();
-					tellLauncherState(false);
 				}
 			} else if (action.equals(TSDEvent.Podcast.RESUME)) {
 				if (isPlayNow) {
 					if(!isPlaying()){
 						AudioPlayerService.this.rusume();
 						isPlayNow = false;
-						tellLauncherState(true);
 					}
 				}
 			} else if (action.equals(CommonMessage.VOICE_COMM_SHUT_UP)) {
@@ -875,17 +880,20 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 			} else if (action.equals(TSDEvent.Interaction.INTERACTION_START)) {
 				if (AudioPlayerService.this.isPlaying()) {
 					isPlayNow = true;
+					isTTSPause = true;
 					AudioPlayerService.this.pause();
-					tellLauncherState(false);
 				}
 			} else if (action.equals(TSDEvent.Interaction.INTERACTION_FINISH_FROM_CORE_SERVICE)) {
-				if (isPlayNow) {
-					if(!isPlaying()){
-						AudioPlayerService.this.rusume();
-						isPlayNow = false;
-						tellLauncherState(true);
+				if(isTTSPause){
+					if (isPlayNow) {
+						if(!isPlaying()){
+							AudioPlayerService.this.rusume();
+							isPlayNow = false;
+							isTTSPause = false;
+						}
 					}
 				}
+				
 		    } else if (action.equals(PLAY_ABANDON)) {
 				int pp = intent.getIntExtra("source", 0);
 				if (pp != 2) {
@@ -962,38 +970,41 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 					it.setAction(Contents.MUSICPLAY_STATE_PAUSE);
 					sendBroadcast(it);
 					isPlayNow = true;
-					tellLauncherState(false);
 				}
 				
 			}else if(intent.getAction().equals(CommonMessage.TTS_PLAY_FINISHED)){
-				if(isPlayNow){
-					if(!isPlaying()){
-						isPlayNow = false;
-						tellLauncherState(true);
-						rusume();
-						try {
-							int size = 0;
-							if(listAudio!=null){
-								for(AudioSubscription cate : listAudio){
-									if(isSubscription(cate.album)){
-										size ++;
+				try {
+					if(isPlayNow){
+						if(!isPlaying()){
+							isPlayNow = false;
+							rusume();
+							try {
+								int size = 0;
+								if(listAudio!=null){
+									for(AudioSubscription cate : listAudio){
+										if(isSubscription(cate.album)){
+											size ++;
+										}
 									}
 								}
+								if(size>=Contents.ADD_BIG_NUM){
+									Notify.showButtonNotify(getPlayingCatogory(),getPlayingAudio(),AudioPlayerService.this, true,isSubscription(getPlayingAudio().albumId),6);
+								}else{
+									Notify.showButtonNotify(getPlayingCatogory(),getPlayingAudio(),AudioPlayerService.this, true,isSubscription(getPlayingAudio().albumId),0);
+								}
+								
+							} catch (Exception e) {
+								e.printStackTrace();
 							}
-							if(size>=Contents.ADD_BIG_NUM){
-								Notify.showButtonNotify(getPlayingCatogory(),getPlayingAudio(),AudioPlayerService.this, true,isSubscription(getPlayingAudio().albumId),6);
-							}else{
-								Notify.showButtonNotify(getPlayingCatogory(),getPlayingAudio(),AudioPlayerService.this, true,isSubscription(getPlayingAudio().albumId),0);
-							}
-							
-						} catch (Exception e) {
-							e.printStackTrace();
+							Intent it = new Intent();
+							it.setAction(Contents.MUSICPLAY_STATE_PLAY);
+							sendBroadcast(it);
 						}
-						Intent it = new Intent();
-						it.setAction(Contents.MUSICPLAY_STATE_PLAY);
-						sendBroadcast(it);
 					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
+				
 			}else if(intent.getAction().equals(TSDEvent.System.HARDKEY3_PRESSED)){
 				if(isPlaying()||isPlayNow){
 					isAddSub();
@@ -1007,11 +1018,13 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 					mHandler.sendMessage(msg);
 				}
 			}else if (action.equals(TSDEvent.Interaction.INTERACTION_ERROR)) {
-				if (isPlayNow) {
-					if(!isPlaying()){
-						AudioPlayerService.this.rusume();
-						isPlayNow = false;
-						tellLauncherState(true);
+				if(isTTSPause){
+					if (isPlayNow) {
+						if(!isPlaying()){
+							AudioPlayerService.this.rusume();
+							isPlayNow = false;
+							isTTSPause = false;
+						}
 					}
 				}
 			}else if(action.equals(CommonApps.SLEEP_PLAY_NEXT)){
@@ -1061,12 +1074,10 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 					it.setAction(Contents.MUSICPLAY_STATE_PAUSE);
 					sendBroadcast(it);
 					isPlayNow = true;
-					tellLauncherState(false);
 				}else if(isPlayNow){
 					if(!isPlaying()){
 
 						isPlayNow = false;
-						tellLauncherState(true);
 						rusume();
 						try {
 							int size = 0;
@@ -1650,8 +1661,9 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 
 	@Override
 	public void pause() {
-		
+		isPlayNow = true;
 		mIsPlaying = false;
+		tellLauncherState(false);
 		sendAudioStateBroadcast("pause");
 		try {
 			if ((mMediaPlayer != null) && (mMediaPlayer.mediaPlayer != null)) {
@@ -1666,7 +1678,8 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 
 	@Override
 	public void rusume() {
-		
+		isPlayNow = false;
+		tellLauncherState(true);
 		try {
 			sendAudioStateBroadcast("resume");
 			if ((mMediaPlayer != null) && (mMediaPlayer.mediaPlayer != null)) {

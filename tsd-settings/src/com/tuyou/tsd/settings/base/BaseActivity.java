@@ -24,6 +24,7 @@ public class BaseActivity extends com.tuyou.tsd.common.base.BaseActivity {
 	public static final String ACTION = "com.tuyou.tsd.trafficstats";
 	public static final String NACTION = "com.tuyou.tsd.fm";
 	public static final String FACTION = "com.tuyou.tsd.flow.redress";
+
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 
 		@Override
@@ -51,21 +52,6 @@ public class BaseActivity extends com.tuyou.tsd.common.base.BaseActivity {
 		if (pref != null) {
 			editor = pref.edit();
 		}
-	}
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
 	}
 
 	/**

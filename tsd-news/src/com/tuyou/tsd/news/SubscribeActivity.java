@@ -17,11 +17,15 @@ import android.os.Message;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.tuyou.tsd.common.TSDEvent;
+import com.tuyou.tsd.common.base.CommonSleep;
 import com.tuyou.tsd.common.network.AudioSubscription;
 import com.tuyou.tsd.news.adapter.SubscribeAdapter;
 import com.tuyou.tsd.news.base.MyBaseActivity;
@@ -37,6 +41,9 @@ public class SubscribeActivity extends MyBaseActivity implements OnClickListener
 	private ListView subscribeList;
 	private int sum;
 	private MyBroadCast cast;
+	
+//	private CommonSleep commonSleep = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -57,12 +64,18 @@ public class SubscribeActivity extends MyBaseActivity implements OnClickListener
 		filter.addAction(AudioPlayerService.SUBSCRIPTION_STATUS);
 		filter.addAction(Contents.KILL_ALL_APP1);
 		filter.addAction(Contents.KILL_ALL_APP2);
+		filter.addAction(TSDEvent.System.ACC_OFF);
 		registerReceiver(cast, filter);
 	}
 	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		
+//		if (commonSleep != null) {
+//			commonSleep.stop();
+//		}
+		
 		try {
 			if(adapter!=null){
 				adapter.cancelAllTasks();
@@ -215,6 +228,8 @@ public class SubscribeActivity extends MyBaseActivity implements OnClickListener
 				showData();
 			}else if(it.getAction().equals(Contents.KILL_ALL_APP1)||it.getAction().equals(Contents.KILL_ALL_APP2)){
 				finish();
+			}else if(it.getAction().equals(TSDEvent.System.ACC_OFF)){
+				finish();
 			}
 		}
 	}
@@ -226,6 +241,39 @@ public class SubscribeActivity extends MyBaseActivity implements OnClickListener
 		ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.white)), str.length()-1, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE); 
 		TextView hadSubscribe = (TextView) findViewById(R.id.had_subscribe);
 		hadSubscribe.setText(ss);
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+//		commonSleep = new CommonSleep(this);
+//		commonSleep.start();
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+//		if (commonSleep != null) {
+//			commonSleep.stop();
+//		}
+	}
+
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
+//		if (commonSleep != null) {
+//			commonSleep.update();
+//		}
+		return super.dispatchKeyEvent(event);
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
+//		if (commonSleep != null) {
+//			commonSleep.update();
+//		}
+		return super.dispatchTouchEvent(ev);
 	}
 
 }

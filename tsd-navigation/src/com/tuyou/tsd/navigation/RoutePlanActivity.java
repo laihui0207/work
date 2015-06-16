@@ -6,11 +6,10 @@ import java.util.TimerTask;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,9 +30,6 @@ import com.baidu.navisdk.comapi.mapcontrol.MapParams.Const.LayerMode;
 import com.baidu.navisdk.comapi.routeplan.BNRoutePlaner;
 import com.baidu.navisdk.comapi.routeplan.RoutePlanParams.NE_RoutePlan_Mode;
 import com.baidu.navisdk.comapi.setting.SettingParams;
-import com.baidu.navisdk.comapi.tts.BNTTSPlayer;
-import com.baidu.navisdk.comapi.tts.BNavigatorTTSPlayer;
-import com.baidu.navisdk.comapi.tts.IBNTTSPlayerListener;
 import com.baidu.navisdk.model.NaviDataEngine;
 import com.baidu.navisdk.model.RoutePlanModel;
 import com.baidu.navisdk.model.datastruct.RoutePlanNode;
@@ -46,7 +42,7 @@ import com.tuyou.tsd.common.TSDLocation;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.navigation.mode.SysApplication;
 
-public class RoutePlanActivity extends BaseActivity implements OnClickListener {
+public class RoutePlanActivity extends SleepBaseActivity implements OnClickListener {
 	private RoutePlanModel mRoutePlanModel = null;
 	private MapGLSurfaceView mMapView = null;
 	private Button recommendBtn, avoidCongestionBtn, distanceBtn, tollBtn;
@@ -59,29 +55,21 @@ public class RoutePlanActivity extends BaseActivity implements OnClickListener {
 	private boolean isReal = true;
 	private TSDLocation location = null;
 	private int routeType;
+	public static int musicM;
 	private Bundle configParam = null;
 	private String source = null;
-	/**
-	 * 是否进行语音播报
-	 */
-	public static boolean isPlayTTS = true;
-	private String playString = "";
-	private boolean isTTS = true;
-	private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+	private String TAG = "RoutePlanActivity";
+	private AudioManager mAudioManager;
 
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			// Toast.makeText(context, "语音播报结束", Toast.LENGTH_SHORT).show();
-			isTTS = true;
-		}
-	};
 	private Handler handler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
 			case 0:
 				BNRoutePlaner.getInstance().zoomToRouteBound();
 				break;
-
+			case 1:
+				routePlan(isReal);
+				break;
 			default:
 				break;
 			}
@@ -92,55 +80,13 @@ public class RoutePlanActivity extends BaseActivity implements OnClickListener {
 		super.onCreate(savedInstance);
 		setContentView(R.layout.activity_routeplan);
 		SysApplication.getInstance().addActivity(this);
-		// 动态注册接收语音播报结束广播
-		IntentFilter filter = new IntentFilter();
-		filter.addAction("tsd.tts.PLAY_FINISHED");
-		registerReceiver(broadcastReceiver, filter);
+		mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		musicM = mAudioManager.getStreamVolume( AudioManager.STREAM_MUSIC );
 		initDate(getIntent());
 		startPoint = new BNaviPoint(sY, sX, myname,
 				BNaviPoint.CoordinateType.BD09_MC);
 		endPoint = new BNaviPoint(eY, eX, name,
 				BNaviPoint.CoordinateType.BD09_MC);
-		// 初始化TTS. 或者也可以使用独立TTS模块，不用使用导航SDK提供的TTS
-		BNTTSPlayer.initPlayer();
-		// 设置TTS播放回调
-		BNavigatorTTSPlayer.setTTSPlayerListener(new IBNTTSPlayerListener() {
-
-			@Override
-			public int playTTSText(String arg0, int arg1) {
-				if (isPlayTTS) {
-					if (arg0.contains("米行驶")) {
-						arg0 = arg0.replace("米行驶", "米 行驶");
-					}
-					if (!playString.equals(arg0)) {
-						playString = arg0;
-						playBroadcast(arg0, 0);
-					}
-					isTTS = false;
-				}
-				return 0;
-			}
-
-			@Override
-			public void phoneHangUp() {
-				// 手机挂断
-			}
-
-			@Override
-			public void phoneCalling() {
-				// 通话中
-			}
-
-			@Override
-			public int getTTSState() {
-				if (isTTS) {
-					return 1;
-				} else {
-					return 0;
-				}
-
-			}
-		});
 		initView();
 		initMapView();
 		listener();
@@ -228,13 +174,11 @@ public class RoutePlanActivity extends BaseActivity implements OnClickListener {
 
 	@Override
 	public void onDestroy() {
+		super.onDestroy();
+		stopBroadcast();
 		BNavigator.destory();
 		BNRoutePlaner.getInstance().setObserver(null);
-		if (broadcastReceiver != null) {
-			unregisterReceiver(broadcastReceiver);
-		}
-		stopBroadcast();
-		super.onDestroy();
+		
 	}
 
 	@Override
@@ -248,10 +192,13 @@ public class RoutePlanActivity extends BaseActivity implements OnClickListener {
 	@Override
 	public void onResume() {
 		super.onResume();
+//		initMapView();
+//		((ViewGroup) (findViewById(R.id.mapview_layout))).addView(mMapView);
+//		BNMapController.getInstance().onResume();
 		mMapView = BaiduNaviManager.getInstance().createNMapView(this);
 		((ViewGroup) (findViewById(R.id.mapview_layout))).addView(mMapView);
 		BNMapController.getInstance().onResume();
-		routePlan(isReal);
+		handler.sendEmptyMessage(1);
 	}
 
 	/**
@@ -339,6 +286,7 @@ public class RoutePlanActivity extends BaseActivity implements OnClickListener {
 		Intent intent = new Intent(RoutePlanActivity.this,
 				BNavigatorActivity.class);
 		intent.putExtras(configParams);
+		SearchService.navIntent = intent;
 		startActivity(intent);
 	}
 

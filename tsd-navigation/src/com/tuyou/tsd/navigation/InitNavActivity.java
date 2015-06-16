@@ -8,7 +8,7 @@ import com.tuyou.tsd.common.util.LogUtil;
 import android.os.Bundle;
 import android.os.Environment;
 
-public class InitNavActivity extends BaseActivity {
+public class InitNavActivity extends SleepBaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

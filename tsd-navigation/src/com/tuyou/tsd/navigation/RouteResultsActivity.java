@@ -20,7 +20,6 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -28,16 +27,16 @@ import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.common.widget.ArrayListAdapter;
 import com.tuyou.tsd.navigation.mode.SysApplication;
 
-public class RouteResultsActivity extends BaseActivity implements
+public class RouteResultsActivity extends SleepBaseActivity implements
 		OnScrollListener {
 	private ImageButton backButton;
 	private ListView linesListView;
 	// private ArrayList<HashMap<String, String>> lines;
 	private SearchResultAdapter adapter;
-	private LinearLayout resoultLayout;
 	private boolean isSearch = false;
 	private int visibleLastIndex;
 	private int page = 0;
+	private final static String finishAction = "activity_finish";
 	private List<ResultItem> listDate = new ArrayList<RouteResultsActivity.ResultItem>();
 
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -48,6 +47,8 @@ public class RouteResultsActivity extends BaseActivity implements
 			if (action.equals(TSDEvent.Navigation.POI_SEARCH_RESULT)) {
 				isSearch = false;
 				adapter.notifyDataSetChanged();
+			} else if (action.equals(finishAction)) {
+				finish();
 			}
 		}
 	};
@@ -76,6 +77,7 @@ public class RouteResultsActivity extends BaseActivity implements
 		}
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(TSDEvent.Navigation.POI_SEARCH_RESULT);
+		filter.addAction(finishAction);
 		registerReceiver(mReceiver, filter);
 		init();
 		listener();
@@ -96,7 +98,6 @@ public class RouteResultsActivity extends BaseActivity implements
 	private void init() {
 		backButton = (ImageButton) findViewById(R.id.btn_route_back);
 		linesListView = (ListView) findViewById(R.id.list_route_lines);
-		resoultLayout = (LinearLayout) findViewById(R.id.layout_result);
 		adapter = new SearchResultAdapter(RouteResultsActivity.this,
 				R.layout.search_result_item, listDate);
 		linesListView.setAdapter(adapter);
@@ -218,6 +219,7 @@ public class RouteResultsActivity extends BaseActivity implements
 						i.setClass(context, RoutePlanActivity.class);
 						i.putExtra("destination", jsonObject.toString());
 						context.startActivity(i);
+						context.sendBroadcast(new Intent(finishAction));
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}

@@ -64,6 +64,7 @@ import com.tuyou.tsd.news.db.SubscriptionRecordDAO;
 import com.tuyou.tsd.news.db.SubscriptionRecordEntity;
 import com.tuyou.tsd.news.utils.GetFileSizeUtil;
 import com.tuyou.tsd.news.utils.Notify;
+import com.tuyou.tsd.news.service.AudioPlayerService;
 
 @SuppressLint("NewApi")
 public class AudioPlayerService extends Service implements IAudioPlayerService,OnBufferingUpdateListener, OnCompletionListener, OnInfoListener,OnErrorListener {
@@ -133,6 +134,7 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 	private ArrayList<AudioSubscription> lcs;
 	
 	private boolean isPlayNow = false;
+	private boolean isTTSPause = false;
 
 	@Override
 	public void onCreate() {
@@ -460,8 +462,12 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 						}
 						for(int i=0;i<myCategories.size();i++){
 							if(myCategories.get(i).category.equals(aduio.category)){
-								StartPlayer(lcs.get(0).album, items.get(0).item);
+//								StartPlayer(lcs.get(0).album, items.get(0).item);
 								isPush = false;
+								Intent it = new  Intent(Contents.TSD_AUDIO_PLAY_MUSIC_RESULT);
+								it.putExtra("album", lcs.get(0).album);
+								it.putExtra("item", items.get(0).item);
+								sendBroadcast(it);
 								return;
 							}
 						}
@@ -483,8 +489,12 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 						}else{
 							sendBroadcast(new Intent(Contents.DATA_REFRESH_PUSH));
 						}
-						StartPlayer(lcs.get(0).album, items.get(0).item);
+//						StartPlayer(lcs.get(0).album, items.get(0).item);
 						isPush = false;
+						Intent it = new  Intent(Contents.TSD_AUDIO_PLAY_MUSIC_RESULT);
+						it.putExtra("album", lcs.get(0).album);
+						it.putExtra("item", items.get(0).item);
+						sendBroadcast(it);
 					}
 				}else{
 					if (subscriptionDetailRes.items != null) {
@@ -555,7 +565,6 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 			case MSG_MUSIC_PLAY:
 				if (isPlaying()) {
 					isPlayNow = true;
-					tellLauncherState(false);
 					pause();
 					try {
 						int size = 0;
@@ -579,7 +588,6 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 					sendBroadcast(it);
 				} else {
 					isPlayNow = false;
-					tellLauncherState(true);
 					rusume();
 					try {
 						int size = 0;
@@ -673,44 +681,44 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 		}
 	}
 
-	private void clearPushCategory() {
-		List<AudioItemEntity> pushcategorys = AudioItemDAO.getInstance(AudioPlayerService.this).readAll();
-		if (pushcategorys != null) {
-			for (int k = 0; k < pushcategorys.size(); k++) {
-				if (pushcategorys.get(k).getDetail().mode == 1) {
-					String timestr = pushcategorys.get(k).getDetail().end;
-					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.CHINA);
-					String strTimestamp = dateFormat.format(new Date(System.currentTimeMillis()));
-					strTimestamp = strTimestamp.substring(0, 22) + ":"+ strTimestamp.substring(22);
-					if (timestr.compareTo(strTimestamp)<= 0) {
-						AudioItemDAO.getInstance(AudioPlayerService.this).delete(pushcategorys.get(k).getId());
-//					} else {
-					}
-				} else {
-					AudioItemDAO.getInstance(AudioPlayerService.this).delete(pushcategorys.get(k).getId());
-				}
-			}
-		}
-	}
+//	private void clearPushCategory() {
+//		List<AudioItemEntity> pushcategorys = AudioItemDAO.getInstance(AudioPlayerService.this).readAll();
+//		if (pushcategorys != null) {
+//			for (int k = 0; k < pushcategorys.size(); k++) {
+//				if (pushcategorys.get(k).getDetail().mode == 1) {
+//					String timestr = pushcategorys.get(k).getDetail().end;
+//					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.CHINA);
+//					String strTimestamp = dateFormat.format(new Date(System.currentTimeMillis()));
+//					strTimestamp = strTimestamp.substring(0, 22) + ":"+ strTimestamp.substring(22);
+//					if (timestr.compareTo(strTimestamp)<= 0) {
+//						AudioItemDAO.getInstance(AudioPlayerService.this).delete(pushcategorys.get(k).getId());
+////					} else {
+//					}
+//				} else {
+//					AudioItemDAO.getInstance(AudioPlayerService.this).delete(pushcategorys.get(k).getId());
+//				}
+//			}
+//		}
+//	}
 
-	void clearMySubscriptions() {
-		List<SubscriptionCategoryEntity> reads = SubscriptionCategoryDAO.getInstance(this).readAll();
-		if (reads == null)
-			return;
-		readLocalSubscription();
-		if (mAudioSubscriptions == null)
-			return;
-		int size = reads.size();
-		if (size > 0) {
-			for (int i = 0; i < size; i++) {
-				AudioCategory rec = reads.get(i).getDetail();
-				String id = rec.category;
-				if (!isSubscription(id)) {
-					SubscriptionCategoryDAO.getInstance(this).delete(reads.get(i).getId());
-				}
-			}
-		}
-	}
+//	void clearMySubscriptions() {
+//		List<SubscriptionCategoryEntity> reads = SubscriptionCategoryDAO.getInstance(this).readAll();
+//		if (reads == null)
+//			return;
+//		readLocalSubscription();
+//		if (mAudioSubscriptions == null)
+//			return;
+//		int size = reads.size();
+//		if (size > 0) {
+//			for (int i = 0; i < size; i++) {
+//				AudioCategory rec = reads.get(i).getDetail();
+//				String id = rec.category;
+//				if (!isSubscription(id)) {
+//					SubscriptionCategoryDAO.getInstance(this).delete(reads.get(i).getId());
+//				}
+//			}
+//		}
+//	}
 	
 	private void isAddSub(){
 		if (!isSubscription(getPlayingAudio().albumId)) {
@@ -773,7 +781,6 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 			} else if (action.equals(TSDEvent.News.PAUSE)) {
 				if (AudioPlayerService.this.isPlaying()) {
 					isPlayNow = true;
-					tellLauncherState(false);
 					AudioPlayerService.this.pause();
 				}
 			} else if (action.equals(TSDEvent.News.RESUME)) {
@@ -781,7 +788,6 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 					if(!isPlaying()){
 						AudioPlayerService.this.rusume();
 						isPlayNow = false;
-						tellLauncherState(true);
 					}
 				}
 			} else if (action.equals(CommonMessage.VOICE_COMM_SHUT_UP)) {
@@ -795,17 +801,20 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 			} else if (action.equals(TSDEvent.Interaction.INTERACTION_START)) {
 				if (AudioPlayerService.this.isPlaying()) {
 					isPlayNow = true;
-					tellLauncherState(false);
+					isTTSPause = true;
 					AudioPlayerService.this.pause();
 				}
 			} else if (action.equals(TSDEvent.Interaction.INTERACTION_FINISH_FROM_CORE_SERVICE)) {
-				if (isPlayNow) {
-					if(!isPlaying()){
-						AudioPlayerService.this.rusume();
-						isPlayNow = false;
-						tellLauncherState(true);
+				if(isTTSPause){
+					if (isPlayNow) {
+						if(!isPlaying()){
+							isTTSPause = false;
+							AudioPlayerService.this.rusume();
+							isPlayNow = false;
+						}
 					}
 				}
+				
 			} else if (action.equals(PLAY_ABANDON)) {
 				int pp = intent.getIntExtra("source", 0);
 				if (pp != 3) {
@@ -882,39 +891,44 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 					it.setAction(Contents.MUSICPLAY_STATE_NEWS_PAUSE);
 					sendBroadcast(it);
 					isPlayNow = true;
-					tellLauncherState(false);
 				}
 				
 			}else if(intent.getAction().equals(CommonMessage.TTS_PLAY_FINISHED)){
-				if(isPlayNow){
-					if(!isPlaying()){
-						isPlayNow = false;
-						tellLauncherState(true);
-						rusume();
-						try {
-							int size = 0;
-							if(listAudio!=null){
-								for(AudioSubscription cate : listAudio){
-									if(isSubscription(cate.album)){
-										size ++;
+				try {
+
+					if(isPlayNow){
+						if(!isPlaying()){
+							isPlayNow = false;
+							rusume();
+							try {
+								int size = 0;
+								if(listAudio!=null){
+									for(AudioSubscription cate : listAudio){
+										if(isSubscription(cate.album)){
+											size ++;
+										}
 									}
 								}
+								if(size>=Contents.ADD_BIG_NEWS_NUM){
+									Notify.showButtonNotify(getPlayingCatogory(),getPlayingAudio(),AudioPlayerService.this, true,isSubscription(getPlayingAudio().albumId),6);
+								}else{
+									Notify.showButtonNotify(getPlayingCatogory(),getPlayingAudio(),AudioPlayerService.this, true,isSubscription(getPlayingAudio().albumId),0);
+								}
+								
+							} catch (Exception e) {
+								e.printStackTrace();
 							}
-							if(size>=Contents.ADD_BIG_NEWS_NUM){
-								Notify.showButtonNotify(getPlayingCatogory(),getPlayingAudio(),AudioPlayerService.this, true,isSubscription(getPlayingAudio().albumId),6);
-							}else{
-								Notify.showButtonNotify(getPlayingCatogory(),getPlayingAudio(),AudioPlayerService.this, true,isSubscription(getPlayingAudio().albumId),0);
-							}
-							
-						} catch (Exception e) {
-							e.printStackTrace();
+							Intent it = new Intent();
+							it.setAction(Contents.MUSICPLAY_STATE_NEWS_PLAY);
+							sendBroadcast(it);
+						
 						}
-						Intent it = new Intent();
-						it.setAction(Contents.MUSICPLAY_STATE_NEWS_PLAY);
-						sendBroadcast(it);
-					
 					}
+				
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
+				
 			}else if(intent.getAction().equals(TSDEvent.System.HARDKEY3_PRESSED)){
 				if(isPlaying()||isPlayNow){
 					isAddSub();
@@ -928,10 +942,12 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 					mHandler.sendMessage(msg);
 				}
 			}else if (action.equals(TSDEvent.Interaction.INTERACTION_ERROR)) {
-				if (isPlayNow) {
-					tellLauncherState(true);
-					AudioPlayerService.this.rusume();
-					isPlayNow = false;
+				if(isTTSPause){
+					if (isPlayNow) {
+						AudioPlayerService.this.rusume();
+						isPlayNow = false;
+						isTTSPause = false;
+					}
 				}
 			}else if(action.equals(CommonApps.SLEEP_PLAY_NEXT)){
 				if(isPlaying()){
@@ -980,10 +996,8 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 					it.setAction(Contents.MUSICPLAY_STATE_NEWS_PAUSE);
 					sendBroadcast(it);
 					isPlayNow = true;
-					tellLauncherState(false);
 				}else if(isPlayNow){
 					if(!isPlaying()){
-						tellLauncherState(true);
 						isPlayNow = false;
 						rusume();
 						try {
@@ -1198,7 +1212,7 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 			if (result != null) {
 				Gson gson = new Gson();
 				String resultJson = gson.toJson(result);
-				System.out.println("resultJson = " + resultJson);
+				System.out.println("resultJsonsub = " + resultJson);
 				if (result.errorCode == 0) {
 					Message msg = mHandler.obtainMessage(MSG_GETSUBSCRIPTIONITEMLISST, result);
 					mHandler.sendMessage(msg);
@@ -1528,8 +1542,9 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 
 	@Override
 	public void pause() {
-		
+		tellLauncherState(false);
 		mIsPlaying = false;
+		isPlayNow = true;
 		sendAudioStateBroadcast("pause");
 		try {
 			if ((mMediaPlayer != null) && (mMediaPlayer.mediaPlayer != null)) {
@@ -1544,7 +1559,8 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 
 	@Override
 	public void rusume() {
-		
+		isPlayNow = false;
+		tellLauncherState(true);
 		try {
 			sendAudioStateBroadcast("resume");
 			if ((mMediaPlayer != null) && (mMediaPlayer.mediaPlayer != null)) {
@@ -1840,17 +1856,14 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 		changeSubscription(item, 2);
 		mSubscriptionManager.disposeSyn();
 
-		if ((currentPlayingCategory != null)
-				&& (currentPlayingCategory.category.equals(item.album))) {
+		if ((currentPlayingCategory != null)&& (currentPlayingCategory.category.equals(item.album))) {
+			
 		} else {
-			List<SubscriptionCategoryEntity> ccList = SubscriptionCategoryDAO
-					.getInstance(AudioPlayerService.this).readAll();
+			List<SubscriptionCategoryEntity> ccList = SubscriptionCategoryDAO.getInstance(AudioPlayerService.this).readAll();
 			if (ccList != null) {
 				for (int i = 0; i < ccList.size(); i++) {
 					if (ccList.get(i).getDetail().category.equals(item.album)) {
-						SubscriptionCategoryDAO.getInstance(
-								AudioPlayerService.this).delete(
-								ccList.get(i).getId());
+						SubscriptionCategoryDAO.getInstance(AudioPlayerService.this).delete(ccList.get(i).getId());
 						break;
 					}
 				}

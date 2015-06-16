@@ -29,7 +29,7 @@ public class LocationService extends Service {
 	private SharedPreferences.Editor editor;
 	private SharedPreferences spf;
 	private BDLocation cacheLocation;
-	private double mileage;
+	private double mileage = 0.0;
 
 	@Override
 	public void onCreate() {
@@ -37,7 +37,7 @@ public class LocationService extends Service {
 		SDKInitializer.initialize(getApplicationContext());
 		spf = getSharedPreferences("navigator", 0);
 		editor = spf.edit();
-		mileage = Double.parseDouble(spf.getString("mileage", 0 + ""));
+		mileage = Double.parseDouble(spf.getString("mileage", 0.0 + ""));
 		cacheTime = spf.getLong("cacheTime", System.currentTimeMillis());
 		LogUtil.v("LocationService", "mileage = " + mileage);
 		// BDLocation init must in the main thread
@@ -98,7 +98,6 @@ public class LocationService extends Service {
 						"Get the location: " + location.getCity()
 								+ location.getDistrict()
 								+ location.getAddrStr());
-
 				if (location.getCity() != null) {
 					distance(location);
 					editor.putString("cachelat", location.getLatitude() + "");
@@ -126,7 +125,7 @@ public class LocationService extends Service {
 		}
 	}
 
-	/**
+	/**.
 	 * 记录一天的里程
 	 */
 	public void distance(BDLocation location) {

@@ -12,22 +12,20 @@ import java.util.List;
 
 import android.os.Bundle;
 import android.os.Environment;
-import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.tuyou.tsd.common.TSDConst;
 import com.tuyou.tsd.common.network.AppVersionInfo;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.settings.R;
-import com.tuyou.tsd.settings.base.BaseActivity;
+import com.tuyou.tsd.settings.base.SleepBaseActivity;
 
-public class AboutActivity extends BaseActivity implements OnClickListener {
+public class AboutActivity extends SleepBaseActivity implements OnClickListener {
 	private String TAG = "AboutActivity";
 	private TextView backButton;
 	private TextView versionNum, versionContent;
@@ -65,6 +63,8 @@ public class AboutActivity extends BaseActivity implements OnClickListener {
 				content = content + updateFile.get(0).notes[i] + "\n";
 			}
 			versionContent.setText(content);
+		}else {
+			versionNum.setText("暂时为空");
 		}
 		// }else {
 		// playBroadcast(getResources()
@@ -78,14 +78,14 @@ public class AboutActivity extends BaseActivity implements OnClickListener {
 			File[] allFiles = new File(path).listFiles();
 			String content = "";
 			if (allFiles == null) {
-				Toast toast = Toast
-						.makeText(
-								AboutActivity.this,
-								getResources().getString(
-										R.string.about_no_update),
-								Toast.LENGTH_LONG);
-				toast.setGravity(Gravity.BOTTOM, 0, 10);
-				toast.show();
+//				Toast toast = Toast
+//						.makeText(
+//								AboutActivity.this,
+//								getResources().getString(
+//										R.string.about_no_update),
+//								Toast.LENGTH_LONG);
+//				toast.setGravity(Gravity.BOTTOM, 0, 10);
+//				toast.show();
 				return;
 			}
 			for (File file : allFiles) {

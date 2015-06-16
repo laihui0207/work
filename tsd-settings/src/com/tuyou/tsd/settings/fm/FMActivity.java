@@ -23,9 +23,10 @@ import android.widget.TextView;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.settings.R;
 import com.tuyou.tsd.settings.base.BaseActivity;
+import com.tuyou.tsd.settings.base.SleepBaseActivity;
 import com.tuyou.tsd.settings.base.SysApplication;
 
-public class FMActivity extends BaseActivity implements OnClickListener {
+public class FMActivity extends SleepBaseActivity implements OnClickListener {
 	// 为防止图片变形由原来的button改为imageview
 	private ImageView playImageView;
 	private ImageButton addButton, reduceButton;

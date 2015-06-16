@@ -24,10 +24,10 @@ import com.tuyou.tsd.common.CommonMessage;
 import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.settings.R;
-import com.tuyou.tsd.settings.base.BaseActivity;
+import com.tuyou.tsd.settings.base.SleepBaseActivity;
 import com.tuyou.tsd.settings.base.SysApplication;
 
-public class CameraPreviewActivity extends BaseActivity implements
+public class CameraPreviewActivity extends SleepBaseActivity implements
 		SurfaceTextureListener {
 	private String TAG = "CameraPreviewActivity";
 	public Camera mCamera;

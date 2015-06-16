@@ -18,10 +18,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tuyou.tsd.settings.R;
-import com.tuyou.tsd.settings.base.BaseActivity;
+import com.tuyou.tsd.settings.base.SleepBaseActivity;
 import com.tuyou.tsd.settings.base.SysApplication;
 
-public class FlowActivity extends BaseActivity {
+public class FlowActivity extends SleepBaseActivity {
 	private TextView flowValueTXT, back;
 	private TasksCompletedView t;
 	private SharedPreferences spf;
