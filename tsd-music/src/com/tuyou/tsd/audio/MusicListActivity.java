@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -18,6 +20,7 @@ import com.tuyou.tsd.audio.adapter.MusicPlayadapter;
 import com.tuyou.tsd.audio.base.MyBaseActivity;
 import com.tuyou.tsd.audio.comm.Contents;
 import com.tuyou.tsd.common.TSDEvent;
+import com.tuyou.tsd.common.base.CommonSleep;
 import com.tuyou.tsd.common.network.AudioItem;
 
 public class MusicListActivity extends MyBaseActivity implements OnClickListener,OnItemClickListener{
@@ -30,12 +33,47 @@ public class MusicListActivity extends MyBaseActivity implements OnClickListener
 	private int playIndex = 0;
 	private ListView musicPlayList;
 	
+	private CommonSleep commonSleep = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.music_play);
 		initCast();
 		initView();
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		commonSleep = new CommonSleep(this);
+		commonSleep.start();
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		if (commonSleep != null) {
+			commonSleep.stop();
+		}
+	}
+	
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
+		if (commonSleep != null) {
+			commonSleep.update();
+		}
+		return super.dispatchKeyEvent(event);
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
+		if (commonSleep != null) {
+			commonSleep.update();
+		}
+		return super.dispatchTouchEvent(ev);
 	}
 
 	private void initCast() {

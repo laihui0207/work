@@ -98,7 +98,7 @@ public class SleepingActivity extends BaseActivity {
     			}else{
     				setMusicLayout(true);
     				mMusicName.setText(musictitle);
-    				mMusicPlay.setBackgroundResource(CoreService.SLEEP_MUSIC_IS_PLAYING ? R.drawable.music_ctl_pause : R.drawable.music_ctl_play);
+//    				mMusicPlay.setBackgroundResource(CoreService.SLEEP_MUSIC_IS_PLAYING ? R.drawable.music_ctl_pause : R.drawable.music_ctl_play);
     			}
     		}else if(action.equals(CommonApps.SLEEP_BEEN_PLAY_MUSIC)){
     			boolean isPlay = intent.getBooleanExtra(CommonApps.SLEEP_PLAY_MUSIC_NEED_PLAY, true);
@@ -154,12 +154,6 @@ public class SleepingActivity extends BaseActivity {
 		}
 		// 请求天气信息
 		sendBroadcast(new Intent(TSDEvent.System.QUERY_WEATHER));
-		
-		if(CoreService.SLEEP_MUSIC_NAME.length()>0){
-			mMusicName.setText(CoreService.SLEEP_MUSIC_NAME);
-			mMusicPlay.setBackgroundResource(CoreService.SLEEP_MUSIC_IS_PLAYING ? R.drawable.music_ctl_pause : R.drawable.music_ctl_play);
-			setMusicLayout(CoreService.SLEEP_MUSIC_IS_PLAYING);
-		}
 	}
 
 	@Override

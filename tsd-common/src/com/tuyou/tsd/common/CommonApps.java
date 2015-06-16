@@ -25,6 +25,9 @@ public interface CommonApps {
 	static final String BROADCAST_SLEEP_TIME_UPDATE = "com_tuyou_tsd_common_broadcast_sleep_time_update";
 	static final String SLEEP_TIME_UPDATE = "com_tuyou_tsd_common_sleep_time_update";
 	
+	static final String SLEEP_START = "com_tuyou_tsd_common_sleep_start";
+	static final String SLEEP_END = "com_tuyou_tsd_common_sleep_end";
+	
 	static final String BROADCAST_SHOW_SLEEP = "com_tuyou_tsd_common_broadcast_show_sleep";
 	static final String BROADCAST_SHOW_SLEEP_ACTIVITY_NAME = "com_tuyou_tsd_common_broadcast_show_sleep_name";
 	

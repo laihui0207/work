@@ -23,9 +23,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tuyou.tsd.common.TSDEvent;
-import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.common.widget.ArrayListAdapter;
-import com.tuyou.tsd.voice.service.VoiceEngine.ErrorType;
 
 public class SearchFragment extends Fragment {
 	private Activity mParentActivity;
@@ -57,7 +55,8 @@ public class SearchFragment extends Fragment {
 		mCloseBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				ErrorType error = ErrorType.ERR_USER_CANCELLED;
+				getActivity().finish();
+/*				ErrorType error = ErrorType.ERR_USER_CANCELLED;
 				String template_wakeup = "GENERIC";
 				String reason = error.name();
 				String description = error.value;
@@ -66,7 +65,7 @@ public class SearchFragment extends Fragment {
 				intent.putExtra("template", template_wakeup);
 				intent.putExtra("reason", reason);
 				intent.putExtra("description", description);
-				mParentActivity.sendBroadcast(intent);
+				mParentActivity.sendBroadcast(intent);*/
 //				mParentActivity.sendBroadcast(new Intent(TSDEvent.Interaction.CANCEL_INTERACTION_BY_TP));
 			}
 		});
@@ -196,11 +195,11 @@ public class SearchFragment extends Fragment {
 			finishIntent.putExtra("answer", answer);
 			finishIntent.putExtra("extra", extra);
 			
-			LogUtil.d(TAG,"#################fq#######################");
-			LogUtil.d(TAG,"template ="+template_wakeup);
-			LogUtil.d(TAG,"answerType ="+answerType);
-			LogUtil.d(TAG,"answer ="+answer);
-			LogUtil.d(TAG,"extra ="+extra);
+			Log.d("fq","#################fq#######################");
+			Log.d("fq","template ="+template_wakeup);
+			Log.d("fq","answerType ="+answerType);
+			Log.d("fq","answer ="+answer);
+			Log.d("fq","extra ="+extra);
 			
 			mParentActivity.sendBroadcast(finishIntent);
 		}

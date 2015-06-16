@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -41,6 +42,7 @@ import com.tuyou.tsd.audio.utils.OrderUtils;
 import com.tuyou.tsd.audio.weight.CoverFlow;
 import com.tuyou.tsd.common.TSDConst;
 import com.tuyou.tsd.common.TSDEvent;
+import com.tuyou.tsd.common.base.CommonSleep;
 import com.tuyou.tsd.common.network.AudioCategory;
 import com.tuyou.tsd.common.network.AudioItem;
 
@@ -65,6 +67,8 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 	private ImageView musicState;
 	private ImageView musicLoading;
 	private TextView addLoveText;
+	
+	private CommonSleep commonSleep = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -567,6 +571,39 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 			   countService = null;  
 			} 
 	}; 
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		commonSleep = new CommonSleep(this);
+		commonSleep.start();
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		if (commonSleep != null) {
+			commonSleep.stop();
+		}
+	}
+	
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
+		if (commonSleep != null) {
+			commonSleep.update();
+		}
+		return super.dispatchKeyEvent(event);
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
+		if (commonSleep != null) {
+			commonSleep.update();
+		}
+		return super.dispatchTouchEvent(ev);
+	}
 	
 	class GetRecCast extends BroadcastReceiver{
 

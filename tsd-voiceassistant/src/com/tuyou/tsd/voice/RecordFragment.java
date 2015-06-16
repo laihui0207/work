@@ -86,7 +86,7 @@ public class RecordFragment extends Fragment {
 		
 		mText = (ImageView) view.findViewById(R.id.record_text);
 		
-		setBtnClickable(false);
+		setBtnClickable(true);
 		LogUtil.d(TAG, "onCreateView done!!");
 		return view;
 	}
@@ -109,6 +109,9 @@ public class RecordFragment extends Fragment {
 		}
 		if(mHomeButton!=null){
 			mHomeButton.setClickable(bClickable);
+		}
+		if(mIcallButton!=null){
+			mIcallButton.setClickable(bClickable);
 		}
 	}
 	

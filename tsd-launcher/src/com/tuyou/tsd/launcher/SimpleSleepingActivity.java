@@ -184,7 +184,7 @@ public class SimpleSleepingActivity extends BaseActivity {
 		mMusicNext = (ImageView) findViewById(R.id.sleep_music_next);
 		mMusicNext.setOnClickListener(mMusicListen);
 		mMusicLayout.setVisibility(View.INVISIBLE);
-		
+
 		// Temporary solution
 		findViewById(R.id.sleeping_layout).setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -217,7 +217,7 @@ public class SimpleSleepingActivity extends BaseActivity {
 	public void setMusicLayout(boolean bVisible){
 		Log.v(TAG,"setMusicLayout "+bVisible);
 		if(mMusicLayout!=null){
-			mMusicLayout.setVisibility(bVisible ? View.VISIBLE : View.VISIBLE);
+			mMusicLayout.setVisibility(View.INVISIBLE);
 		}
 	}
 

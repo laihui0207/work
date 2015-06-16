@@ -528,9 +528,8 @@ public class SystemController {
 		}).start();
 
     	// 熄火后跳转到睡觉页面
-//    	HelperUtil.startActivityWithFadeInAnim(mService, TSDComponent.LAUNCHER_PACKAGE, TSDComponent.SLEEPING_ACTIVITY);
-    	HelperUtil.startActivityWithFadeInAnim(mService, 
-    			TSDComponent.LAUNCHER_PACKAGE,"com.tuyou.tsd.launcher.SimpleSleepingActivity");
+		//HelperUtil.startActivityWithFadeInAnim(mService, TSDComponent.LAUNCHER_PACKAGE, TSDComponent.SLEEPING_ACTIVITY);
+    	HelperUtil.startActivityWithFadeInAnim(mService, TSDComponent.LAUNCHER_PACKAGE,"com.tuyou.tsd.launcher.SimpleSleepingActivity");
 	}
 
 	public void onSystemStopped() {
