@@ -159,6 +159,13 @@ public class SearchFragment extends Fragment {
 		String memo;
 		String rawData;
 	}
+	
+	@Override
+	public void onDetach() {
+		// TODO Auto-generated method stub
+		super.onDetach();
+		mParentActivity.finish();
+	}
 
 	private AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
 

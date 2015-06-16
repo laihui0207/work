@@ -35,6 +35,7 @@ import com.tuyou.tsd.common.network.GetWeatherRes;
 import com.tuyou.tsd.common.util.HelperUtil;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.core.CoreService;
+import com.tuyou.tsd.core.CoreService.WorkingMode;
 
 public class NewSleepingActivity extends BaseActivity {
 	private static final String TAG = "NewSleepingActivity";
@@ -274,7 +275,7 @@ public class NewSleepingActivity extends BaseActivity {
 	private void canWakeUpFromSleep() {
 		if (mBindService != null) {
 			if (mBindService.getCurrentState() == CoreService.ServiceState.STATE_RESUME) {
-				mBindService.wakeUpDevice();
+//				mBindService.wakeUpDevice(WorkingMode.MODE_INTERACTING);
 //				finish();
 				HelperUtil.finishActivity(this, android.R.anim.fade_out, android.R.anim.fade_out);
 			} else {
