@@ -12,10 +12,9 @@ import com.tuyou.tsd.common.CommonApps;
 import com.tuyou.tsd.common.TSDComponent;
 import com.tuyou.tsd.common.TSDShare;
 import com.tuyou.tsd.common.util.HelperUtil;
-import com.tuyou.tsd.common.util.LogUtil;
 
 public class CommonSleep {
-	private String TAG = "CommonSleep";
+	private String TAG = "CommonSleepfq";
 	private Context mContext;
 	private volatile boolean mbStop = false;
 	private long mCurTime = 0;
@@ -46,9 +45,9 @@ public class CommonSleep {
 				3 * 60 + ""))) * 1000;
 		}
 
-		LogUtil.d(TAG, "初始化：mUpdateTime = " + mUpdateTime);
+		Log.d(TAG, "初始化：mUpdateTime = " + mUpdateTime);
 		mContext = contex;
-		Log.v("fq", "new Sleep class = " + mContext.getClass().getName());
+		Log.v(TAG, "new Sleep class = " + mContext.getClass().getName());
 		mIntentFilter = new IntentFilter();
 		mIntentFilter.addAction(CommonApps.BROADCAST_SLEEP_TIME_UPDATE);
 		mContext.registerReceiver(mReceiver, mIntentFilter);
@@ -59,7 +58,7 @@ public class CommonSleep {
 	}
 
 	public void start() {
-		Log.v("fq", "start class = " + mContext.getClass().getName());
+		Log.v(TAG, "start class = " + mContext.getClass().getName());
 		Thread thread = new Thread() {
 			@Override
 			public void run() {
@@ -75,7 +74,7 @@ public class CommonSleep {
 					if ((System.currentTimeMillis() - mCurTime) > mUpdateTime) {
 
 						String name = mContext.getClass().getName();
-						Log.v("fq", "time up class = "+ name);
+						Log.v(TAG, "time up class = "+ name);
 						
 						if(mSleepCallback == null || mSleepCallback.goSleep(SLEEPCALL.GOTOSLEEP)){
 							goIntoSleep(name);
@@ -88,17 +87,17 @@ public class CommonSleep {
 	}
 
 	public void update() {
-		Log.v("fq", "update class = " + mContext.getClass().getName());
+		Log.v(TAG, "update class = " + mContext.getClass().getName());
 		mCurTime = System.currentTimeMillis();
 	}
 
 	public void stop() {
-		Log.v("fq", "stop class = " + mContext.getClass().getName());
+		Log.v(TAG, "stop class = " + mContext.getClass().getName());
 		finish();
 	}
 
 	synchronized private void finish() {
-		Log.v("fq", "finish mbStop=" + mbStop + " class = "
+		Log.v(TAG, "finish mbStop=" + mbStop + " class = "
 				+ mContext.getClass().getName());
 		if (!mbStop) {
 			mContext.unregisterReceiver(mReceiver);
@@ -110,14 +109,14 @@ public class CommonSleep {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Log.v("fq", "new Sleep BroadcastReceiver class = "
+			Log.v(TAG, "new Sleep BroadcastReceiver class = "
 					+ mContext.getClass().getName());
 			String action = intent.getAction();
 			if (action.equals(CommonApps.BROADCAST_SLEEP_TIME_UPDATE)) {
 				long time = intent.getLongExtra(CommonApps.SLEEP_TIME_UPDATE,
 						mUpdateTime);
 				mUpdateTime = time;
-				Log.v("fq", "SLEEP_TIME_UPDATE " + time + " class = "
+				Log.v(TAG, "SLEEP_TIME_UPDATE " + time + " class = "
 						+ mContext.getClass().getName());
 			}
 		}

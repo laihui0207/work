@@ -6,18 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.util.Log;
 import cn.yunzhisheng.common.util.ErrorUtil;
 import cn.yunzhisheng.vui.recognizer.IRecognizerTalkListener;
 import cn.yunzhisheng.vui.recognizer.RecognizerTalk;
 import cn.yunzhisheng.vui.wakeup.IWakeupListener;
 import cn.yunzhisheng.vui.wakeup.IWakeupOperate;
-
-import com.tuyou.tsd.common.TSDConst;
-import com.tuyou.tsd.common.util.HelperUtil;
-import com.tuyou.tsd.common.util.LogUtil;
 
 final class YunZhiShengAdapter {
 	private static final String LOG_TAG = "YunZhiShengAdapter";
@@ -90,15 +84,15 @@ final class YunZhiShengAdapter {
 	}
 
 	private void setRequestToStartWakeUp(boolean bUp){
-		LogUtil.d(LOG_TAG,"setRequestToStartWakeUp = "+bUp);
+		Log.d(LOG_TAG,"setRequestToStartWakeUp = "+bUp);
 		mRequestToStartWakeUp = bUp;
 	}
 	
 	void startWakeUpListening() {
-		LogUtil.d(LOG_TAG, "YunZhiShengAdapter.startWakeUpListening, recogRecordingState=" + mRecognitionRecordingState +
+		Log.d(LOG_TAG, "YunZhiShengAdapter.startWakeUpListening, recogRecordingState=" + mRecognitionRecordingState +
 				", mRecogState=" + mRecognitionState);
 		if (mWakeupRecordingState) {
-			LogUtil.w(LOG_TAG, "wake up service already ran, ignore.");
+			Log.w(LOG_TAG, "wake up service already ran, ignore.");
 			return;
 		}
 		boolean wakeup = false;
@@ -117,15 +111,15 @@ final class YunZhiShengAdapter {
 
 	void stopWakeUpListening() {
 		if (mWakeupRecordingState) {
-			LogUtil.d(LOG_TAG, "################### stopWakeup #######################");
+			Log.d(LOG_TAG, "################### stopWakeup #######################");
 			mWakeupOperate.stopWakeup();
 		}
 	}
 
 	void startRecognition() {
-		LogUtil.d(LOG_TAG, "YunZhiShengAdapter.startRecognition, mWakeupRecordingState=" + mWakeupRecordingState);
+		Log.d(LOG_TAG, "YunZhiShengAdapter.startRecognition, mWakeupRecordingState=" + mWakeupRecordingState);
 		if (mRecognitionRecordingState) {
-			LogUtil.w(LOG_TAG, "recognition service already ran, ignore.");
+			Log.w(LOG_TAG, "recognition service already ran, ignore.");
 		}
 		if (!mWakeupRecordingState) {
 			// 若唤醒没在录音，则直接开始识别
@@ -134,19 +128,19 @@ final class YunZhiShengAdapter {
 			Log.d(LOG_TAG, "mRecognizer.stopWakeup();");
 			mRequestToStartRecog = true;
 			// 否则先将唤醒识别停止，以释放录音设备资源
-			LogUtil.d(LOG_TAG, "################### stopWakeup #######################");
+			Log.d(LOG_TAG, "################### stopWakeup #######################");
 			mWakeupOperate.stopWakeup();
 		}
 	}
 
 	boolean mbWakeAfterStop = false;
 	void stopRecognition() {
-		LogUtil.d(LOG_TAG, "Stop recognition...");
+		Log.d(LOG_TAG, "Stop recognition...");
 		mRecognizer.stop();
 	}
 
 	void cancelRecognition() {
-		LogUtil.d(LOG_TAG, "Cancel recognition...");
+		Log.d(LOG_TAG, "Cancel recognition...");
 		mRecognizer.cancel(true);
 	}
 
@@ -157,7 +151,7 @@ final class YunZhiShengAdapter {
 	 * @param recordingState
 	 */
 	private boolean requestStartWakeup() {
-		LogUtil.v(LOG_TAG, "requestStartWakeup, wakeupInitDone: " + mWakeupInitDone +
+		Log.v(LOG_TAG, "requestStartWakeup, wakeupInitDone: " + mWakeupInitDone +
 					   ", recognitionInitDone: " + mRecognitionInitDone +
 					   ", dataInitDone: " + mDataInitDone +
 					   ", recordingState: " + mRecognitionRecordingState +
@@ -171,18 +165,12 @@ final class YunZhiShengAdapter {
 			command.add(VoiceAssistant.WAKE_UP_COMMAND_1);
 			command.add(VoiceAssistant.WAKE_UP_COMMAND_2);
 			command.add(VoiceAssistant.WAKE_UP_COMMAND_3);
-			command.add(VoiceAssistant.WAKE_UP_COMMAND_OPEN_WIFI_AP_0);
-			command.add(VoiceAssistant.WAKE_UP_COMMAND_OPEN_WIFI_AP_1);
-			command.add(VoiceAssistant.WAKE_UP_COMMAND_OPEN_WIFI_AP_2);
-			command.add(VoiceAssistant.WAKE_UP_COMMAND_OPEN_WIFI_AP_3);
-			command.add(VoiceAssistant.WAKE_UP_COMMAND_OPEN_WIFI_AP_4);
-			command.add(VoiceAssistant.WAKE_UP_COMMAND_OPEN_WIFI_AP_5);
 			mWakeupOperate.setCommandData(command);
 
 			StartTalkPerf[0] = System.currentTimeMillis();
-			LogUtil.d(LOG_TAG, "################### startWakeup #######################");
+			Log.d(LOG_TAG, "################### startWakeup #######################");
 			mWakeupOperate.startWakeup();
-			LogUtil.d(LOG_TAG, "Start wakeup listening...");
+			Log.d(LOG_TAG, "Start wakeup listening...");
 			return true;
 		}
 		return false;
@@ -194,11 +182,11 @@ final class YunZhiShengAdapter {
 	 * @param recordingState
 	 */
 	private void requestStartTalk() {
-		LogUtil.v(LOG_TAG, "requestStartTalk, mWakeupRecordingState = " + mWakeupRecordingState);
+		Log.v(LOG_TAG, "requestStartTalk, mWakeupRecordingState = " + mWakeupRecordingState);
 		if (!mWakeupRecordingState) {
 			mRequestToStartRecog = false;
 			mRecognizer.start();
-			LogUtil.d(LOG_TAG, "requestStartTalk Start to recognize...");
+			Log.d(LOG_TAG, "requestStartTalk Start to recognize...");
 		}
 	}
 
@@ -209,21 +197,21 @@ final class YunZhiShengAdapter {
 
 		@Override
 		public void onInitDone() {
-			LogUtil.v(LOG_TAG, "#####################IWakeupListener######## onInitDone");
+			Log.v(LOG_TAG, "#####################IWakeupListener######## onInitDone");
 			mWakeupInitDone = true;
 			setRequestToStartWakeUp(!requestStartWakeup());
 		}
 
 		@Override
 		public void onStart() {
-			LogUtil.v(LOG_TAG, "#####################IWakeupListener######## onStart");
+			Log.v(LOG_TAG, "#####################IWakeupListener######## onStart");
 			mWakeupRecordingState = true;
 			mCallback.onStart();
 		}
 
 		@Override
 		public void onStop() {
-			LogUtil.v(LOG_TAG, "#####################IWakeupListener######## onStop");
+			Log.v(LOG_TAG, "#####################IWakeupListener######## onStop");
 			mWakeupRecordingState = false;
 			if (mRequestToStartRecog) {
 				// 若已有识别请求，则开始语音识别
@@ -233,22 +221,22 @@ final class YunZhiShengAdapter {
 
 		@Override
 		public void onSuccess(String arg0) {
-			LogUtil.v(LOG_TAG, "#####################IWakeupListener######## onSuccess");
+			Log.v(LOG_TAG, "#####################IWakeupListener######## onSuccess");
 			String word = arg0.trim();
-			LogUtil.v(LOG_TAG, "IWakeupListener.onSuccess, word = " + word);
+			Log.v(LOG_TAG, "IWakeupListener.onSuccess, word = " + word);
 			mCallback.onWakeUp(word);
 		}
 
 		@Override
 		public void onError(ErrorUtil arg0) {
-			LogUtil.v(LOG_TAG, "#####################IWakeupListener######## onError");
-			LogUtil.v(LOG_TAG, "IWakeupListener.onError " + arg0);
+			Log.v(LOG_TAG, "#####################IWakeupListener######## onError");
+			Log.v(LOG_TAG, "IWakeupListener.onError " + arg0);
 		}
 	
 	}
 
 	private void reuqestToWake(){
-		LogUtil.v(LOG_TAG, "reuqestToWake mRequestToStartWakeUp="+mRequestToStartWakeUp);
+		Log.v(LOG_TAG, "reuqestToWake mRequestToStartWakeUp="+mRequestToStartWakeUp);
 		if (mRequestToStartWakeUp) {
 			// 若有唤醒请求，则开始唤醒服务
 			setRequestToStartWakeUp(!requestStartWakeup());
@@ -261,7 +249,7 @@ final class YunZhiShengAdapter {
 
 		@Override
 		public void onInitDone() {
-			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onInitDone");
+			Log.v(LOG_TAG, "***********IRecognizerTalkListener************onInitDone");
 			mRecognitionInitDone = true;
 
 //			public static final String TAG_CONTACT = "Contact"; // 联系人
@@ -282,7 +270,7 @@ final class YunZhiShengAdapter {
 
 		@Override
 		public void onDataDone() {
-			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onDataDone");
+			Log.v(LOG_TAG, "***********IRecognizerTalkListener************onDataDone");
 			mDataInitDone = true;
 			reuqestToWake();
 		}
@@ -290,39 +278,39 @@ final class YunZhiShengAdapter {
 		@Override
 		public void onUserDataCompile() {
 			// TODO Auto-generated method stub
-			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onUserDataCompile");
+			Log.v(LOG_TAG, "***********IRecognizerTalkListener************onUserDataCompile");
 			
 		}
 
 		@Override
 		public void onUserDataCompileDone() {
 			// TODO Auto-generated method stub
-			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onUserDataCompileDone");
+			Log.v(LOG_TAG, "***********IRecognizerTalkListener************onUserDataCompileDone");
 		}
 
 		@Override
 		public void onTalkStart() {
-			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkStart");
+			Log.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkStart");
 			mCallback.onTalkStart();
 		}
 
 		@Override
 		public void onTalkStop() {
-			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkStop");
+			Log.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkStop");
 		}
 
 		@Override
 		public void onTalkRecordingStart() {
-			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkRecordingStart");
+			Log.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkRecordingStart");
             StartTalkPerf[1] = System.currentTimeMillis();
-		    LogUtil.d(LOG_TAG, "YunZhiShengAdapter.java::onTalkRecordingStart=> 语音引擎待监听中间态耗时=>[" + (StartTalkPerf[1]-StartTalkPerf[0]) + "] ms.");
+		    Log.d(LOG_TAG, "YunZhiShengAdapter.java::onTalkRecordingStart=> 语音引擎待监听中间态耗时=>[" + (StartTalkPerf[1]-StartTalkPerf[0]) + "] ms.");
 			mRecognitionRecordingState = true;
 			mCallback.onStartRecording();
 		}
 
 		@Override
 		public void onTalkRecordingStop() {
-			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkRecordingStop");
+			Log.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkRecordingStop");
 			mRecognitionRecordingState = false;
 			mRecognitionState = true;
 			reuqestToWake();
@@ -333,19 +321,19 @@ final class YunZhiShengAdapter {
 
 		@Override
 		public void onVolumeUpdate(int volume) {
-//			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onVolumeUpdate="+volume);
+//			Log.v(LOG_TAG, "***********IRecognizerTalkListener************onVolumeUpdate="+volume);
 			mCallback.onVolume(volume);
 		}
 
 		@Override
 		public void onActiveStatusChanged(int arg0) {
-			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onActiveStatusChanged="+arg0);
+			Log.v(LOG_TAG, "***********IRecognizerTalkListener************onActiveStatusChanged="+arg0);
 		}
 
 		@Override
 		public void onTalkResult(String result) {
-			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkResult");
-			LogUtil.v(LOG_TAG, "IRecognizerTalkListener.onTalkResult: " + result);
+			Log.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkResult");
+			Log.v(LOG_TAG, "IRecognizerTalkListener.onTalkResult: " + result);
 			TestString = "onTalkResult = "+result+"\n"+"-----******-----\n";
 			// 此问题为云知声最新sdk在识别结果的句子末尾增加了一个句号，导致后续进行指令匹配时出现问题。
 			// 现将末尾句号过滤以临时解决此问题。2015-4-9
@@ -356,7 +344,7 @@ final class YunZhiShengAdapter {
 
 		@Override
 		public void onTalkCancel() {
-			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkCancel");
+			Log.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkCancel");
 			mRecognitionState = false;
 			mRecognitionRecordingState = false;
 			mCallback.onCancelRecognition();
@@ -367,7 +355,7 @@ final class YunZhiShengAdapter {
 
 		@Override
 		public void onTalkError(ErrorUtil arg0) {
-			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkCancel="+arg0);
+			Log.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkCancel="+arg0);
 			mRecognitionState = false;
 			mCallback.onFailedRecognition(arg0.code, arg0.message);
 
@@ -377,13 +365,13 @@ final class YunZhiShengAdapter {
 
 		@Override
 		public void onTalkParticalResult(String arg0) {
-			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkResult="+ arg0);
+			Log.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkResult="+ arg0);
 		}
 
 		@Override
 		public void onTalkProtocal(String protocol) {
-			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkProtocal");
-			LogUtil.v(LOG_TAG, "IRecognizerTalkListener.onTalkProtocal: " + protocol);
+			Log.v(LOG_TAG, "***********IRecognizerTalkListener************onTalkProtocal");
+			Log.v(LOG_TAG, "IRecognizerTalkListener.onTalkProtocal: " + protocol);
 			mRecognitionState = false;
 			
 			String errorStr = null ;
@@ -406,7 +394,7 @@ final class YunZhiShengAdapter {
 		@Override
 		public void isActive(boolean arg0) {
 			// TODO Auto-generated method stub
-			LogUtil.v(LOG_TAG, "***********IRecognizerTalkListener************isActive="+arg0);
+			Log.v(LOG_TAG, "***********IRecognizerTalkListener************isActive="+arg0);
 		}
 
 	}

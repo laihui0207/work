@@ -12,6 +12,7 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tuyou.tsd.common.base.CommonSleep;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.settings.R;
 import com.tuyou.tsd.settings.base.BaseActivity;
@@ -328,6 +330,9 @@ public class FMActivity extends SleepBaseActivity implements OnClickListener {
 	public void onDestroy() {
 		super.onDestroy();
 		clearPlay();
+		if(mCommonSleep != null){
+			mCommonSleep.stop();
+		}
 	}
 
 	@Override
@@ -335,6 +340,9 @@ public class FMActivity extends SleepBaseActivity implements OnClickListener {
 		clearPlay();
 		musicTextView.setText(getResources().getString(
 				R.string.txt_fm_play_music));
+		if(mCommonSleep != null){
+			mCommonSleep.stop();
+		}
 		super.onPause();
 	}
 
@@ -346,5 +354,29 @@ public class FMActivity extends SleepBaseActivity implements OnClickListener {
 		if (animationDrawable != null) {
 			animationDrawable.stop();
 		}
+	}
+	
+	CommonSleep mCommonSleep = null;
+	@Override
+	protected void onResume() {
+		mCommonSleep = new CommonSleep(this);
+		mCommonSleep.start();
+		super.onResume();
+	}
+	
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		if(mCommonSleep != null){
+			mCommonSleep.update();
+		}
+		return super.dispatchKeyEvent(event);
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		if(mCommonSleep != null){
+			mCommonSleep.update();
+		}
+		return super.dispatchTouchEvent(ev);
 	}
 }

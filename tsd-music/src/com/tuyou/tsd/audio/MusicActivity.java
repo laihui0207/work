@@ -68,7 +68,7 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 	private ImageView musicLoading;
 	private TextView addLoveText;
 	
-//	private CommonSleep commonSleep = null;
+	CommonSleep mCommonSleep = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -574,34 +574,37 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 	
 	@Override
 	protected void onResume() {
+		mCommonSleep = new CommonSleep(this);
+		mCommonSleep.start();
 		super.onResume();
-//		commonSleep = new CommonSleep(this);
-//		commonSleep.start();
 	}
 	
 	@Override
 	protected void onPause() {
 		super.onPause();
-//		if (commonSleep != null) {
-//			commonSleep.stop();
-//		}
+		
+		if(mCommonSleep != null){
+			mCommonSleep.stop();
+		}
 	}
 	
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
-//		if (commonSleep != null) {
-//			commonSleep.update();
-//		}
+		
+		if(mCommonSleep != null){
+			mCommonSleep.update();
+		}
 		return super.dispatchKeyEvent(event);
 	}
 
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
 		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
-//		if (commonSleep != null) {
-//			commonSleep.update();
-//		}
+		
+		if(mCommonSleep != null){
+			mCommonSleep.update();
+		}
 		return super.dispatchTouchEvent(ev);
 	}
 	
@@ -756,6 +759,10 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		if(mCommonSleep != null){
+			mCommonSleep.stop();
+		}
+		
 		unbindService(serviceConnection);
 		unregisterReceiver(cast);
 		Intent it = new Intent();

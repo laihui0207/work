@@ -6,7 +6,9 @@ import java.util.TimerTask;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -14,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tuyou.tsd.common.base.CommonSleep;
 import com.tuyou.tsd.common.network.GetOwnerInfoRes;
 import com.tuyou.tsd.common.network.JsonOA2;
 import com.tuyou.tsd.common.util.HelperUtil;
@@ -208,4 +211,43 @@ public class InformationActivity extends SleepBaseActivity implements
 		dialog.show();
 	}
 
+	CommonSleep mCommonSleep = null;
+	@Override
+	protected void onResume() {
+		mCommonSleep = new CommonSleep(this);
+		mCommonSleep.start();
+		super.onResume();
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		
+		if(mCommonSleep != null){
+			mCommonSleep.stop();
+		}
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if(mCommonSleep != null){
+			mCommonSleep.stop();
+		}
+	}
+	
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		if(mCommonSleep != null){
+			mCommonSleep.update();
+		}
+		return super.dispatchKeyEvent(event);
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		if(mCommonSleep != null){
+			mCommonSleep.update();
+		}
+		return super.dispatchTouchEvent(ev);
+	}
 }

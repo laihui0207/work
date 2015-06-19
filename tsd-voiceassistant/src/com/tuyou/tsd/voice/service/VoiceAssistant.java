@@ -59,12 +59,6 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 	static final String WAKE_UP_COMMAND_1 = "小宝小宝";
 	static final String WAKE_UP_COMMAND_2 = "小宝拍照";
 	static final String WAKE_UP_COMMAND_3 = "小宝闭嘴";
-	static final String WAKE_UP_COMMAND_OPEN_WIFI_AP_0 = "打开热点";
-	static final String WAKE_UP_COMMAND_OPEN_WIFI_AP_1 = "打开小宝热点";
-	static final String WAKE_UP_COMMAND_OPEN_WIFI_AP_2 = "开热点";
-	static final String WAKE_UP_COMMAND_OPEN_WIFI_AP_3 = "小宝开热点";
-	static final String WAKE_UP_COMMAND_OPEN_WIFI_AP_4 = "开WIFI";
-	static final String WAKE_UP_COMMAND_OPEN_WIFI_AP_5 = "打开WIFI";
 
 	private static final String LOG_TAG = "VoiceAssistant";
 
@@ -82,6 +76,7 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 	private static Object mLock = new Object();
 	private static Vector<Scene> mSceneList = new Vector<Scene>();
 
+	public static boolean ACC_STATE = true;
 	private boolean mInitialized;
 	
 	private enum State {
@@ -294,11 +289,16 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 				}
 			}
 			else if (action.equals(TSDEvent.System.ACC_ON)) {
+				ACC_STATE = true;
 				if (mEngine != null) {
 					mEngine.startWakeUpListening();
 				}
 			}
 			else if (action.equals(TSDEvent.System.ACC_OFF)) {
+				ACC_STATE = false;
+				Intent acc_intent = new Intent(TSDEvent.Interaction.FINISH_ACTIVITY);
+				sendBroadcast(acc_intent);
+				
 				if (mEngine != null) {
 					// Cancel the interaction if we are during in an interaction.
 					// Otherwise the wake up message will be ignored by the engine when ACC turns on next time.
@@ -415,14 +415,6 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 			sendBroadcast(resultIntent);
 		} else if (word.equals(WAKE_UP_COMMAND_3)) {
 			Intent resultIntent = new Intent(CommonMessage.VOICE_COMM_SHUT_UP);
-			sendBroadcast(resultIntent);
-		} else if (word.equals(WAKE_UP_COMMAND_OPEN_WIFI_AP_0)
-				|| word.equals(WAKE_UP_COMMAND_OPEN_WIFI_AP_1)
-				|| word.equals(WAKE_UP_COMMAND_OPEN_WIFI_AP_2)
-				|| word.equals(WAKE_UP_COMMAND_OPEN_WIFI_AP_3)
-				|| word.equals(WAKE_UP_COMMAND_OPEN_WIFI_AP_4)
-				|| word.equals(WAKE_UP_COMMAND_OPEN_WIFI_AP_5)) {
-			Intent resultIntent = new Intent(CommonMessage.VOICE_COMM_OPEN_WIFI_AP);
 			sendBroadcast(resultIntent);
 		}
 	}
@@ -701,6 +693,8 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 							((VoiceAssistant)context).changeState(VoiceAssistant.State.STATE_LISTENING);
 							
 							LogUtil.w(LOG_TAG, "executeInteraction from to end !");
+							Log.d("fq","InteractionExecuteThread wait !!!!!!!!!!!!!!!!");
+							context.sendBroadcast(new Intent(CommonApps.APP_VOICE_WAIT_READY));
 							mLock.wait();
 							LogUtil.v(LOG_TAG,"mLock up ###########################################");
 						} catch (InterruptedException e) {
@@ -768,6 +762,7 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 			// Start the interaction
 			if (scene != null) {
 				LogUtil.d(LOG_TAG," scene !!!!!!!!!!!!!!!!!!!!!!!!! in");
+				Log.d("step","run sendBroadcast INTERACTION_START *********************");
 				context.sendBroadcast(new Intent(TSDEvent.Interaction.INTERACTION_START));
 
 				// Notify interaction start

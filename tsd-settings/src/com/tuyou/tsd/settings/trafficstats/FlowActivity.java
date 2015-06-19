@@ -12,11 +12,14 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.text.format.Formatter;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.tuyou.tsd.common.base.CommonSleep;
 import com.tuyou.tsd.settings.R;
 import com.tuyou.tsd.settings.base.SleepBaseActivity;
 import com.tuyou.tsd.settings.base.SysApplication;
@@ -110,7 +113,42 @@ public class FlowActivity extends SleepBaseActivity {
 		if (wifiReceiver != null) {
 			unregisterReceiver(wifiReceiver);
 		}
+		if(mCommonSleep != null){
+			mCommonSleep.stop();
+		}
 		super.onDestroy();
 	}
 
+	CommonSleep mCommonSleep = null;
+	@Override
+	protected void onResume() {
+		mCommonSleep = new CommonSleep(this);
+		mCommonSleep.start();
+		super.onResume();
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		
+		if(mCommonSleep != null){
+			mCommonSleep.stop();
+		}
+	}
+	
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		if(mCommonSleep != null){
+			mCommonSleep.update();
+		}
+		return super.dispatchKeyEvent(event);
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		if(mCommonSleep != null){
+			mCommonSleep.update();
+		}
+		return super.dispatchTouchEvent(ev);
+	}
 }

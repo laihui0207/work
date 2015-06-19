@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -14,6 +16,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.tuyou.tsd.common.CommonMessage;
+import com.tuyou.tsd.common.base.CommonSleep;
 import com.tuyou.tsd.settings.R;
 
 public class WeclomeActivity extends Activity {
@@ -94,6 +97,42 @@ public class WeclomeActivity extends Activity {
 		if (broadcastReceiver != null) {
 			unregisterReceiver(broadcastReceiver);
 		}
+		if(mCommonSleep != null){
+			mCommonSleep.stop();
+		}
 		super.onDestroy();
+	}
+	
+	CommonSleep mCommonSleep = null;
+	@Override
+	protected void onResume() {
+		mCommonSleep = new CommonSleep(this);
+		mCommonSleep.start();
+		super.onResume();
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		
+		if(mCommonSleep != null){
+			mCommonSleep.stop();
+		}
+	}
+	
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		if(mCommonSleep != null){
+			mCommonSleep.update();
+		}
+		return super.dispatchKeyEvent(event);
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		if(mCommonSleep != null){
+			mCommonSleep.update();
+		}
+		return super.dispatchTouchEvent(ev);
 	}
 }

@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 
 import com.tuyou.tsd.common.CommonMessage;
 import com.tuyou.tsd.common.TSDEvent;
+import com.tuyou.tsd.common.base.CommonSleep;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.settings.R;
 import com.tuyou.tsd.settings.base.SleepBaseActivity;
@@ -59,6 +62,8 @@ public class WifiActivity extends SleepBaseActivity implements OnClickListener {
 		}
 	};
 
+	CommonSleep mCommonSleep = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -261,16 +266,42 @@ public class WifiActivity extends SleepBaseActivity implements OnClickListener {
 
 	@Override
 	protected void onResume() {
+		mCommonSleep = new CommonSleep(this);
+		mCommonSleep.start();
 		super.onResume();
-		if (!getWifiApState(wifiManager)) {
-		} else {
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		
+		if(mCommonSleep != null){
+			mCommonSleep.stop();
 		}
 	}
-
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-	};
+		if(mCommonSleep != null){
+			mCommonSleep.stop();
+		}
+	}
+	
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		if(mCommonSleep != null){
+			mCommonSleep.update();
+		}
+		return super.dispatchKeyEvent(event);
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		if(mCommonSleep != null){
+			mCommonSleep.update();
+		}
+		return super.dispatchTouchEvent(ev);
+	}
 
 	@Override
 	public void onClick(View v) {

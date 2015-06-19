@@ -130,6 +130,9 @@ public class CoreService extends Service {
 	static final int LOADING_COMPLETED = 100;
 	static final int SHAKE_HAPPENED = 200;
 	
+	//acc 
+	public boolean ACC_STATE = false;
+	
 	//test
 	public static String TestYZSstr = null;
 
@@ -214,6 +217,7 @@ public class CoreService extends Service {
     		}
     		// ACC on
     		else if (action.equals(TSDEvent.System.ACC_ON)) {
+    			ACC_STATE = true;
     		    LogUtil.v(LOG_TAG, "CoreService.java::onReceive=> [点火触发提示]");
     			Toast.makeText(context, "点火触发.", Toast.LENGTH_SHORT).show();
 
@@ -228,6 +232,7 @@ public class CoreService extends Service {
     		}
     		// ACC off
     		else if (action.equals(TSDEvent.System.ACC_OFF)) {
+    			ACC_STATE = false;
     		    LogUtil.v(LOG_TAG, "CoreService.java::onReceive=> [熄火触发提示]");
     			Toast.makeText(context, "熄火触发.", Toast.LENGTH_SHORT).show();
 
@@ -493,7 +498,7 @@ public class CoreService extends Service {
 	 * @param destMode
 	 * @param param
 	 */
-	public void changeMode(WorkingMode destMode, ContentType param) {
+	public synchronized void changeMode(WorkingMode destMode, ContentType param) {
 		if (mCurrentMode == destMode && mCurrentType == param)
 			return;
 

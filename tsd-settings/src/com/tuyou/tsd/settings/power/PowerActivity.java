@@ -5,12 +5,15 @@ import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.tuyou.tsd.common.CommonApps;
+import com.tuyou.tsd.common.base.CommonSleep;
 import com.tuyou.tsd.common.util.LogUtil;
 import com.tuyou.tsd.settings.R;
 import com.tuyou.tsd.settings.base.SleepBaseActivity;
@@ -206,5 +209,45 @@ public class PowerActivity extends SleepBaseActivity implements OnClickListener 
 		builder.setSpan(orangeSpan, 23, 24, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 		builder.setSpan(orangeSpan1, 39, 41, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 		textView.setText(builder);
+	}
+	
+	CommonSleep mCommonSleep = null;
+	@Override
+	protected void onResume() {
+		mCommonSleep = new CommonSleep(this);
+		mCommonSleep.start();
+		super.onResume();
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		
+		if(mCommonSleep != null){
+			mCommonSleep.stop();
+		}
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if(mCommonSleep != null){
+			mCommonSleep.stop();
+		}
+	}
+	
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		if(mCommonSleep != null){
+			mCommonSleep.update();
+		}
+		return super.dispatchKeyEvent(event);
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		if(mCommonSleep != null){
+			mCommonSleep.update();
+		}
+		return super.dispatchTouchEvent(ev);
 	}
 }

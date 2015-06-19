@@ -50,6 +50,8 @@ public class InteractingActivity extends Activity {
 	private final int MSG_KILL_VOICE_SERVER = 0x1001;
 	private final long TIME_KILL_VOICE_SERVER = 30*1000;
 	
+	public static boolean InteractingActivityRuning = false;
+	private boolean mReturnImmed = false;
 	
 	enum FRAGMENT_TYPE {
 		RECORD,
@@ -80,6 +82,15 @@ public class InteractingActivity extends Activity {
 		Log.d(TAG,"onCreate...");
 		Log.d("fq","InteractingActivity onCreate...");
 		super.onCreate(savedInstanceState);
+		if(!VoiceAssistant.ACC_STATE || InteractingActivityRuning){
+			Log.d("fq","InteractingActivity onCreate...ACC OFF  ");
+			mReturnImmed = true;
+			finish();
+			return;
+		}
+		InteractingActivityRuning = true;
+		
+		bindService(new Intent(this, VoiceAssistant.class), mVoiceServiceConnection, Service.BIND_AUTO_CREATE);
 		setContentView(R.layout.interacting_activity);
 		setVoiceState(VOICE_STATE.VOICE_STATE_NONE);
 		mbIsSearchView = false;
@@ -87,7 +98,6 @@ public class InteractingActivity extends Activity {
 		mbFinishActivity = false;
 		initView();
 
-		bindService(new Intent(this, VoiceAssistant.class), mVoiceServiceConnection, Service.BIND_AUTO_CREATE);
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(TSDEvent.Interaction.FINISH_ACTIVITY);
@@ -104,6 +114,7 @@ public class InteractingActivity extends Activity {
 	@Override
 	protected void onResume() {
 		Log.d(TAG, "onResume...");
+		Log.d("step","InterActivity onResume "+InteractingActivityRuning);
 		if (mVoiceService != null) {
 			try {
 				// Register self for reply message
@@ -132,6 +143,7 @@ public class InteractingActivity extends Activity {
 	@Override
 	protected void onPause() {
 		Log.d(TAG, "onPause...");
+		Log.d("step","InterActivity onPause "+InteractingActivityRuning);
 		mHandler.removeMessages(MSG_KILL_VOICE_SERVER);
 		if(mVoiceSleep != null){
 			mVoiceSleep.stop();
@@ -157,6 +169,10 @@ public class InteractingActivity extends Activity {
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
 		// TODO Auto-generated method stub
+		if(mFragmentType == FRAGMENT_TYPE.RECOG){
+			sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
+		}
+		
 		if(mVoiceSleep != null){
 			mVoiceSleep.update();
 		}
@@ -166,6 +182,10 @@ public class InteractingActivity extends Activity {
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		// TODO 自动生成的方法存根
+		if(mFragmentType == FRAGMENT_TYPE.RECOG){
+			sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
+		}
+		
 		if (mVoiceSleep != null) {
 			mVoiceSleep.update();
 		}
@@ -182,6 +202,13 @@ public class InteractingActivity extends Activity {
 	protected void onDestroy() {
 		Log.d(TAG, "onDestroy...");
 		Log.d("fq","InteractingActivity onDestroy...");
+		Log.d("step","InterActivity onDestroy "+InteractingActivityRuning);
+		if(mReturnImmed){
+			Log.d("step","InterActivity return");
+			super.onDestroy();
+			return;
+		}
+		
 		if(mVoiceSleep != null){
 			mVoiceSleep.stop();
 		}
@@ -196,6 +223,8 @@ public class InteractingActivity extends Activity {
 		Intent intent = new Intent(CommonApps.APP_VOICE_INTERACTINGACTIVITY);
 		intent.putExtra(CommonApps.APP_VOICE_INTERACTINGACTIVITY_RUNNING, false);
 		sendBroadcast(intent);
+		
+		InteractingActivityRuning = false;
 	}
 
 	private void initView() {
@@ -436,7 +465,7 @@ public class InteractingActivity extends Activity {
 		notifyInteractionError();
 	}
 	
-	boolean finishOut = false;
+	private volatile boolean finishOut = false;
 	private void notifyInteractionError() {
 		Log.d(TAG, "notifyInteractionError return to laucher! finishOut="+finishOut);
 		if(finishOut){
@@ -511,10 +540,16 @@ public class InteractingActivity extends Activity {
 			switch(msg.what){
 			case MSG_KILL_VOICE_SERVER:
 				Log.v(TAG, "InteActivity BROADCAST_KILL_VOICE");
-				sendBroadcast(new Intent(CommonApps.BROADCAST_KILL_VOICE));
+//				finish();
+				
+				if(mFragmentType == FRAGMENT_TYPE.RECORD){
+					Log.d("step","InteractionExecuteThread wait");
+					sendBroadcast(new Intent(CommonApps.BROADCAST_KILL_VOICE));
+				}else{
+					finish();
+				}
 				break;
 			}
 		}
-		
 	};
 }

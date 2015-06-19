@@ -9,6 +9,8 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -16,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tuyou.tsd.common.base.CommonSleep;
 import com.tuyou.tsd.settings.R;
 import com.tuyou.tsd.settings.base.BaseActivity;
 import com.tuyou.tsd.settings.base.SleepBaseActivity;
@@ -85,6 +88,9 @@ public class FMMainActivity extends SleepBaseActivity implements OnClickListener
 	@Override
 	protected void onResume() {
 		super.onResume();
+		mCommonSleep = new CommonSleep(this);
+		mCommonSleep.start();
+		
 		if (pref != null) {
 			isOpen = Boolean.parseBoolean(pref.getString("FMOpen", "false"));
 			frequency = Double.parseDouble(pref.getString("fm_freq", "88.8"));
@@ -153,5 +159,37 @@ public class FMMainActivity extends SleepBaseActivity implements OnClickListener
 		if (myReceiver != null) {
 			unregisterReceiver(myReceiver);
 		}
+		if(mCommonSleep != null){
+			mCommonSleep.stop();
+		}
+	}
+	
+	
+	CommonSleep mCommonSleep = null;
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		
+		if(mCommonSleep != null){
+			mCommonSleep.stop();
+		}
+	}
+
+	
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		if(mCommonSleep != null){
+			mCommonSleep.update();
+		}
+		return super.dispatchKeyEvent(event);
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		if(mCommonSleep != null){
+			mCommonSleep.update();
+		}
+		return super.dispatchTouchEvent(ev);
 	}
 }

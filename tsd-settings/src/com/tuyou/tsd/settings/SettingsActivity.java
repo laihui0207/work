@@ -2,12 +2,16 @@ package com.tuyou.tsd.settings;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.tuyou.tsd.common.TSDEvent;
+import com.tuyou.tsd.common.base.CommonSleep;
 import com.tuyou.tsd.settings.about.AboutActivity;
 import com.tuyou.tsd.settings.base.BaseActivity;
 import com.tuyou.tsd.settings.base.SettingsService;
@@ -26,7 +30,7 @@ public class SettingsActivity extends SleepBaseActivity implements OnClickListen
 	private LinearLayout aboutLayout;
 	public PowerActivity activity;
 	private ImageView back;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -119,5 +123,45 @@ public class SettingsActivity extends SleepBaseActivity implements OnClickListen
 		default:
 			break;
 		}
+	}
+	
+	CommonSleep mCommonSleep = null;
+	@Override
+	protected void onResume() {
+		mCommonSleep = new CommonSleep(this);
+		mCommonSleep.start();
+		super.onResume();
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		
+		if(mCommonSleep != null){
+			mCommonSleep.stop();
+		}
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if(mCommonSleep != null){
+			mCommonSleep.stop();
+		}
+	}
+	
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		if(mCommonSleep != null){
+			mCommonSleep.update();
+		}
+		return super.dispatchKeyEvent(event);
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		if(mCommonSleep != null){
+			mCommonSleep.update();
+		}
+		return super.dispatchTouchEvent(ev);
 	}
 }

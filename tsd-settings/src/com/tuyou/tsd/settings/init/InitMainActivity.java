@@ -12,7 +12,9 @@ import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -24,6 +26,7 @@ import android.widget.RelativeLayout;
 import com.tuyou.tsd.common.CommonMessage;
 import com.tuyou.tsd.common.TSDComponent;
 import com.tuyou.tsd.common.TSDShare;
+import com.tuyou.tsd.common.base.CommonSleep;
 import com.tuyou.tsd.common.util.HelperUtil;
 import com.tuyou.tsd.settings.R;
 import com.tuyou.tsd.settings.base.WaitDialog;
@@ -273,6 +276,10 @@ public class InitMainActivity extends FragmentActivity implements
 			unregisterReceiver(broadcastReceiver);
 		}
 		super.onDestroy();
+		
+		if(mCommonSleep != null){
+			mCommonSleep.stop();
+		}
 	}
 
 	public void dialogFM() {
@@ -369,5 +376,39 @@ public class InitMainActivity extends FragmentActivity implements
 		default:
 			break;
 		}
+	}
+	
+	
+	CommonSleep mCommonSleep = null;
+	@Override
+	protected void onResume() {
+		mCommonSleep = new CommonSleep(this);
+		mCommonSleep.start();
+		super.onResume();
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		
+		if(mCommonSleep != null){
+			mCommonSleep.stop();
+		}
+	}
+	
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		if(mCommonSleep != null){
+			mCommonSleep.update();
+		}
+		return super.dispatchKeyEvent(event);
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		if(mCommonSleep != null){
+			mCommonSleep.update();
+		}
+		return super.dispatchTouchEvent(ev);
 	}
 }

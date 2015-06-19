@@ -16,6 +16,7 @@ public interface TSDComponent {
 	static final String VOICE_ASSISTANT_PACKAGE = "com.tuyou.tsd.voice";
 	static final String WAKEUP_ACTIVITY = "com.tuyou.tsd.voice.WakeUpActivity";
 	static final String INTERACTION_ACTIVITY = "com.tuyou.tsd.voice.InteractingActivity";
+	static final String INTERACTION_ACTIVITY_BG = "com.tuyou.tsd.voice.BackActivity";
 	static final String VOICE_ASSISTANT_SERVICE = "com.tuyou.tsd.voice.service.VoiceAssistant";
 
 	// 系统设置app

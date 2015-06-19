@@ -117,18 +117,13 @@ public interface CommonMessage {
 	 * 指令: 闭嘴
 	 */
 	static final String VOICE_COMM_SHUT_UP = "tsd.command.SHUT_UP";
+
+
 	/**
 	 * 指令：语音打开热点
 	 */
 	static final String VOICE_COMM_OPEN_WIFI_AP = "tsd.command.OPEN_WIFI_AP";
-	/**
-	 * 指令：打开热点
-	 */
-	static final String SETTING_COMM_OPEN_WIFI_AP = "tsd.command.SETTING_OPEN_WIFI_AP";
-	/**
-	 * 指令：关闭热点
-	 */
-	static final String SETTING_COMM_CLOSE_WIFI_AP = "tsd.command.SETTING_CLOSE_WIFI_AP";
+
 //	/**
 //	 * 指令: 暂停
 //	 */
@@ -157,6 +152,7 @@ public interface CommonMessage {
 //	 * 指令: 赞上一首
 //	 */
 //	static final String VOICE_COMM_LIKE_PREV = "tsd.command.LIKE_PREV";
+
 
 	//
 	// 行车记录消息

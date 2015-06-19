@@ -94,19 +94,19 @@ public class NewSleepingActivity extends BaseActivity {
     		if(action.equals(CommonApps.SLEEP_SHOW_CONTENT)){
     			String musictitle = intent.getStringExtra(CommonApps.SLEEP_CONTENT_TITLE);
     			boolean isPlay = intent.getBooleanExtra(CommonApps.SLEEP_PLAY_MUSIC_NEED_PLAY, false);
-    			Log.v(TAG,"SLEEP_SHOW_CONTENT ="+musictitle);
-    			if(musictitle==null || musictitle.equals("")){
+    			Log.v(TAG,"SLEEP_SHOW_CONTENT ="+musictitle+"  isPlay="+isPlay);
+    			if(musictitle==null || musictitle.length()<1){
     				setMusicLayout(false);
     			}else{
     				setMusicLayout(true);
     				mMusicName.setText(musictitle);
     				mbIsMusicPlay = isPlay;
-    				mMusicPlay.setBackgroundResource(isPlay ? R.drawable.music_ctl_play : R.drawable.music_ctl_pause );
+    				mMusicPlay.setBackgroundResource(isPlay ? R.drawable.music_ctl_pause : R.drawable.music_ctl_play );
     			}
     		}else if(action.equals(CommonApps.SLEEP_BEEN_PLAY_MUSIC)){
-    			boolean isPlay = intent.getBooleanExtra(CommonApps.SLEEP_PLAY_MUSIC_NEED_PLAY, true);
+    			boolean isPlay = intent.getBooleanExtra(CommonApps.SLEEP_PLAY_MUSIC_NEED_PLAY, false);
     			Log.v(TAG,"SLEEP_BEEN_PLAY_MUSIC isPlay="+isPlay);
-    			mMusicPlay.setBackgroundResource(isPlay ? R.drawable.music_ctl_play : R.drawable.music_ctl_pause);
+    			mMusicPlay.setBackgroundResource(isPlay ? R.drawable.music_ctl_pause : R.drawable.music_ctl_play );
     		}
 
 			if (action.equals(CommonMessage.VOICE_COMM_WAKEUP)) {
@@ -234,7 +234,7 @@ public class NewSleepingActivity extends BaseActivity {
 	public void setMusicLayout(boolean bVisible){
 		Log.v(TAG,"setMusicLayout "+bVisible);
 		if(mMusicLayout!=null){
-			mMusicLayout.setVisibility(bVisible ? View.VISIBLE : View.VISIBLE);
+			mMusicLayout.setVisibility(bVisible ? View.VISIBLE : View.INVISIBLE);
 		}
 	}
 
@@ -263,6 +263,7 @@ public class NewSleepingActivity extends BaseActivity {
 	private void setPlayState(){
 		mbIsMusicPlay = !mbIsMusicPlay;
 		Intent intent = new Intent(CommonApps.SLEEP_PLAY_MUSIC);
+		Log.v(TAG,"setPlayState mbIsMusicPlay="+mbIsMusicPlay);
 		if(mbIsMusicPlay){
 			intent.putExtra(CommonApps.SLEEP_PLAY_MUSIC_NEED_PLAY, true);
 		}else{

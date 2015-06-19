@@ -14,33 +14,41 @@ public final class VoiceCommand {
 	static final Map<String, String> map = new HashMap<String, String>();
 	// 定义指令关系映射
 	static {
-//		map.put("拍照",	 CommonMessage.VOICE_COMM_TAKE_PICTURE);
-//		map.put("拍张照",	 CommonMessage.VOICE_COMM_TAKE_PICTURE);
-//		map.put("拍个照", CommonMessage.VOICE_COMM_TAKE_PICTURE);
+//		map.put("拍照",	        CommonMessage.VOICE_COMM_TAKE_PICTURE);
+//		map.put("拍张照",	    CommonMessage.VOICE_COMM_TAKE_PICTURE);
+//		map.put("拍个照",       CommonMessage.VOICE_COMM_TAKE_PICTURE);
 
-		map.put("导航",   CommonMessage.VOICE_COMM_MAP);
-		map.put("打开导航",   CommonMessage.VOICE_COMM_MAP);
-		map.put("我要导航",   CommonMessage.VOICE_COMM_MAP);
-		map.put("我想导航",   CommonMessage.VOICE_COMM_MAP);
+		map.put("导航",         CommonMessage.VOICE_COMM_MAP);
+		map.put("打开导航",     CommonMessage.VOICE_COMM_MAP);
+		map.put("我要导航",     CommonMessage.VOICE_COMM_MAP);
+		map.put("我想导航",     CommonMessage.VOICE_COMM_MAP);
 
-		map.put("新闻",	 CommonMessage.VOICE_COMM_NEWS);
-		map.put("打开新闻",	 CommonMessage.VOICE_COMM_NEWS);
-		map.put("听新闻",	 CommonMessage.VOICE_COMM_NEWS);
-		map.put("播新闻",	 CommonMessage.VOICE_COMM_NEWS);
-		map.put("放新闻",	 CommonMessage.VOICE_COMM_NEWS);
-		map.put("帮我打开新闻",	 CommonMessage.VOICE_COMM_NEWS);
-		map.put("给我打开新闻",	 CommonMessage.VOICE_COMM_NEWS);
-		map.put("我要打开新闻",	 CommonMessage.VOICE_COMM_NEWS);
-		map.put("我要听新闻",	 CommonMessage.VOICE_COMM_NEWS);
+		map.put("新闻",	        CommonMessage.VOICE_COMM_NEWS);
+		map.put("打开新闻",	    CommonMessage.VOICE_COMM_NEWS);
+		map.put("听新闻",	    CommonMessage.VOICE_COMM_NEWS);
+		map.put("播新闻",	    CommonMessage.VOICE_COMM_NEWS);
+		map.put("放新闻",	    CommonMessage.VOICE_COMM_NEWS);
+		map.put("帮我打开新闻",	CommonMessage.VOICE_COMM_NEWS);
+		map.put("给我打开新闻",	CommonMessage.VOICE_COMM_NEWS);
+		map.put("我要打开新闻",	CommonMessage.VOICE_COMM_NEWS);
+		map.put("我要听新闻",	CommonMessage.VOICE_COMM_NEWS);
 
-		map.put("播客",	 CommonMessage.VOICE_COMM_JOKE);
-		map.put("打开播客",	 CommonMessage.VOICE_COMM_JOKE);
-		map.put("听播客",	 CommonMessage.VOICE_COMM_JOKE);
-		map.put("放播客",	 CommonMessage.VOICE_COMM_JOKE);
-		map.put("帮我打开播客",	 CommonMessage.VOICE_COMM_JOKE);
-		map.put("给我打开播客",	 CommonMessage.VOICE_COMM_JOKE);
-		map.put("我要打开播客",	 CommonMessage.VOICE_COMM_JOKE);
-		map.put("我要听播客",	 CommonMessage.VOICE_COMM_JOKE);
+		map.put("播客",	        CommonMessage.VOICE_COMM_JOKE);
+		map.put("节目",	        CommonMessage.VOICE_COMM_JOKE);
+		map.put("打开播客",	    CommonMessage.VOICE_COMM_JOKE);
+		map.put("打开节目",	    CommonMessage.VOICE_COMM_JOKE);
+		map.put("听播客",	    CommonMessage.VOICE_COMM_JOKE);
+		map.put("听节目",	    CommonMessage.VOICE_COMM_JOKE);
+		map.put("放播客",	    CommonMessage.VOICE_COMM_JOKE);
+		map.put("放节目",	    CommonMessage.VOICE_COMM_JOKE);
+		map.put("帮我打开播客",	CommonMessage.VOICE_COMM_JOKE);
+		map.put("帮我打开节目",	CommonMessage.VOICE_COMM_JOKE);
+		map.put("给我打开播客",	CommonMessage.VOICE_COMM_JOKE);
+		map.put("给我打开节目",	CommonMessage.VOICE_COMM_JOKE);
+		map.put("我要打开播客",	CommonMessage.VOICE_COMM_JOKE);
+		map.put("我要打开节目",	CommonMessage.VOICE_COMM_JOKE);
+		map.put("我要听播客",	CommonMessage.VOICE_COMM_JOKE);
+		map.put("我要听节目",	CommonMessage.VOICE_COMM_JOKE);
 
 		map.put("音乐",	 CommonMessage.VOICE_COMM_MUSIC);
 		map.put("听音乐",	 CommonMessage.VOICE_COMM_MUSIC);
@@ -59,6 +67,20 @@ public final class VoiceCommand {
 		map.put("我想听音乐",	 CommonMessage.VOICE_COMM_MUSIC);
 		map.put("我要听音乐",	 CommonMessage.VOICE_COMM_MUSIC);
 		map.put("我想听歌",	 CommonMessage.VOICE_COMM_MUSIC);
+
+		map.put("打开热点",         CommonMessage.VOICE_COMM_OPEN_WIFI_AP);
+		map.put("打开小宝热点",     CommonMessage.VOICE_COMM_OPEN_WIFI_AP);
+		map.put("开热点",	        CommonMessage.VOICE_COMM_OPEN_WIFI_AP);
+		map.put("打开wifi",	        CommonMessage.VOICE_COMM_OPEN_WIFI_AP);
+		map.put("开wifi",	        CommonMessage.VOICE_COMM_OPEN_WIFI_AP);
+		map.put("打开wifi热点",	    CommonMessage.VOICE_COMM_OPEN_WIFI_AP);
+		map.put("开wifi热点",	    CommonMessage.VOICE_COMM_OPEN_WIFI_AP);
+		map.put("小宝开热点",	    CommonMessage.VOICE_COMM_OPEN_WIFI_AP);
+		map.put("小宝打开热点",	    CommonMessage.VOICE_COMM_OPEN_WIFI_AP);
+		map.put("小宝开wifi",	    CommonMessage.VOICE_COMM_OPEN_WIFI_AP);
+		map.put("小宝打开wiFi",	    CommonMessage.VOICE_COMM_OPEN_WIFI_AP);
+		map.put("小宝开wifi热点",	CommonMessage.VOICE_COMM_OPEN_WIFI_AP);
+		map.put("小宝打开wiFi热点",	CommonMessage.VOICE_COMM_OPEN_WIFI_AP);
 
 		map.put("好",	 CommonMessage.VOICE_COMM_POSITIVE);
 		map.put("是",	 CommonMessage.VOICE_COMM_POSITIVE);

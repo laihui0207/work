@@ -9,6 +9,7 @@ import java.util.TimerTask;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.R.bool;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +32,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.tuyou.tsd.R;
+import com.tuyou.tsd.common.CommonApps;
 import com.tuyou.tsd.common.CommonMessage;
 import com.tuyou.tsd.common.TSDComponent;
 import com.tuyou.tsd.common.TSDConst;
@@ -106,11 +108,18 @@ public class SystemController {
 	private String  mAddress;
 	private String mDistrict;
 	private double mileage;
+	
+	private boolean mRunningInterActivity = false;
+	private boolean mRunningVoiceReady = true;
 
 	private Timer mTimer = null;
 	
 	private Timer mKeepAliveTimer = null;
 	private long tickCountForKeepAlive = 0;
+	/**
+	 * 是否在进行摄像头预览
+	 */
+	private boolean isCameraPreview = false;
 
 	public SystemController(CoreService context) {
 		mService = context;
@@ -121,11 +130,22 @@ public class SystemController {
 		LogUtil.d(LOG_TAG, "create the instance of Message service.");
 		mMessageClient = MessageService.getInstance(mService);
 		// 启动messageClient在登录成功后进行，因为需要deviceId
-		tickCountForKeepAlive = SystemClock.uptimeMillis();
 	}
 
 	public void start() {
 		startSystemServices();
+
+		long time = 60000;
+		Log.d(LOG_TAG, "Schedule keep alive " + time + " ms.");
+		mKeepAliveTimer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				if(tickCountForKeepAlive>0 && (SystemClock.uptimeMillis()-tickCountForKeepAlive > 180000)){
+					tickCountForKeepAlive = 0;
+					mService.sendBroadcast(new Intent(TSDEvent.System.CLOSE_WIFI_AP_FROM_CORE_SERVICE));
+				}
+			}
+		}, 0, time);
 	}
 
 	public void stop() {
@@ -162,14 +182,10 @@ public class SystemController {
 				resumeIdleCheckThread();
 			}
 			else if (action.equals(TSDEvent.System.RECEIVE_KEEP_ALIVE)) {
-				tickCountForKeepAlive = SystemClock.uptimeMillis(); 
+				tickCountForKeepAlive = SystemClock.uptimeMillis();
 			}
 			else if (action.equals(TSDEvent.System.RECEIVE_DISCONNECT)) {
-				onCloseWifiAp();
-				tickCountForKeepAlive = SystemClock.uptimeMillis();
-				Intent intentCloseWifi = new Intent();
-				intentCloseWifi.setAction(TSDEvent.System.CLOSE_WIFI_AP_FROM_CORE_SERVICE);
-				mService.sendBroadcast(intentCloseWifi);
+			    mService.sendBroadcast(new Intent(TSDEvent.System.CLOSE_WIFI_AP_FROM_CORE_SERVICE));
 			}
 			// Network connection
 			else if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
@@ -252,6 +268,11 @@ public class SystemController {
     			mDistrict=location.getDistrict();
     			mileage = location.getMileage();
 			}
+			else if (action.equals(TSDEvent.CarDVR.START_CAM_PREVIEW)) {
+				isCameraPreview = true;
+			}else if(action.equals(TSDEvent.CarDVR.STOP_CAM_PREVIEW)){
+				isCameraPreview = false;
+			}
 		}
 	};
 	
@@ -264,7 +285,7 @@ public class SystemController {
 		Intent intent = new Intent();
 		intent.setAction(CommonMessage.TTS_PLAY);
 		// 要发送的内容
-		intent.putExtra("package", mService.getPackageName());
+		//intent.putExtra("package", mService.getPackageName()); //Fixed: 1118
 		intent.putExtra("id", pid);
 		intent.putExtra("content", content);
 		// 发送 一个无序广播
@@ -279,34 +300,6 @@ public class SystemController {
 		intent.setAction(CommonMessage.TTS_CLEAR);
 		// 发送 一个无序广播
 		mService.sendBroadcast(intent);
-	}
-	
-	private void onOpenWifiAp() {
-		if(!HelperUtil.isWifiApEnabled(mService)){
-			if(HelperUtil.setWifiApEnabled(mService, true)){
-				stopBroadcast();
-				playBroadcast(mService.getResources().getString(R.string.wifi_open_ts), 0);
-			}
-			else{
-				Log.v(LOG_TAG,"Open Wifi Ap failed");
-				stopBroadcast();
-				playBroadcast(mService.getResources().getString(R.string.wifi_open_failed_ts), 0);
-			}
-		}
-	}
-	
-	private void onCloseWifiAp() {
-		if(HelperUtil.isWifiApEnabled(mService)){
-			if(HelperUtil.setWifiApEnabled(mService, false)){
-				stopBroadcast();
-				playBroadcast(mService.getResources().getString(R.string.wifi_off_ts), 0);
-			}
-			else{
-				Log.v(LOG_TAG,"Close Wifi Ap failed");
-				stopBroadcast();
-				playBroadcast(mService.getResources().getString(R.string.wifi_off_failed_ts), 0);
-			}
-		}
 	}
 
 	/**
@@ -329,21 +322,6 @@ public class SystemController {
 			}
 			else if (action.equals(CommonMessage.VOICE_COMM_SHUT_UP)) {
 				onStandbyMode();
-			}
-			else if(action.equals(CommonMessage.VOICE_COMM_OPEN_WIFI_AP)) {
-				onOpenWifiAp();
-				tickCountForKeepAlive = SystemClock.uptimeMillis();
-				Intent intentOpenWifi = new Intent();
-				intentOpenWifi.setAction(TSDEvent.System.OPEN_WIFI_AP_FROM_CORE_SERVICE);
-				mService.sendBroadcast(intentOpenWifi);
-			}
-			else if(action.equals(CommonMessage.SETTING_COMM_OPEN_WIFI_AP)) {
-				onOpenWifiAp();
-				tickCountForKeepAlive = SystemClock.uptimeMillis();
-			}
-			else if(action.equals(CommonMessage.SETTING_COMM_CLOSE_WIFI_AP)) {
-				onCloseWifiAp();
-				tickCountForKeepAlive = SystemClock.uptimeMillis();
 			}
 			else if (action.equals(TSDEvent.Interaction.INTERACTION_START)) {
 				onInteractionStart();
@@ -384,6 +362,12 @@ public class SystemController {
 					stopIdleCheckThread();
 					resumeIdleCheckThread();
 				}
+			}else if(action.equals(CommonApps.APP_VOICE_INTERACTINGACTIVITY)){
+				mRunningInterActivity = intent.getBooleanExtra(CommonApps.APP_VOICE_INTERACTINGACTIVITY_RUNNING, false);
+				Log.v("step","mRunningInterActivity="+mRunningInterActivity+" mRunningVoiceReady="+mRunningVoiceReady);
+			}else if(action.equals(CommonApps.APP_VOICE_WAIT_READY)){
+				mRunningVoiceReady = true;
+				Log.v("step","APP_VOICE_WAIT_READY="+mRunningVoiceReady);
 			}
 		}
 	};
@@ -455,6 +439,10 @@ public class SystemController {
 
 		turnOnScreen();
 		turnOnKeyLight();
+		
+		startSystemServices();
+		
+		try { Thread.sleep(200); } catch (InterruptedException e) { e.printStackTrace(); }
 
 		// 开始录像
 		recordVideo(true);
@@ -569,7 +557,7 @@ public class SystemController {
 		LogUtil.v(LOG_TAG, "onNetworkDisconnected");
 	}
 
-	private void onWakeUp() {
+	private synchronized void onWakeUp() {
 		if ((mService.mCurrentState == ServiceState.STATE_RESUME ||
 				 mService.mCurrentState == ServiceState.STATE_START) &&
 				 mService.mCurrentMode != WorkingMode.MODE_INTERACTING)
@@ -646,10 +634,13 @@ public class SystemController {
 	}
 
 	public void onInteractingMode(ContentType param) {
-		LogUtil.v(LOG_TAG, "Start to interact...");
+		LogUtil.v(LOG_TAG, "Start to interact...ACC_STATE="+mService.ACC_STATE);
 
-		stopIdleCheckThread();
+//		stopIdleCheckThread();
 
+		if(!mService.ACC_STATE){
+			return;
+		}
 		HelperUtil.startActivityWithFadeInAnim(mService,
 				TSDComponent.VOICE_ASSISTANT_PACKAGE,
 				TSDComponent.INTERACTION_ACTIVITY);
@@ -744,30 +735,33 @@ public class SystemController {
 
     public void onShake() {
 		Intent intent = new Intent();
-		if (TsdHelper.getAccStatus()) {
-			// Accident occurs
-			intent.setAction(TSDEvent.CarDVR.ACCIDENT_TRIGGERED);
-			if (mCurrentLocation != null) {
-    			SubmitAccidentInfoReq param = new SubmitAccidentInfoReq();
-    			param.timestamp = HelperUtil.getCurrentTimestamp();
-    			param.latitude = String.valueOf(mCurrentLocation.getLatitude());
-    			param.longitude = String.valueOf(mCurrentLocation.getLongitude());
-    			param.district = mCurrentLocation.getDistrict();
-    			param.address  = mCurrentLocation.getAddrStr();
-    			intent.putExtra("data", param);
+		//添加是否进行摄像头预览判断，如果进行摄像头预览则不能触发事故判断
+		if (!isCameraPreview) {
+			if (TsdHelper.getAccStatus()) {
+				// Accident occurs
+				intent.setAction(TSDEvent.CarDVR.ACCIDENT_TRIGGERED);
+				if (mCurrentLocation != null) {
+	    			SubmitAccidentInfoReq param = new SubmitAccidentInfoReq();
+	    			param.timestamp = HelperUtil.getCurrentTimestamp();
+	    			param.latitude = String.valueOf(mCurrentLocation.getLatitude());
+	    			param.longitude = String.valueOf(mCurrentLocation.getLongitude());
+	    			param.district = mCurrentLocation.getDistrict();
+	    			param.address  = mCurrentLocation.getAddrStr();
+	    			intent.putExtra("data", param);
+				}
+				// test
+				Toast.makeText(mService, "事故触发", Toast.LENGTH_SHORT).show();
+			} else {
+				// Alert occurs
+				intent.setAction(TSDEvent.CarDVR.ALERT_TRIGGERED);
+				if (mCurrentLocation != null) {
+					intent.putExtra(TSDConst.UPLOAD_LOC_LAT, String.valueOf(mCurrentLocation.getLatitude()));
+					intent.putExtra(TSDConst.UPLOAD_LOC_LNG, String.valueOf(mCurrentLocation.getLongitude()));
+					intent.putExtra(TSDConst.UPLOAD_TIME_STAMP, HelperUtil.getCurrentTimestamp());
+				}
+				// test
+				Toast.makeText(mService, "停车报警触发", Toast.LENGTH_SHORT).show();
 			}
-			// test
-			Toast.makeText(mService, "事故触发", Toast.LENGTH_SHORT).show();
-		} else {
-			// Alert occurs
-			intent.setAction(TSDEvent.CarDVR.ALERT_TRIGGERED);
-			if (mCurrentLocation != null) {
-				intent.putExtra(TSDConst.UPLOAD_LOC_LAT, String.valueOf(mCurrentLocation.getLatitude()));
-				intent.putExtra(TSDConst.UPLOAD_LOC_LNG, String.valueOf(mCurrentLocation.getLongitude()));
-				intent.putExtra(TSDConst.UPLOAD_TIME_STAMP, HelperUtil.getCurrentTimestamp());
-			}
-			// test
-			Toast.makeText(mService, "停车报警触发", Toast.LENGTH_SHORT).show();
 		}
 		LogUtil.d(LOG_TAG, "Send broadcast " + intent);
 		mService.sendBroadcast(intent);
@@ -873,7 +867,7 @@ public class SystemController {
 		IntentFilter filter = new IntentFilter();
 		// 语音指令
 		filter.addAction(CommonMessage.VOICE_COMM_WAKEUP);		// 语音唤醒
-		filter.addAction(CommonMessage.VOICE_COMM_TAKE_PICTURE);	// 拍照
+		filter.addAction(CommonMessage.VOICE_COMM_TAKE_PICTURE);// 拍照
 		filter.addAction(CommonMessage.VOICE_COMM_SHUT_UP);		// 闭嘴
 		filter.addAction(CommonMessage.VOICE_COMM_POSITIVE);	// 肯定回答
 		filter.addAction(CommonMessage.VOICE_COMM_NEGATIVE);	// 否定回答
@@ -881,7 +875,8 @@ public class SystemController {
 		filter.addAction(CommonMessage.VOICE_COMM_MAP);			// 地图导航
 		filter.addAction(CommonMessage.VOICE_COMM_NEWS);		// 听新闻
 		filter.addAction(CommonMessage.VOICE_COMM_JOKE);
-		filter.addAction(CommonMessage.VOICE_COMM_OPEN_WIFI_AP);  //打开热点
+		filter.addAction(CommonMessage.VOICE_COMM_OPEN_WIFI_AP);//打开热点
+
 		// 交互结果
 		filter.addAction(TSDEvent.Interaction.INTERACTION_START);
 		filter.addAction(TSDEvent.Interaction.INTERACTION_FINISH);
@@ -891,9 +886,10 @@ public class SystemController {
 		filter.addAction(TSDEvent.CarDVR.PICTURE_TAKEN_COMPLETED);
 		
 		filter.addAction(TSDEvent.Interaction.CANCEL_INTERACTION_BY_TP);
-		
-		filter.addAction(CommonMessage.SETTING_COMM_OPEN_WIFI_AP);  //打开热点
-		filter.addAction(CommonMessage.SETTING_COMM_CLOSE_WIFI_AP);  //关闭热点
+
+		//voice 
+		filter.addAction(CommonApps.APP_VOICE_INTERACTINGACTIVITY);
+		filter.addAction(CommonApps.APP_VOICE_WAIT_READY);
 
 		mService.registerReceiver(mIntactEventsReceiver, filter);
 	}
@@ -908,6 +904,8 @@ public class SystemController {
 		filter.addAction(TSDEvent.CarDVR.APP_STOPPED);
 		filter.addAction(TSDEvent.System.IDLE_INTERVAL_TIME_UPDATED);
 		filter.addAction(TSDEvent.Push.FEED_BACK);
+		filter.addAction(TSDEvent.CarDVR.START_CAM_PREVIEW);
+		filter.addAction(TSDEvent.CarDVR.STOP_CAM_PREVIEW);
 		
 		mService.registerReceiver(mBusinessEventsReceiver, filter);
 	}
@@ -949,21 +947,6 @@ public class SystemController {
 		// settings
 		mService.startService(new Intent(TSDComponent.SETTINGS_SERVICE));
 		LogUtil.v(LOG_TAG, "Start settings service.");
-		
-		long time = 60000;
-		Log.d(LOG_TAG, "Schedule keep alive " + time + " ms.");
-		mKeepAliveTimer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				if(HelperUtil.isWifiApEnabled(mService)&& (SystemClock.uptimeMillis() - tickCountForKeepAlive > 180000)){
-					onCloseWifiAp();
-					tickCountForKeepAlive = SystemClock.uptimeMillis();
-					Intent intentCloseWifi = new Intent();
-					intentCloseWifi.setAction(TSDEvent.System.CLOSE_WIFI_AP_FROM_CORE_SERVICE);
-					mService.sendBroadcast(intentCloseWifi);
-				}
-			}
-		}, 0, time);
 	}
 
 	/**
@@ -1077,14 +1060,14 @@ public class SystemController {
 			location.district = mDistrict;
 			location.lat = mLat;
 			location.lng = mLng;
-			location.mileage = mileage;
+			location.mileage = (int)mileage;
 			req.location = location;
 		}else{
 			req.location.address = mAddress;
 			req.location.district = mDistrict;
 			req.location.lat = mLat;
 			req.location.lng = mLng;
-			req.location.mileage = mileage;
+			req.location.mileage = (int)mileage;
 		}
 		
 		new UpdateDeviceStateTask().execute(req);
@@ -1159,6 +1142,7 @@ public class SystemController {
 	private void doActionAfterWakeUpInteraction(String answerType, String answer, String extra) {
 		if (answerType.equals("command")) {
 			mService.sendBroadcast(new Intent(TSDEvent.Interaction.INTERACTION_FINISH_FROM_CORE_SERVICE));
+
 			if (answer.equals(CommonMessage.VOICE_COMM_TAKE_PICTURE)) {
 				mService.changeMode(WorkingMode.MODE_TAKE_PICTURE);
 			}
@@ -1173,6 +1157,10 @@ public class SystemController {
 			}
 			else if (answer.equals(CommonMessage.VOICE_COMM_JOKE)) {
 				mService.changeMode(WorkingMode.MODE_AUDIO, ContentType.TYPE_JOKE);
+			}
+			else if (answer.equals(CommonMessage.VOICE_COMM_OPEN_WIFI_AP)) {
+			    mService.sendBroadcast(new Intent(TSDEvent.System.OPEN_WIFI_AP_FROM_CORE_SERVICE));
+			    tickCountForKeepAlive = SystemClock.uptimeMillis();
 			}
 		}
 		else if (answerType.equals("#location")) {

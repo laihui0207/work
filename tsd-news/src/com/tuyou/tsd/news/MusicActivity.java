@@ -70,7 +70,7 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 	private List<AudioSubscription> listAudio;
 //	private ImageView musicNull;
 	
-//	private CommonSleep commonSleep = null;
+	CommonSleep mCommonSleep = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -828,9 +828,9 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 	protected void onDestroy() {
 		super.onDestroy();
 		
-//		if (commonSleep != null) {
-//			commonSleep.stop();
-//		}
+		if(mCommonSleep != null){
+			mCommonSleep.stop();
+		}
 		
 		unbindService(serviceConnection);
 		unregisterReceiver(cast);
@@ -1032,34 +1032,34 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 	@Override
 	protected void onResume() {
 		super.onResume();
-//		commonSleep = new CommonSleep(this);
-//		commonSleep.start();
+		mCommonSleep = new CommonSleep(this);
+		mCommonSleep.start();
 	}
 	
 	@Override
 	protected void onPause() {
 		super.onPause();
-//		if (commonSleep != null) {
-//			commonSleep.stop();
-//		}
+		if(mCommonSleep != null){
+			mCommonSleep.stop();
+		}
 	}
 
 	
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
-//		if (commonSleep != null) {
-//			commonSleep.update();
-//		}
+		if(mCommonSleep != null){
+			mCommonSleep.update();
+		}
 		return super.dispatchKeyEvent(event);
 	}
 
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
 		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
-//		if (commonSleep != null) {
-//			commonSleep.update();
-//		}
+		if(mCommonSleep != null){
+			mCommonSleep.update();
+		}
 		return super.dispatchTouchEvent(ev);
 	}
 	

@@ -8,6 +8,9 @@ public interface CommonApps {
 	//INTERACTINGACTIVITY info
 	static final String APP_VOICE_INTERACTINGACTIVITY = "com_tuyou_tsd_common_voice_interaction";
 	static final String APP_VOICE_INTERACTINGACTIVITY_RUNNING = "interaction_running";
+	static final String APP_VOICE_INTERACTINGACTIVITY_RESTART = "interaction_restart";
+	
+	static final String APP_VOICE_WAIT_READY = "app_voice_wait_ready";
 	
 	static final String SLEEP_SHOW_CONTENT = "com_tuyou_tsd_common_content";
 	static final String SLEEP_CONTENT_TITLE = "com_tuyou_tsd_common_content_title";
