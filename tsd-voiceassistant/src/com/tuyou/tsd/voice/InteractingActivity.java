@@ -51,6 +51,9 @@ public class InteractingActivity extends Activity {
 	private final long TIME_KILL_VOICE_SERVER = 30*1000;
 	
 	public static boolean InteractingActivityRuning = false;
+	public static int ACTIVITY_COUNT = 0;
+	private int mCurActivityCount = 0;
+	
 	private boolean mReturnImmed = false;
 	
 	enum FRAGMENT_TYPE {
@@ -80,9 +83,13 @@ public class InteractingActivity extends Activity {
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG,"onCreate...");
-		Log.d("fq","InteractingActivity onCreate...");
+		
+		ACTIVITY_COUNT = (ACTIVITY_COUNT+1)%100;
+		mCurActivityCount = ACTIVITY_COUNT;
+		
+		Log.d("fq","InteractingActivity onCreate..."+ACTIVITY_COUNT+" and "+mCurActivityCount);
 		super.onCreate(savedInstanceState);
-		if(!VoiceAssistant.ACC_STATE || InteractingActivityRuning){
+		if(!VoiceAssistant.ACC_STATE /*|| InteractingActivityRuning*/){
 			Log.d("fq","InteractingActivity onCreate...ACC OFF  ");
 			mReturnImmed = true;
 			finish();
@@ -511,6 +518,7 @@ public class InteractingActivity extends Activity {
 			Log.d(TAG, "BroadcastReceiver.onReceive, action: " + action);
 
 			if (action.equals(TSDEvent.Interaction.FINISH_ACTIVITY)) {
+				Log.d("fq","onReceive FINISH_ACTIVITY "+InteractingActivityRuning);
 				HelperUtil.finishActivity(InteractingActivity.this, android.R.anim.fade_in, android.R.anim.fade_out);
 			}else if(action.equals(CommonMessage.VOICE_COMM_WAKEUP)){
 				Log.d(TAG, "BroadcastReceiver VOICE_COMM_WAKEUP xxx");
@@ -540,13 +548,12 @@ public class InteractingActivity extends Activity {
 			switch(msg.what){
 			case MSG_KILL_VOICE_SERVER:
 				Log.v(TAG, "InteActivity BROADCAST_KILL_VOICE");
-//				finish();
-				
-				if(mFragmentType == FRAGMENT_TYPE.RECORD){
+ 				
+				if(VoiceAssistant.IS_VOICE_READY){
 					Log.d("step","InteractionExecuteThread wait");
-					sendBroadcast(new Intent(CommonApps.BROADCAST_KILL_VOICE));
-				}else{
 					finish();
+				}else{
+					sendBroadcast(new Intent(CommonApps.BROADCAST_KILL_VOICE));
 				}
 				break;
 			}

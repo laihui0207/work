@@ -127,11 +127,8 @@ public class SearchService extends Service {
 				i.putExtra("destination", intent.getStringExtra("destination"));
 				startActivity(i);
 			} else if (action.equals(navingAction)) {
-				Intent i = new Intent();
-				i.setClassName("com.tuyou.tsd.navigation",
-						"com.tuyou.tsd.navigation.BNavigatorActivity");
 				// 说明系统中存在这个activity
-				if (i.resolveActivity(getPackageManager()) != null) {
+				if (navIntent != null) {
 					LogUtil.d(TAG, "跳转到：BNavigatorActivity");
 					// 跳转到导航中页面
 					navIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

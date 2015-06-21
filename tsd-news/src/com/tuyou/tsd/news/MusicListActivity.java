@@ -16,6 +16,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.tuyou.tsd.common.CommonMessage;
 import com.tuyou.tsd.common.TSDEvent;
 import com.tuyou.tsd.common.base.CommonSleep;
 import com.tuyou.tsd.common.network.AudioItem;
@@ -32,7 +33,7 @@ public class MusicListActivity extends MyBaseActivity implements OnClickListener
 	private int playIndex = 0;
 	private ListView musicPlayList;
 	
-	CommonSleep mCommonSleep = null;
+	private CommonSleep commonSleep = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -158,23 +159,26 @@ public class MusicListActivity extends MyBaseActivity implements OnClickListener
 		super.onDestroy();
 		unregisterReceiver(cast);
 		
-		if (mCommonSleep != null) {
-			mCommonSleep.stop();
+		if (commonSleep != null) {
+			commonSleep.stop();
 		}
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_STOP));
 	}
 	
 	@Override
 	protected void onResume() {
 		super.onResume();
-		mCommonSleep = new CommonSleep(this);
-		mCommonSleep.start();
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
+		commonSleep = new CommonSleep(this);
+		commonSleep.start();
 	}
 	
 	@Override
 	protected void onPause() {
 		super.onPause();
-		if (mCommonSleep != null) {
-			mCommonSleep.stop();
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_STOP));
+		if (commonSleep != null) {
+			commonSleep.stop();
 		}
 	}
 
@@ -182,8 +186,8 @@ public class MusicListActivity extends MyBaseActivity implements OnClickListener
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
-		if (mCommonSleep != null) {
-			mCommonSleep.update();
+		if (commonSleep != null) {
+			commonSleep.update();
 		}
 		return super.dispatchKeyEvent(event);
 	}
@@ -191,8 +195,8 @@ public class MusicListActivity extends MyBaseActivity implements OnClickListener
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
 		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
-		if (mCommonSleep != null) {
-			mCommonSleep.update();
+		if (commonSleep != null) {
+			commonSleep.update();
 		}
 		return super.dispatchTouchEvent(ev);
 	}

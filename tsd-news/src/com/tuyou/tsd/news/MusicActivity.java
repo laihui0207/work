@@ -70,7 +70,7 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 	private List<AudioSubscription> listAudio;
 //	private ImageView musicNull;
 	
-	CommonSleep mCommonSleep = null;
+	private CommonSleep commonSleep = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -828,8 +828,8 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 	protected void onDestroy() {
 		super.onDestroy();
 		
-		if(mCommonSleep != null){
-			mCommonSleep.stop();
+		if (commonSleep != null) {
+			commonSleep.stop();
 		}
 		
 		unbindService(serviceConnection);
@@ -837,6 +837,8 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 		Intent it = new Intent();
 		it.setAction(TSDEvent.Audio.APP_STOPPED);
 		sendBroadcast(it);
+		
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_STOP));
 	}
 	
 	private void isPlayMusic(){
@@ -1032,15 +1034,17 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 	@Override
 	protected void onResume() {
 		super.onResume();
-		mCommonSleep = new CommonSleep(this);
-		mCommonSleep.start();
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
+		commonSleep = new CommonSleep(this);
+		commonSleep.start();
 	}
 	
 	@Override
 	protected void onPause() {
 		super.onPause();
-		if(mCommonSleep != null){
-			mCommonSleep.stop();
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_STOP));
+		if (commonSleep != null) {
+			commonSleep.stop();
 		}
 	}
 
@@ -1048,8 +1052,8 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
-		if(mCommonSleep != null){
-			mCommonSleep.update();
+		if (commonSleep != null) {
+			commonSleep.update();
 		}
 		return super.dispatchKeyEvent(event);
 	}
@@ -1057,8 +1061,8 @@ public class MusicActivity extends MyBaseActivity implements OnClickListener,OnT
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
 		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
-		if(mCommonSleep != null){
-			mCommonSleep.update();
+		if (commonSleep != null) {
+			commonSleep.update();
 		}
 		return super.dispatchTouchEvent(ev);
 	}

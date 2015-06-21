@@ -159,7 +159,7 @@ public class MusicListActivity extends MyBaseActivity implements OnClickListener
 	protected void onDestroy() {
 		super.onDestroy();
 		unregisterReceiver(cast);
-		
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_STOP));
 		if (commonSleep != null) {
 			commonSleep.stop();
 		}
@@ -168,6 +168,7 @@ public class MusicListActivity extends MyBaseActivity implements OnClickListener
 	@Override
 	protected void onResume() {
 		super.onResume();
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
 		commonSleep = new CommonSleep(this);
 		commonSleep.start();
 	}
@@ -175,6 +176,7 @@ public class MusicListActivity extends MyBaseActivity implements OnClickListener
 	@Override
 	protected void onPause() {
 		super.onPause();
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_STOP));
 		if (commonSleep != null) {
 			commonSleep.stop();
 		}

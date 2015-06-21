@@ -14,9 +14,9 @@ public class SleepBaseActivity extends BaseActivity {
 
 	@Override
 	protected void onDestroy() {
-//		if (commonSleep != null) {
-//			commonSleep.stop();
-//		}
+		if (commonSleep != null) {
+			commonSleep.stop();
+		}
 		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_STOP));
 		LogUtil.d(TAG, "send:" + TSDEvent.Navigation.IDLE_NAV_STOP);
 		super.onDestroy();
@@ -28,8 +28,8 @@ public class SleepBaseActivity extends BaseActivity {
 		super.onResume();
 		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
 		LogUtil.d(TAG, "send:" + TSDEvent.Navigation.IDLE_NAV_UPDATE);
-//		commonSleep = new CommonSleep(SleepBaseActivity.this);
-//		commonSleep.start();
+		commonSleep = new CommonSleep(SleepBaseActivity.this);
+		commonSleep.start();
 	}
 
 	@Override
@@ -38,9 +38,9 @@ public class SleepBaseActivity extends BaseActivity {
 		super.onPause();
 		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_STOP));
 		LogUtil.d(TAG, "send:" + TSDEvent.Navigation.IDLE_NAV_STOP);
-//		if (commonSleep != null) {
-//			commonSleep.stop();
-//		}
+		if (commonSleep != null) {
+			commonSleep.stop();
+		}
 	}
 
 	@Override
@@ -48,41 +48,43 @@ public class SleepBaseActivity extends BaseActivity {
 		// TODO 自动生成的方法存根
 		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
 		LogUtil.d(TAG, "send:" + TSDEvent.Navigation.IDLE_NAV_UPDATE);
-//		if (commonSleep != null) {
-//			commonSleep.update();
-//		}
+		if (commonSleep != null) {
+			commonSleep.update();
+		}
 		return super.dispatchKeyEvent(event);
 	}
 
-//	@Override
-//	public boolean dispatchTouchEvent(MotionEvent ev) {
-//		// TODO 自动生成的方法存根
-//		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
-//		LogUtil.d(TAG, "send:" + TSDEvent.Navigation.IDLE_NAV_UPDATE);
-//		if (commonSleep != null) {
-//			commonSleep.update();
-//		}
-//		return super.dispatchTouchEvent(ev);
-//	}
-	
-	//剥离完休眠机制，一分钟回导航的判断添加到onTouchEvent
 	@Override
-	public boolean onTouchEvent(MotionEvent event) {
+	public boolean dispatchTouchEvent(MotionEvent ev) {
 		// TODO 自动生成的方法存根
-		switch (event.getAction()) {
-		// 触摸屏幕时刻
-		case MotionEvent.ACTION_DOWN:
-			break;
-		// 触摸并移动时刻
-		case MotionEvent.ACTION_MOVE:
-			break;
-		// 终止触摸时刻
-		case MotionEvent.ACTION_UP:
-			sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
-			LogUtil.d(TAG, "send:" + TSDEvent.Navigation.IDLE_NAV_UPDATE);
-			break;
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
+		LogUtil.d(TAG, "send:" + TSDEvent.Navigation.IDLE_NAV_UPDATE);
+		if (commonSleep != null) {
+			commonSleep.update();
 		}
-		return super.onTouchEvent(event);
+		return super.dispatchTouchEvent(ev);
 	}
+
+//	@Override
+//	public boolean onTouchEvent(MotionEvent event) {
+//		// TODO 自动生成的方法存根
+//		switch (event.getAction()) {
+//		// 触摸屏幕时刻
+//		case MotionEvent.ACTION_DOWN:
+//			break;
+//		// 触摸并移动时刻
+//		case MotionEvent.ACTION_MOVE:
+//			break;
+//		// 终止触摸时刻
+//		case MotionEvent.ACTION_UP:
+//			sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
+//			LogUtil.d(TAG, "send:" + TSDEvent.Navigation.IDLE_NAV_UPDATE);
+//			if (commonSleep != null) {
+//				commonSleep.update();
+//			}
+//			break;
+//		}
+//		return super.onTouchEvent(event);
+//	}
 
 }

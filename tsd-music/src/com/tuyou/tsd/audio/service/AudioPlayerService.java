@@ -134,12 +134,28 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
     
 	@Override
 	public void onCreate() {
-		
+		initCast();
 		super.onCreate();
 //		getCategoryList();
-		System.out.println("=========================================音乐开始了");
+//		System.out.println("=========================================音乐开始了");
 		mPref = getSharedPreferences("audioservice", Context.MODE_PRIVATE);
 		mIsAccOn=true;
+		
+
+		if (JsonOA2.getInstance(this).checkNetworkInfo() == -1) {
+
+		} else {
+			startGetCategory();
+			mTrygetCategoryTime=1;
+			isGetCategory=true;
+		}
+		readPushCategory();
+		isAutoPlayed=false;
+		mHandler.sendEmptyMessageDelayed(801, 1000*30);
+		this.sendBroadcast(new Intent(TSDEvent.Audio.SERVICE_STARTED));		
+	}
+
+	private void initCast() {
 		m_myReceiver = new MyReceiver();
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(TSDEvent.Push.AUDIO_CATEGORY);
@@ -150,7 +166,6 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 		filter.addAction(PLAY_ABANDON);
 		filter.addAction(CommonMessage.VOICE_COMM_SHUT_UP);
 		filter.addAction(TSDEvent.Interaction.INTERACTION_START);
-//		filter.addAction(TSDEvent.Interaction.INTERACTION_FINISH);
 		filter.addAction(TSDEvent.Interaction.INTERACTION_FINISH_FROM_CORE_SERVICE);
 		filter.addAction(TSDEvent.Interaction.INTERACTION_ERROR);
 		filter.addAction(Contents.KILL_ALL_APP1);
@@ -166,19 +181,9 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 		filter.addAction(CommonApps.SLEEP_PLAY_MUSIC);
 		filter.addAction(CommonApps.SLEEP_PLAY_PRE);
 		
+		filter.addAction(CommonApps.SLEEP_START);
+		
 		registerReceiver(m_myReceiver, filter);
-
-		if (JsonOA2.getInstance(this).checkNetworkInfo() == -1) {
-
-		} else {
-			startGetCategory();
-			mTrygetCategoryTime=1;
-			isGetCategory=true;
-		}
-		readPushCategory();
-		isAutoPlayed=false;
-		mHandler.sendEmptyMessageDelayed(801, 1000*30);
-		this.sendBroadcast(new Intent(TSDEvent.Audio.SERVICE_STARTED));		
 	}
 
 	@Override
@@ -595,7 +600,20 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();			
-			if (action.equals(TSDEvent.Push.AUDIO_CATEGORY)) {
+			if(intent.getAction().equals(Contents.KILL_ALL_APP1)||intent.getAction().equals(Contents.KILL_ALL_APP2)){
+				NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+				notificationManager.cancelAll();
+				tellLauncher("");
+				isPlayNow = false;
+				mIsAccOn=false;
+				mPushCategorys=null;
+				try {
+					clearPushCategory();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				stop();
+			}else if (action.equals(TSDEvent.Push.AUDIO_CATEGORY)) {
 				if(mIsAccOn)
 				{
 					String url = intent.getStringExtra("params");
@@ -743,17 +761,6 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 					}
 					break;
 				}
-			}else if(intent.getAction().equals(Contents.KILL_ALL_APP1)||intent.getAction().equals(Contents.KILL_ALL_APP2)){
-				tellLauncher("");
-				isPlayNow = false;
-				mIsAccOn=false;
-				mPushCategorys=null;
-				clearPushCategory();
-				if (mMediaPlayer != null)  {
-					mMediaPlayer.stop();
-				}
-				NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-				notificationManager.cancelAll();
 			}else if(intent.getAction().equals(TSDEvent.Audio.PLAY)){
 				try {
 					if(intent.getExtras().getString("type").equals("music")){
@@ -797,19 +804,23 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 					}else{
 						addFavourite(getPlayingAudio());
 					}
+					try {
+						Notify.showButtonNotify(getPlayingAudio(), AudioPlayerService.this, isPlaying(), isFavourite(getPlayingAudio()));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}else if(isPlayNow){
 					if(isFavourite(getPlayingAudio())){
 						deleteFavourite(getPlayingAudio());
 					}else{
 						addFavourite(getPlayingAudio());
 					}
+					try {
+						Notify.showButtonNotify(getPlayingAudio(), AudioPlayerService.this, isPlaying(), isFavourite(getPlayingAudio()));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
-				try {
-					Notify.showButtonNotify(getPlayingAudio(), AudioPlayerService.this, isPlaying(), isFavourite(getPlayingAudio()));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				
 			}else if(intent.getAction().equals(TSDEvent.System.HARDKEY2_PRESSED)){
 				if(isPlaying()){
 					pause();
@@ -823,18 +834,16 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 					sendBroadcast(it);
 					isPlayNow = true;
 				}else if(isPlayNow){
-					if(isPlayNow){
-						isPlayNow = false;
-						rusume();
-						try {
-							Notify.showButtonNotify(getPlayingAudio(), AudioPlayerService.this, true, isFavourite(getPlayingAudio()));
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						Intent it = new Intent();
-						it.setAction(Contents.MUSICPLAY_STATE_PLAY);
-						sendBroadcast(it);
+					isPlayNow = false;
+					rusume();
+					try {
+						Notify.showButtonNotify(getPlayingAudio(), AudioPlayerService.this, true, isFavourite(getPlayingAudio()));
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
+					Intent it = new Intent();
+					it.setAction(Contents.MUSICPLAY_STATE_PLAY);
+					sendBroadcast(it);
 				}
 			}else if (action.equals(TSDEvent.Interaction.INTERACTION_ERROR)) {
 				if(isTTSPause){
@@ -889,6 +898,12 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
+				}
+			}else if(action.equals(CommonApps.SLEEP_START)){
+				if(isPlaying()){
+					tellLauncherContent(getPlayingAudio().name, true);
+				}else if(isPlayNow){
+					tellLauncherContent(getPlayingAudio().name, false);
 				}
 			}
 		}
@@ -1507,7 +1522,6 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 
 	@Override
 	public void stop() {
-		
 		mIsPlaying = false;
 		try {
 			if ((mMediaPlayer != null) ) {
@@ -1516,7 +1530,9 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}//&& (mMediaPlayer.mediaPlayer != null)
+		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		notificationManager.cancelAll();
+	}
 
 	@Override
 	public List<AudioCategory> getCategoryList() {
@@ -2515,6 +2531,13 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 	private void tellLauncher(String text){
 		Intent it = new Intent(CommonApps.SLEEP_SHOW_CONTENT);
 		it.putExtra(CommonApps.SLEEP_CONTENT_TITLE, text);
+		AudioPlayerService.this.sendBroadcast(it);
+	}
+	
+	private void tellLauncherContent(String text,boolean isPlay){
+		Intent it = new Intent(CommonApps.SLEEP_SHOW_CONTENT);
+		it.putExtra(CommonApps.SLEEP_CONTENT_TITLE, text);
+		it.putExtra(CommonApps.SLEEP_PLAY_MUSIC_NEED_PLAY, isPlay);
 		AudioPlayerService.this.sendBroadcast(it);
 	}
 	

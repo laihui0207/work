@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tuyou.tsd.common.CommonApps;
@@ -141,9 +142,26 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 	private ArrayList<AudioSubscription> lcs;
 	@Override
 	public void onCreate() {
+		initCast();
 		super.onCreate();
 		mPref = getSharedPreferences("audioservice", Context.MODE_PRIVATE);
 
+		
+
+		if (JsonOA2.getInstance(this).checkNetworkInfo() == -1) {
+
+		} else {
+			startGetCategory();
+			mTrygetCategoryTime = 1;
+			isGetCategory = true;
+		}
+		readPushCategory();
+		isAutoPlayed = false;
+		mHandler.sendEmptyMessageDelayed(801, 1000 * 30);
+		this.sendBroadcast(new Intent(TSDEvent.Podcast.SERVICE_STARTED));
+	}
+
+	private void initCast() {
 		m_myReceiver = new MyReceiver();
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(TSDEvent.Push.AUDIO_CATEGORY);
@@ -173,20 +191,9 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 		filter.addAction(CommonApps.SLEEP_PLAY_NEXT);
 		filter.addAction(CommonApps.SLEEP_PLAY_MUSIC);
 		filter.addAction(CommonApps.SLEEP_PLAY_PRE);
+		filter.addAction(CommonApps.SLEEP_START);
 		
 		registerReceiver(m_myReceiver, filter);
-
-		if (JsonOA2.getInstance(this).checkNetworkInfo() == -1) {
-
-		} else {
-			startGetCategory();
-			mTrygetCategoryTime = 1;
-			isGetCategory = true;
-		}
-		readPushCategory();
-		isAutoPlayed = false;
-		mHandler.sendEmptyMessageDelayed(801, 1000 * 30);
-		this.sendBroadcast(new Intent(TSDEvent.Podcast.SERVICE_STARTED));
 	}
 
 	@Override
@@ -626,7 +633,7 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 					Intent it = new Intent();
 					it.setAction(Contents.MUSICPLAY_STATE_PAUSE);
 					sendBroadcast(it);
-				} else {
+				} else if(isPlayNow){
 					rusume();
 					isPlayNow = false;
 					try {
@@ -820,17 +827,20 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
-			if (action.equals(TSDEvent.Push.AUDIO_CATEGORY)) {
+			if(intent.getAction().equals(Contents.KILL_ALL_APP1)||intent.getAction().equals(Contents.KILL_ALL_APP2)){
+				NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+				notificationManager.cancelAll();
+				isPlayNow = false;
+				tellLauncher("");
+				stop();
+			}else if (action.equals(TSDEvent.Push.AUDIO_CATEGORY)) {
 				String url = intent.getStringExtra("params");
 				String label = url.substring(url.lastIndexOf("=") + 1);
 				disposePushCategory(label);
 			} else if (action.equals("android.net.conn.CONNECTIVITY_CHANGE")) {
-				ConnectivityManager manager = (ConnectivityManager) context
-						.getSystemService(Context.CONNECTIVITY_SERVICE);
-				NetworkInfo mobileInfo = manager
-						.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-				NetworkInfo wifiInfo = manager
-						.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+				ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+				NetworkInfo mobileInfo = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+				NetworkInfo wifiInfo = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 				// NetworkInfo activeInfo = manager.getActiveNetworkInfo();
 				if (mobileInfo.isConnected() || wifiInfo.isConnected()) {
 					if (!isGetCategory) {
@@ -929,14 +939,6 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 					isAddSub();
 					break;
 				}
-			}else if(intent.getAction().equals(Contents.KILL_ALL_APP1)||intent.getAction().equals(Contents.KILL_ALL_APP2)){
-				if (mMediaPlayer != null) {
-					mMediaPlayer.stop();
-				}
-				isPlayNow = false;
-				tellLauncher("");
-				NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-				notificationManager.cancel(200);
 			}else if(intent.getAction().equals(TSDEvent.Audio.PLAY)){
 				if(intent.getExtras().getString("type").equals("podcast")){
 					isPush = true;
@@ -1124,6 +1126,12 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
+				}
+			}else if(intent.getAction().equals(CommonApps.SLEEP_START)){
+				if(isPlaying()){
+					tellLauncherContent(getPlayingAudio().name, true);
+				}else if(isPlayNow){
+					tellLauncherContent(getPlayingAudio().name, false);
 				}
 			}
 		}
@@ -1694,7 +1702,6 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 
 	@Override
 	public void stop() {
-		
 		mIsPlaying = false;
 		try {
 			if ((mMediaPlayer != null)) {
@@ -1703,6 +1710,8 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		notificationManager.cancelAll();
 	}
 	
 	@Override
@@ -2636,6 +2645,12 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,
 		tellLauncher(item.name);
 	}
 	
+	private void tellLauncherContent(String text,boolean isPlay){
+		Intent it = new Intent(CommonApps.SLEEP_SHOW_CONTENT);
+		it.putExtra(CommonApps.SLEEP_CONTENT_TITLE, text);
+		it.putExtra(CommonApps.SLEEP_PLAY_MUSIC_NEED_PLAY, isPlay);
+		AudioPlayerService.this.sendBroadcast(it);
+	}
 	
 	private void tellLauncher(String text){
 		Intent it = new Intent(CommonApps.SLEEP_SHOW_CONTENT);

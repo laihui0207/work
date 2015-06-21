@@ -2,13 +2,20 @@ package com.tuyou.tsd.common.base;
 
 
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 
+import com.tuyou.tsd.common.CommonApps;
 import com.tuyou.tsd.common.TSDEvent;
 
 public class BaseActivity extends Activity{
@@ -17,6 +24,7 @@ public class BaseActivity extends Activity{
 	
 	final long TimeDelay = 2000;
 	private boolean mbCanResponse = false;
+	Timer mTimer = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +32,26 @@ public class BaseActivity extends Activity{
 		super.onCreate(savedInstanceState);
 		
 		mHandler.sendEmptyMessageDelayed(0, TimeDelay);
+		
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(CommonApps.APP_VOICE_INTERACTINGACTIVITY);
+		registerReceiver(mBaseReceiver, filter);
 	}
+	
+	private final BroadcastReceiver mBaseReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context arg0, Intent intent) {
+			String action = intent.getAction();
+			if(action.equals(CommonApps.APP_VOICE_INTERACTINGACTIVITY)){
+				if(mTimer != null){
+					mTimer.cancel();
+					mTimer = null;
+				}
+			}
+		}
+		
+	};
 	
 	Handler mHandler = new Handler(){
 		public void handleMessage(android.os.Message msg) {
@@ -40,16 +67,28 @@ public class BaseActivity extends Activity{
 		}
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_F4:
-			timeout = (System.currentTimeMillis()-timeout);
-			if(timeout<2000){
-				timeout = System.currentTimeMillis();
+			long tempTime = 0;
+			tempTime = (System.currentTimeMillis()-timeout);
+			if(tempTime<2500){
 				Log.w("fq", "onKeyDown time wait !!!");
 				break;
 			}else{
 				Log.w("fq", "onKeyDown time ="+System.currentTimeMillis());
+				timeout = System.currentTimeMillis();
 				Intent itF1 = new Intent();
 				itF1.setAction(TSDEvent.System.HARDKEY4_PRESSED);
 				sendBroadcast(itF1);
+				
+				mTimer = new Timer(true);
+				mTimer.schedule(new TimerTask() {
+					
+					@Override
+					public void run() {
+						Log.w("fq", "KILL_VOICE  by BaseActivity !!!!!!!!!!!!");
+						sendBroadcast(new Intent(CommonApps.BROADCAST_KILL_VOICE));
+					}
+				}, 5000);
+				
 			}
 			break;
 		case KeyEvent.KEYCODE_F3:

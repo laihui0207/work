@@ -90,6 +90,7 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 	public static final int CMD_VOICE_LISTEN = 0x1001;
 	public static final String INTO_SEARCH_VIEW = "com.tuyou.tsd.voice.service.searchview";
 	public volatile static boolean mbStopInSearchView = false;
+	public volatile static boolean IS_VOICE_READY = false;
 	
 	public static boolean TEST_ON = false;
 
@@ -695,7 +696,9 @@ public class VoiceAssistant extends Service implements VoiceEngine.WakeUpCallbac
 							LogUtil.w(LOG_TAG, "executeInteraction from to end !");
 							Log.d("fq","InteractionExecuteThread wait !!!!!!!!!!!!!!!!");
 							context.sendBroadcast(new Intent(CommonApps.APP_VOICE_WAIT_READY));
+							IS_VOICE_READY = true;
 							mLock.wait();
+							IS_VOICE_READY = false;
 							LogUtil.v(LOG_TAG,"mLock up ###########################################");
 						} catch (InterruptedException e) {
 							e.printStackTrace();

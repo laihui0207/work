@@ -245,6 +245,7 @@ public class NewSleepingActivity extends BaseActivity {
 			Intent intent ;
 			switch(arg0.getId()){
 			case R.id.sleep_music_pre:
+				Log.v("fq","SLEEP_PLAY_PRE"); 
 				intent= new Intent(CommonApps.SLEEP_PLAY_PRE);
 				sendBroadcast(intent);
 				break;
@@ -252,6 +253,7 @@ public class NewSleepingActivity extends BaseActivity {
 				setPlayState();
 				break;
 			case R.id.sleep_music_next:
+				Log.v("fq","SLEEP_PLAY_NEXT");
 				intent= new Intent(CommonApps.SLEEP_PLAY_NEXT);
 				sendBroadcast(intent);
 				break;
@@ -263,7 +265,7 @@ public class NewSleepingActivity extends BaseActivity {
 	private void setPlayState(){
 		mbIsMusicPlay = !mbIsMusicPlay;
 		Intent intent = new Intent(CommonApps.SLEEP_PLAY_MUSIC);
-		Log.v(TAG,"setPlayState mbIsMusicPlay="+mbIsMusicPlay);
+		Log.v("fq","setPlayState mbIsMusicPlay="+mbIsMusicPlay);
 		if(mbIsMusicPlay){
 			intent.putExtra(CommonApps.SLEEP_PLAY_MUSIC_NEED_PLAY, true);
 		}else{

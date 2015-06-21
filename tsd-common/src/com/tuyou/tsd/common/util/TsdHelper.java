@@ -127,7 +127,7 @@ public class TsdHelper {
 		
 		if(fd_carbx>0)
 			closeport(fd_carbx);
-		return result;
+		return true;
 	}
 
 	/**

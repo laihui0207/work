@@ -70,6 +70,7 @@ public class SubscribeActivity extends MyBaseActivity implements OnClickListener
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_STOP));
 		if (commonSleep != null) {
 			commonSleep.stop();
 		}
@@ -244,6 +245,7 @@ public class SubscribeActivity extends MyBaseActivity implements OnClickListener
 	@Override
 	protected void onResume() {
 		super.onResume();
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_UPDATE));
 		commonSleep = new CommonSleep(this);
 		commonSleep.start();
 	}
@@ -251,6 +253,7 @@ public class SubscribeActivity extends MyBaseActivity implements OnClickListener
 	@Override
 	protected void onPause() {
 		super.onPause();
+		sendBroadcast(new Intent(TSDEvent.Navigation.IDLE_NAV_STOP));
 		if (commonSleep != null) {
 			commonSleep.stop();
 		}

@@ -138,14 +138,14 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 
 	@Override
 	public void onCreate() {
+		initCast();
 		super.onCreate();
-		System.out.println("resultJsonSubscriptionListRes =  开始了");
+//		System.out.println("resultJsonSubscriptionListRes =  开始了");
 		init();
 	}
 
 	private void init() {
 		mPref = getSharedPreferences("audioservice", Context.MODE_PRIVATE);
-		initCast();
 
 		if (JsonOA2.getInstance(this).checkNetworkInfo() != -1) {
 			startGetCategory();
@@ -187,6 +187,7 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 		
 		filter.addAction(CommonMessage.TTS_PLAY);
 		filter.addAction(CommonMessage.TTS_PLAY_FINISHED);
+		filter.addAction(CommonApps.SLEEP_START);
 		registerReceiver(m_myReceiver, filter);
 	}
 
@@ -586,7 +587,7 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 					Intent it = new Intent();
 					it.setAction(Contents.MUSICPLAY_STATE_NEWS_PAUSE);
 					sendBroadcast(it);
-				} else {
+				} else if(isPlayNow){
 					isPlayNow = false;
 					rusume();
 					try {
@@ -747,7 +748,14 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
-			if (action.equals(TSDEvent.Push.AUDIO_CATEGORY)) {
+			if(intent.getAction().equals(Contents.KILL_ALL_APP1)||intent.getAction().equals(Contents.KILL_ALL_APP2)){
+				NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+				notificationManager.cancelAll();
+				mPushCategorys = null;
+				isPlayNow = false;
+				tellLauncher("");
+				stop();
+			}else if (action.equals(TSDEvent.Push.AUDIO_CATEGORY)) {
 				String url = intent.getStringExtra("params");
 				String label = url.substring(url.lastIndexOf("=") + 1);
 				disposePushCategory(label);
@@ -847,16 +855,6 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 					isAddSub();
 					break;
 				}
-			}else if(intent.getAction().equals(Contents.KILL_ALL_APP1)||intent.getAction().equals(Contents.KILL_ALL_APP2)){
-				mPushCategorys = null;
-				isPlayNow = false;
-				if (mMediaPlayer != null) {
-					mMediaPlayer.stop();
-				}
-				tellLauncher("");
-				NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-				notificationManager.cancelAll();
-				stop();
 			}else if(intent.getAction().equals(TSDEvent.Audio.PLAY)){
 				if(intent.getExtras().getString("type").equals("news")){
 					isPush = true;
@@ -895,7 +893,6 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 				
 			}else if(intent.getAction().equals(CommonMessage.TTS_PLAY_FINISHED)){
 				try {
-
 					if(isPlayNow){
 						if(!isPlaying()){
 							isPlayNow = false;
@@ -1044,6 +1041,12 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
+				}
+			}else if(intent.getAction().equals(CommonApps.SLEEP_START)){
+				if(isPlaying()){
+					tellLauncherContent(getPlayingAudio().name, true);
+				}else if(isPlayNow){
+					tellLauncherContent(getPlayingAudio().name, false);
 				}
 			}
 		}
@@ -1584,6 +1587,8 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		notificationManager.cancelAll();
 	}
 
 	@Override
@@ -2464,6 +2469,12 @@ public class AudioPlayerService extends Service implements IAudioPlayerService,O
 		tellLauncher(item.name);
 	}
 	
+	private void tellLauncherContent(String text,boolean isPlay){
+		Intent it = new Intent(CommonApps.SLEEP_SHOW_CONTENT);
+		it.putExtra(CommonApps.SLEEP_CONTENT_TITLE, text);
+		it.putExtra(CommonApps.SLEEP_PLAY_MUSIC_NEED_PLAY, isPlay);
+		AudioPlayerService.this.sendBroadcast(it);
+	}
 	
 	private void tellLauncher(String text){
 		Intent it = new Intent(CommonApps.SLEEP_SHOW_CONTENT);
